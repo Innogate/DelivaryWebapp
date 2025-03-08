@@ -8,16 +8,20 @@ import { Observable } from 'rxjs';
 export class BranchService {
   constructor(private apiService: ApiService) {}
 
-  getBranches(from: number = 0): Observable<any> {
+  getAllBranches(from: number = 0): Observable<any> {
     return this.apiService.post('/master/branches', { from });
   }
 
   getBranchById(branchId: number): Observable<any> {
-    return this.apiService.post('/master/branches', { brach_id: branchId });
+    return this.apiService.post('/master/branches/byId', { branch_id: branchId });
   }
 
-  createNewBranch(data: any): Observable<any> {
-    return this.apiService.post('/master/branches/new', data);
+  getBranchesByCityId(cityId: number, from: number = 0): Observable<any> {
+    return this.apiService.post('/master/branches/byCityId', { city_id: cityId, from });
+  }
+
+  addNewBranch(branchName: string, cityId: number, stateId: number): Observable<any> {
+    return this.apiService.post('/master/branches/new', { branch_name: branchName, city_id: cityId, state_id: stateId });
   }
 
   deleteBranch(branchId: string): Observable<any> {
