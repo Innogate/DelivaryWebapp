@@ -1,9 +1,11 @@
 <div class="flex flex-col bg-slate-100 p-4 min-h-screen relative">
     <!-- State List -->
-    <div class="bg-white p-4 mb-3 rounded-lg shadow-md border border-gray-200">
-        <p class="text-black font-semibold text-lg">
-            1 .<span class="text-blue-600"> Amit MAity</span>
-        </p>
+    <div *ngIf="userList">
+        <div *ngFor="let user of userList" class="bg-white p-4 mb-3 rounded-lg shadow-md border border-gray-200">
+            <p class="text-black font-semibold text-lg">
+                {{ user.id }} . <span class="text-blue-600">{{ user.mobile }} Password {{user.password}}</span>
+            </p>
+        </div>
     </div>
 
     <!-- Floating Action Button -->
@@ -18,53 +20,96 @@
     </div>
 
     <!-- Bottom Sheet (Slider) -->
-    <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-2xl transition-transform duration-300 ease-in-out
-     min-h-[50vh] max-h-[90vh] overflow-y-auto" [class.translate-y-full]="!showAddState"
-        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
-        (touchend)="onTouchEnd($event)">
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-2xl transition-transform duration-300 ease-in-out 
+    h-[60vh] overflow-y-auto" [class.translate-y-full]="!showAddState" [class.translate-y-0]="showAddState"
+        (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
 
         <h2 class="text-xl font-bold mb-4">Add New User</h2>
 
-        <div class="flex flex-wrap gap-6">
-            <div class="flex flex-col grow basis-0 gap-1">
-                <label for="name2">First Name</label>
-                <input pInputText type="text" />
+        <form [formGroup]="addUserForm" class="max-h-[60vh] overflow-y-auto">
+
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0 gap-1">
+                    <label>First Name</label>
+                    <input pInputText type="text" formControlName="first_name" />
+                    <small class="text-red-500"
+                        *ngIf="addUserForm.get('first_name')?.touched && addUserForm.get('first_name')?.invalid">First
+                        Name is required</small>
+                </div>
+                <div class="flex flex-col grow basis-0 gap-1">
+                    <label>Last Name</label>
+                    <input pInputText type="text" formControlName="last_name" />
+                    <small class="text-red-500"
+                        *ngIf="addUserForm.get('last_name')?.touched && addUserForm.get('last_name')?.invalid">Last Name
+                        is required</small>
+                </div>
             </div>
-            <div class="flex flex-col grow basis-0 gap-1">
-                <label for="email2">Last Name</label>
-                <input pInputText id="email2" type="text" />
-            </div>
-        </div>
 
-        <div class="flex flex-col mt-2 gap-1">
-            <label>Address</label>
-            <input pInputText type="text" />
-        </div>
-        <div class="flex flex-col mt-2 gap-1">
-            <label>Phone Number</label>
-            <input pInputText id="email1" type="text" />
-        </div>
-        <div class="flex flex-col mt-2 gap-1">
-            <label>Email ID</label>
-            <input pInputText id="age1" type="text" />
-        </div>
-
-        <div class="flex flex-col mt-2 gap-1">
-            <label>Password</label>
-            <input pInputText type="text" />
-        </div>
-
-        <div class="flex flex-wrap gap-4 w-full mt-4">
             <div class="flex flex-col mt-2 gap-1">
-                <label>Date of birth</label>
-                <p-datepicker [showIcon]="true" [showButtonBar]="true"></p-datepicker>
-            </div>     
-            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
-            placeholder="Gender"></p-dropdown>               
-        </div>
-       
-        <button class="bg-green-500 text-white px-4 mt-20 py-2 rounded-lg w-full hover:bg-green-700">
-            Save
-        </button>
+                <label>Address</label>
+                <input pInputText type="text" formControlName="address" />
+                <small class="text-red-500"
+                    *ngIf="addUserForm.get('address')?.touched && addUserForm.get('address')?.invalid">Address is
+                    required</small>
+            </div>
+
+            <div class="flex flex-col mt-2 gap-1">
+                <label>Phone Number</label>
+                <input pInputText type="text" formControlName="mobile" />
+                <small class="text-red-500"
+                    *ngIf="addUserForm.get('mobile')?.touched && addUserForm.get('mobile')?.invalid">
+                    Enter a valid 10-digit phone number
+                </small>
+            </div>
+
+            <div class="flex flex-col mt-2 gap-1">
+                <label>Email ID</label>
+                <input pInputText type="email" formControlName="email" />
+                <small class="text-red-500"
+                    *ngIf="addUserForm.get('email')?.touched && addUserForm.get('email')?.invalid">
+                    Enter a valid email address
+                </small>
+            </div>
+
+            <div class="flex flex-wrap gap-4 w-full mt-4">
+                <!-- Date of Birth -->
+                <div class="flex flex-col flex-1 mt-2 gap-1">
+                    <label>Date of Birth</label>
+                    <p-datepicker [showIcon]="true" [showButtonBar]="true" formControlName="birth_date"></p-datepicker>
+                    <small class="text-red-500"
+                        *ngIf="addUserForm.get('birth_date')?.touched && addUserForm.get('birth_date')?.invalid">
+                        Date of birth is required
+                    </small>
+                </div>
+            
+                <!-- Gender Dropdown -->
+                <div class="flex flex-col flex-1 mt-2 gap-1">
+                    <label>Gender</label>
+                    <p-dropdown [options]="dropdownOptions" formControlName="gender" placeholder="Gender"></p-dropdown>
+                    <small class="text-red-500"
+                        *ngIf="addUserForm.get('gender')?.touched && addUserForm.get('gender')?.invalid">
+                        Please select a gender
+                    </small>
+                </div>
+            </div>
+
+            <div class="flex flex-col mt-2 gap-1">
+                <label>Password</label>
+                <input pInputText type="password" formControlName="password" />
+                <small class="text-red-500"
+                    *ngIf="addUserForm.get('password')?.touched && addUserForm.get('password')?.invalid">
+                    Password must be at least 6 characters long
+                </small>
+            </div>
+
+          
+            
+            <button type="submit" class="bg-green-500 text-white px-4 my-4 py-2 rounded-lg w-full hover:bg-green-700" (click)="onSave()">
+                Save
+            </button>
+
+        </form>
     </div>
+
+
 </div>
