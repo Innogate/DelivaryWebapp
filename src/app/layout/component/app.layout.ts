@@ -4,28 +4,22 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
-import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
-    template: `<div class="layout-wrapper" [ngClass]="containerClass">
-        <app-topbar></app-topbar>
-        <app-sidebar></app-sidebar>
-        <div class="layout-main-container">
-            <div class="layout-main">
-                <router-outlet></router-outlet>
-            </div>
-            <app-footer></app-footer>
-        </div>
-        <div class="layout-mask animate-fadein"></div>
-    </div> `
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule],
+    templateUrl: './pages/layout.html'
 })
 export class AppLayout {
     overlayMenuOpenSubscription: Subscription;
-
+    navItems = [
+        { label: 'Menu', icon: 'pi pi-bars', route: '/menu' },
+        { label: 'Scan', icon: 'pi pi-qrcode', route: '/scan' },
+        { label: 'Booking', icon: 'pi pi-calendar', route: '/booking' },
+        { label: 'Profile', icon: 'pi pi-user', route: '/profile' }
+    ];
     menuOutsideClickListener: any;
 
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
@@ -107,5 +101,13 @@ export class AppLayout {
         if (this.menuOutsideClickListener) {
             this.menuOutsideClickListener();
         }
+    }
+
+    isActive(route: string): boolean {
+        return this.router.url === route;
+    }
+
+    navigate(route: string) {
+        this.router.navigate([route]);
     }
 }

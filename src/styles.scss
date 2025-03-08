@@ -3,3 +3,23 @@
 @use './assets/layout/layout.scss';
 @use 'primeicons/primeicons.css';
 @use './assets/demo/demo.scss';
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+
+html, body { height: 100% !important;  width: 100% !important;}
+@media (max-width: 768px) {
+    .not-for-mobile {
+      display: none !important;
+    }
+  }
+  
