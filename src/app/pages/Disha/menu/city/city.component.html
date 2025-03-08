@@ -2,16 +2,18 @@
     <!-- State List -->
 
     <form class="mb-4">
-        <div class="flex-1">
-            <p-dropdown class="flex-1" [options]="dropdownOptions"
-                placeholder="Select an State"></p-dropdown>
+        <div class="flex flex-wrap w-full mt-4">
+            <p-dropdown class="flex-1" [options]="dropdownOptions" placeholder="Select an State"
+                (onChange)="getAllCity($event)"></p-dropdown>
         </div>
     </form>
-    
-    <div class="bg-white p-4 mb-3 rounded-lg shadow-md border border-gray-200">
-        <p class="text-black font-semibold text-lg">
-            1 .<span class="text-blue-600"> West Bengal</span>
-        </p>
+
+    <div *ngIf="cityList">
+        <div *ngFor="let city of cityList" class="bg-white p-4 mb-3 rounded-lg shadow-md border border-gray-200">
+            <p class="text-black font-semibold text-lg">
+                {{ city.id }} . <span class="text-blue-600">{{ city.name }}</span>
+            </p>
+        </div>
     </div>
 
     <button
@@ -26,26 +28,23 @@
 
     <!-- Bottom Sheet (Slider) -->
     <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-2xl transition-transform duration-300 ease-in-out
-     min-h-[50vh] max-h-[90vh] overflow-y-auto"
-        [class.translate-y-full]="!showAddState"
-        [class.translate-y-0]="showAddState"
-        (click)="$event.stopPropagation()"
-        (touchstart)="onTouchStart($event)"
+     min-h-[50vh] max-h-[90vh] overflow-y-auto" [class.translate-y-full]="!showAddState"
+        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
         (touchend)="onTouchEnd($event)">
 
         <h2 class="text-xl font-bold mb-4">Add New City</h2>
 
-        <form class="mb-4">
+        <form class="mb-4" [formGroup]="Form">
             <div class="flex flex-wrap w-full mt-4">
-                <p-dropdown class="flex-1" [options]="dropdownOptions"
-                    placeholder="Select an State"></p-dropdown>
+                <p-dropdown formControlName="stateId" class="flex-1" [options]="dropdownOptions" placeholder="Select an State"></p-dropdown>
+            </div>
+            <div class="flex flex-col mt-2 gap-1">
+                <label>Enter City</label>
+                <input formControlName="cityName" pInputText id="age1" type="text" />
             </div>
         </form>
-        <div class="flex flex-col mt-2 gap-1">
-            <label>Enter City</label>
-            <input pInputText id="age1" type="text" />
-        </div>
-        <button class="bg-green-500 text-white px-4 py-2 mt-6 rounded-lg w-full hover:bg-green-700">
+        <button class="bg-green-500 text-white px-4 py-2 mt-6 rounded-lg w-full hover:bg-green-700"
+            (click)="addNewCity()">
             Save
         </button>
     </div>

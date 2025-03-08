@@ -72,7 +72,7 @@ export class StateComponent {
       this.service.addNewState(newState).subscribe(
         (res) => {
           alert(res.message)
-          this.GetAllState(); // Refresh state list
+          this.GetAllState(); 
           this.showAddState = false;
           this.stateForm.reset();
         },
