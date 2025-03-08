@@ -8,6 +8,8 @@ import { CityComponent } from './Disha/menu/city/city.component';
 import { BookingStatusComponent } from './Disha/menu/booking-status/booking-status.component';
 import { UserComponent } from './Disha/menu/user/user.component';
 import { EmployComponent } from './Disha/menu/employ/employ.component';
+import { CompanyComponent } from './Disha/menu/company/company.component';
+import { BranchComponent } from './Disha/menu/branch/branch.component';
 
 export default [
     { path: 'documentation', component: Documentation },
@@ -19,5 +21,7 @@ export default [
     {path: 'booking-status', component: BookingStatusComponent},
     {path: 'employee', component: EmployComponent},
     {path: 'user', component: UserComponent},
+    {path: 'company', component: CompanyComponent},
+    {path: 'branch', component: BranchComponent},
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

@@ -48,5 +48,6 @@ export class MenuComponent {
       this.router.navigate(["/pages/branch"]);
     }
   }
+  
 }
 
