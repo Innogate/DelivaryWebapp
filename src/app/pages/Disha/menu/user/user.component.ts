@@ -24,8 +24,7 @@ export class UserComponent {
   private touchStartY: number = 0;
   dropdownOptions = [{ label: 'Male', value: 'M' }, { label: 'Female', value: 'F' }];
   selectedValue: any;
-
-
+  passwordVisible = false;
 
   constructor(private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
     this.addUserForm = this.fb.group({
@@ -99,10 +98,6 @@ export class UserComponent {
 
 
 
-  toggleAddState() {
-    this.showAddState = !this.showAddState;
-  }
-
   onTouchStart(event: TouchEvent) {
     // Store the initial touch position
     this.touchStartY = event.touches[0].clientY;
@@ -120,5 +115,19 @@ export class UserComponent {
 
   
 
+  togglePassword(user: any) {
+    user.showPassword = !user.showPassword;
+  }
 
+  toggleFormPassword() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleAddState() {
+    this.showAddState = !this.showAddState;
+  }
+
+  getGenderLabel(value: string) {
+    return this.dropdownOptions.find(option => option.value === value)?.label || 'Unknown';
+  }
 }
