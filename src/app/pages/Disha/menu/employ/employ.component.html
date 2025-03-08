@@ -1,0 +1,70 @@
+<div class="flex flex-col bg-slate-100 p-4 min-h-screen relative">
+    <!-- State List -->
+    <div class="bg-white p-4 mb-3 rounded-lg shadow-md border border-gray-200">
+        <p class="text-black font-semibold text-lg">
+            1 .<span class="text-blue-600"> Amit MAity</span>
+        </p>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button
+        class="fixed bottom-6 right-6 bg-purple-600 text-white rounded-full w-14 h-14 shadow-lg flex items-center mb-20 mr-4 justify-center text-3xl transition-transform transform hover:scale-110"
+        (click)="toggleAddState()">
+        +
+    </button>
+
+    <!-- Background Overlay: Click to Close -->
+    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50" (click)="toggleAddState()">
+    </div>
+
+    <!-- Bottom Sheet (Slider) -->
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-2xl transition-transform duration-300 ease-in-out
+     min-h-[50vh] max-h-[90vh] overflow-y-auto" [class.translate-y-full]="!showAddState"
+        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)">
+
+        <h2 class="text-xl font-bold mb-4">Add New Employee</h2>
+
+        <div class="flex flex-wrap gap-6">
+            <div class="flex flex-col grow basis-0 gap-1">
+                <label for="name2">First Name</label>
+                <input pInputText type="text" />
+            </div>
+            <div class="flex flex-col grow basis-0 gap-1">
+                <label for="email2">Last Name</label>
+                <input pInputText id="email2" type="text" />
+            </div>
+        </div>
+
+        <div class="flex flex-col mt-2 gap-1">
+            <label>Address</label>
+            <input pInputText type="text" />
+        </div>
+        <div class="flex flex-col mt-2 gap-1">
+            <label>Phone Number</label>
+            <input pInputText id="email1" type="text" />
+        </div>
+        <div class="flex flex-col mt-2 gap-1">
+            <label>Email ID</label>
+            <input pInputText id="age1" type="text" />
+        </div>
+
+        <div class="flex flex-col mt-2 gap-1">
+            <label>Password</label>
+            <input pInputText type="text" />
+        </div>
+
+        <div class="flex flex-wrap gap-4 w-full mt-4">
+            <div class="flex flex-col mt-2 gap-1">
+                <label>Date of birth</label>
+                <p-datepicker [showIcon]="true" [showButtonBar]="true"></p-datepicker>
+            </div>     
+            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+            placeholder="Gender"></p-dropdown>               
+        </div>
+       
+        <button class="bg-green-500 text-white px-4 mt-20 py-2 rounded-lg w-full hover:bg-green-700">
+            Save
+        </button>
+    </div>
+</div>

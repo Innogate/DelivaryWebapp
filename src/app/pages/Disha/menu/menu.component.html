@@ -1,0 +1,58 @@
+<div class="h-full bg-slate-100 p-6 flex min-h-screen">
+    <div class="w-full max-w-md mx-auto">
+        <h1 class="text-xl font-bold text-center mb-6 text-gray-800">Choose Your Area</h1>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+            <!-- Booking -->
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'booking', 'bg-white text-purple-700': selectedCard !== 'booking'}"
+                (click)="selectCard('booking')">
+                <ng-template pHeader>
+                    <!-- <p-image src="/assets/images/cart.png" alt="Booking" width="50"></p-image> -->
+                </ng-template>
+                <p class="text-lg font-semibold text-center">Booking</p>
+            </p-card>
+
+            <!-- Booking Status -->
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'booking-status', 'bg-white text-purple-700': selectedCard !== 'booking-status'}"
+                (click)="selectCard('booking-status')">
+                <ng-template pHeader>
+                    <span class="text-5xl">🏪</span>
+                </ng-template>
+                <p class="text-lg font-semibold text-center">Booking Status</p>
+            </p-card>
+
+            <!-- Master (Trades) -->
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'city', 'bg-white text-purple-700': selectedCard !== 'city'}"
+                (click)="selectCard('city')">
+                <ng-template pHeader>
+                    <span class="text-5xl">💼</span>
+                </ng-template>
+                <p class="text-lg font-semibold text-center">City Master</p>
+            </p-card>
+
+            <!-- Master (Duplicate Entry?) -->
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'state', 'bg-white text-purple-700': selectedCard !== 'state'}"
+                (click)="selectCard('state')">
+                <p class="text-lg font-semibold text-center">State Master</p>
+            </p-card>
+
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'user', 'bg-white text-purple-700': selectedCard !== 'user'}"
+                (click)="selectCard('user')">
+                <p class="text-lg font-semibold text-center">User Master</p>
+            </p-card>
+
+
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+            [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'employee', 'bg-white text-purple-700': selectedCard !== 'employee'}"
+            (click)="selectCard('employee')">
+            <p class="text-lg font-semibold text-center">Employee Master</p>
+        </p-card>
+
+        </div>
+    </div>
+</div>

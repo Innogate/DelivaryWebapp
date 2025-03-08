@@ -1,0 +1,103 @@
+<div class="gap-4">
+    <div class="flex flex-wrap gap-6">
+        <div class="flex flex-col grow basis-0">
+            <label for="name2">Slip No</label>
+            <input pInputText id="name2" type="text" />
+        </div>
+        <div class="flex flex-col grow basis-0">
+            <label for="email2">Consignor</label>
+            <input pInputText id="email2" type="text" />
+        </div>
+    </div>
+
+    <div class="flex flex-col mt-2 gap-1">
+        <label for="name1">Consignor Mobile</label>
+        <input pInputText id="name1" type="text" />
+    </div>
+    <div class="flex flex-col mt-2 gap-1">
+        <label for="email1">Consigee</label>
+        <input pInputText id="email1" type="text" />
+    </div>
+    <div class="flex flex-col mt-2 gap-1">
+        <label for="age1">Consigee Mobile</label>
+        <input pInputText id="age1" type="text" />
+    </div>
+
+
+    <!-- <div class="flex flex-wrap gap-6"> -->
+    <div class="gap-2">
+        <div class="flex flex-wrap gap-4 w-full mt-4">
+            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+                placeholder="Select an state"></p-dropdown>
+
+            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+                placeholder="Select an city"></p-dropdown>
+        </div>
+        <div class="flex flex-wrap w-full mt-4">
+            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+                placeholder="Select an branch"></p-dropdown>
+        </div>
+    </div>
+
+
+    <div class="flex flex-wrap w-full mt-4">
+
+        <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+            placeholder="Select transport mode"></p-dropdown>
+    </div>
+
+    <div class="flex flex-row gap-4 w-full mt-2">
+        <div class="flex flex-col flex-1">
+            <label for="packages">No of Packages</label>
+            <input pInputText id="packages" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+        <div class="flex flex-col flex-1">
+            <label for="weight">Weight</label>
+            <input pInputText id="weight" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+        <div class="flex flex-col flex-1">
+            <label for="declaredValue">Declared Value</label>
+            <input pInputText id="declaredValue" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+    </div>
+
+
+    <div class="flex flex-row gap-4 w-full mt-2">
+        <div class="flex flex-col flex-1">
+            <label for="packages">Contents</label>
+            <input pInputText id="packages" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+        <div class="flex flex-col flex-1">
+            <label for="weight">Charges</label>
+            <input pInputText id="weight" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+        <div class="flex flex-col flex-1">
+            <label for="declaredValue">Shiper</label>
+            <input pInputText id="declaredValue" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+    </div>
+
+
+
+    <div class="flex flex-row gap-4 w-full mt-2">
+        <div class="flex flex-col flex-1">
+            <label for="packages">CGST</label>
+            <input pInputText id="packages" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+        <div class="flex flex-col flex-1">
+            <label for="weight">SGST</label>
+            <input pInputText id="weight" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+        <div class="flex flex-col flex-1">
+            <label for="declaredValue">IGST</label>
+            <input pInputText id="declaredValue" type="text" class="p-2 border rounded-md w-full" />
+        </div>
+    </div>
+    <div class="flex flex-col mt-2 gap-1">
+        <label for="name1">Total </label>
+        <input pInputText id="name1" type="text" />
+    </div>
+    <div class="w-full mt-10">
+        <p-button label="Primary" raised />
+    </div>
+</div>
