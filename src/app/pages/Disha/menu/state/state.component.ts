@@ -1,20 +1,27 @@
 import { Component } from '@angular/core';
 import { DialogModule } from 'primeng/dialog'; // ✅ Import DialogModule
 import { ButtonModule } from 'primeng/button'; // ✅ Import ButtonModule
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { StateService } from '../services/state.service';
 import { catchError, tap, throwError } from 'rxjs';
+import { StateService } from '../../../../../services/state.service';
 @Component({
   selector: 'app-state',
-  imports: [DialogModule, ButtonModule, FormsModule,CommonModule],
+  imports: [DialogModule, ButtonModule, FormsModule,CommonModule,ReactiveFormsModule,CommonModule],
   templateUrl: './state.component.html',
   styleUrl: './state.component.scss'
 })
 export class StateComponent {
 
   showAddState: boolean = false;
-  constructor(private service: StateService){}
+  stateForm: FormGroup;
+
+ constructor(private service: StateService,private fb: FormBuilder) {
+  this.stateForm = this.fb.group({
+    stateName: ['', [Validators.required, Validators.minLength(3)]]
+  });
+  }
+ states: {id:number, stateName: String}[] = [];
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
@@ -28,7 +35,6 @@ export class StateComponent {
   onTouchEnd(event: TouchEvent) {
     // Get the final touch position
     const touchEndY = event.changedTouches[0].clientY;
-
     // Detect swipe down (close slider)
     if (touchEndY - this.touchStartY > 50) {
       this.showAddState = false;
@@ -36,17 +42,9 @@ export class StateComponent {
   }
 
   private touchStartY: number = 0;
-
-
-
-
-
-
-  states: {id:number, stateName: String}[] = [];
   newStateName = '';
   ngOnInit() {
     this.GetAllState();
-
   }
 
   GetAllState() {
@@ -65,13 +63,23 @@ export class StateComponent {
       })
     ).subscribe(); // Subscribe to execute the observable
   }
+  
 
 
   addState() {
-    if (this.newStateName.trim()) {
-      console.log('State Added:', this.newStateName);
-      this.newStateName = '';
-      this.toggleAddState();
+    if (this.stateForm.valid) {
+      const newState:any = this.stateForm.value.stateName;
+      this.service.addNewState(newState).subscribe(
+        (res) => {
+          alert(res.message)
+          this.GetAllState(); // Refresh state list
+          this.showAddState = false;
+          this.stateForm.reset();
+        },
+        (error) => {
+          console.error('Error adding state:', error);
+        }
+      );
     }
   }
 }

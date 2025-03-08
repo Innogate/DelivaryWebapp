@@ -1,4 +1,4 @@
 export default {
     production: true,
-    apiUrl: 'http://api.example.com/api'
+   apiUrl: 'http://18.217.159.77'
 }
