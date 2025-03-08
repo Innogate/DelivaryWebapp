@@ -21,7 +21,7 @@ export class StateComponent {
     stateName: ['', [Validators.required, Validators.minLength(3)]]
   });
   }
- states: {id:number, stateName: String}[] = [];
+ states: any[] = [];
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
@@ -51,10 +51,7 @@ export class StateComponent {
     this.service.getAllStates(0).pipe(
       tap((res) => {
         if (res.body) {
-          this.states = res.body.map((states: any) => ({
-            id: states.id,
-            stateName: states.name
-          }));
+          this.states = res.body;
       }
       }),
       catchError((error) => {

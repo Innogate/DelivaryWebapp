@@ -1,51 +1,106 @@
 <div class="flex flex-col bg-slate-100 p-4 min-h-screen relative">
-    <!-- State List -->
-
+    <!-- State Selection Form -->
     <form class="mb-4">
         <div class="flex flex-wrap w-full mt-4">
-            <p-dropdown class="flex-1" [options]="dropdownOptions" placeholder="Select an State"
-                (onChange)="getAllCity($event)"></p-dropdown>
+            <p-dropdown class="flex-1 rounded-lg shadow-md border border-gray-300 bg-white hover:shadow-lg transition-all"
+                [options]="dropdownOptions" placeholder="Select a State" (onChange)="getAllCity($event)">
+            </p-dropdown>
         </div>
     </form>
 
+    <!-- City List -->
     <div *ngIf="cityList">
-        <div *ngFor="let city of cityList" class="bg-white p-4 mb-3 rounded-lg shadow-md border border-gray-200">
-            <p class="text-black font-semibold text-lg">
-                {{ city.id }} . <span class="text-blue-600">{{ city.name }}</span>
-            </p>
+        <div *ngFor="let city of cityList"
+            class="bg-white p-5 mb-4 rounded-xl shadow-lg border border-gray-200 flex items-center justify-between transition-all hover:shadow-xl hover:border-blue-400">
+            
+            <!-- Left: City Info -->
+            <div class="flex items-center gap-4">
+                <!-- City Icon -->
+                <div class="bg-blue-500 text-white w-12 h-12 flex items-center justify-center rounded-lg shadow-md">
+                    <i class="pi pi-map-marker text-xl"></i>
+                </div>
+
+                <div class="flex flex-col">
+                    <p class="text-black font-semibold text-lg flex items-center gap-2">
+                        <i class="pi pi-flag text-blue-500"></i>
+                        <span class="text-blue-600">{{ city.name }}</span>
+                    </p>
+                    <div class="text-gray-500 text-sm flex items-center gap-2">
+                        <i class="pi pi-calendar"></i>
+                        {{ city.created_at | date: 'MMM d, y h:mm a' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Action Buttons -->
+            <div class="flex flex-col gap-2">
+                <button pButton class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-blue-600 transition-all">
+                    <i class="pi pi-eye"></i> View
+                </button>
+
+                <button pButton class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all">
+                    <i class="pi pi-trash"></i> Delete
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- Floating Action Button (FAB) -->
     <button
-        class="fixed bottom-6 right-6 bg-purple-600 text-white rounded-full w-14 h-14 shadow-lg flex items-center mb-20 mr-4 justify-center text-3xl transition-transform transform hover:scale-110"
+        class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
         (click)="toggleAddState()">
-        +
+        <i class="pi pi-plus"></i>
     </button>
 
-    <!-- Background Overlay: Click to Close -->
-    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50" (click)="toggleAddState()">
+    <!-- Background Overlay -->
+    <div *ngIf="showAddState"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" (click)="toggleAddState()">
     </div>
 
-    <!-- Bottom Sheet (Slider) -->
-    <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-2xl transition-transform duration-300 ease-in-out
-     min-h-[50vh] max-h-[90vh] overflow-y-auto" [class.translate-y-full]="!showAddState"
-        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
-        (touchend)="onTouchEnd($event)">
+    <!-- Bottom Sheet Modal -->
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
+     min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect"
+        [class.translate-y-full]="!showAddState" [class.translate-y-0]="showAddState"
+        (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
 
-        <h2 class="text-xl font-bold mb-4">Add New City</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New City</h2>
 
         <form class="mb-4" [formGroup]="Form">
             <div class="flex flex-wrap w-full mt-4">
-                <p-dropdown formControlName="stateId" class="flex-1" [options]="dropdownOptions" placeholder="Select an State"></p-dropdown>
+                <p-dropdown formControlName="stateId"
+                    class="flex-1 rounded-lg shadow-md border border-gray-300 bg-white hover:shadow-lg transition-all"
+                    [options]="dropdownOptions" placeholder="Select a State"></p-dropdown>
             </div>
-            <div class="flex flex-col mt-2 gap-1">
-                <label>Enter City</label>
-                <input formControlName="cityName" pInputText id="age1" type="text" />
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Enter City</label>
+                <input formControlName="cityName"
+                    class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 transition-all"
+                    pInputText type="text" />
             </div>
         </form>
-        <button class="bg-green-500 text-white px-4 py-2 mt-6 rounded-lg w-full hover:bg-green-700"
+        <button
+            class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 mt-6 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
             (click)="addNewCity()">
             Save
         </button>
     </div>
 </div>
+
+<style>
+    /* Floating Action Button Pulse Effect */
+    .pulse {
+        animation: pulse-animation 1.5s infinite;
+    }
+
+    @keyframes pulse-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Glass Effect */
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+    }
+</style>
