@@ -48,9 +48,23 @@
 
 
             <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
-            [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'employee', 'bg-white text-purple-700': selectedCard !== 'employee'}"
-            (click)="selectCard('employee')">
-            <p class="text-lg font-semibold text-center">Employee Master</p>
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'employee', 'bg-white text-purple-700': selectedCard !== 'employee'}"
+                (click)="selectCard('employee')">
+                <p class="text-lg font-semibold text-center">Employee Master</p>
+            </p-card>
+
+
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+                [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'company', 'bg-white text-purple-700': selectedCard !== 'company'}"
+                (click)="selectCard('company')">
+                <p class="text-lg font-semibold text-center">Company Master</p>
+            </p-card>
+
+
+            <p-card class="p-4 rounded-2xl transform hover:scale-110 transition-all duration-300 cursor-pointer"
+            [ngClass]="{'bg-[#7829b9] text-white': selectedCard === 'branch', 'bg-white text-purple-700': selectedCard !== 'branch'}"
+            (click)="selectCard('branch')">
+            <p class="text-lg font-semibold text-center">Branch Master</p>
         </p-card>
 
         </div>

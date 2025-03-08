@@ -16,7 +16,7 @@ export class MenuComponent {
   selectedCard: string = ''; // Initially, no card is selected
 
   ngOnInit(): void {
-   
+
   }
   gotoBooking(Data: any) {
     if (Data === "booking") {
@@ -36,13 +36,17 @@ export class MenuComponent {
       this.router.navigate(["/pages/booking-status"]);
     } else if (card === "city") {
       this.router.navigate(["/pages/city"]);
-    } else if (card === "state"){
+    } else if (card === "state") {
       this.router.navigate(["/pages/state"]);
     } else if (card === "user") {
       this.router.navigate(["/pages/user"]);
-    }  else if (card === "employee") {
+    } else if (card === "employee") {
       this.router.navigate(["/pages/employee"]);
-    } 
+    } else if (card === "company") {
+      this.router.navigate(["/pages/company"]);
+    } else if (card === "branch") {
+      this.router.navigate(["/pages/branch"]);
+    }
   }
 }
 

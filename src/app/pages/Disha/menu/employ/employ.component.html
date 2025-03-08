@@ -26,14 +26,8 @@
         <h2 class="text-xl font-bold mb-4">Add New Employee</h2>
 
         <div class="flex flex-wrap gap-6">
-            <div class="flex flex-col grow basis-0 gap-1">
-                <label for="name2">First Name</label>
-                <input pInputText type="text" />
-            </div>
-            <div class="flex flex-col grow basis-0 gap-1">
-                <label for="email2">Last Name</label>
-                <input pInputText id="email2" type="text" />
-            </div>
+            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+            placeholder="Select Enploy Name"></p-dropdown>    
         </div>
 
         <div class="flex flex-col mt-2 gap-1">
@@ -45,22 +39,25 @@
             <input pInputText id="email1" type="text" />
         </div>
         <div class="flex flex-col mt-2 gap-1">
-            <label>Email ID</label>
+            <label>Aadhar No</label>
             <input pInputText id="age1" type="text" />
         </div>
 
-        <div class="flex flex-col mt-2 gap-1">
-            <label>Password</label>
-            <input pInputText type="text" />
+        <div class="flex flex-wrap gap-6 mt-4">
+            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
+            placeholder="Select Gender"></p-dropdown>    
         </div>
 
         <div class="flex flex-wrap gap-4 w-full mt-4">
             <div class="flex flex-col mt-2 gap-1">
+                <label>Join date</label>
+                <p-datepicker [showIcon]="true" [showButtonBar]="true"></p-datepicker>
+            </div>   
+            
+            <div class="flex flex-col mt-2 gap-1">
                 <label>Date of birth</label>
                 <p-datepicker [showIcon]="true" [showButtonBar]="true"></p-datepicker>
-            </div>     
-            <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
-            placeholder="Gender"></p-dropdown>               
+            </div>   
         </div>
        
         <button class="bg-green-500 text-white px-4 mt-20 py-2 rounded-lg w-full hover:bg-green-700">
