@@ -1,6 +1,6 @@
 <div class="layout-wrapper w-full h-full" [ngClass]="containerClass">
-    <app-topbar></app-topbar>
-    <app-sidebar></app-sidebar>
+    <app-topbar *ngIf="isNotLoginPage"></app-topbar>
+    <app-sidebar *ngIf="isNotLoginPage"></app-sidebar>
     <div class="absolute left-0 right-0 buttom-[46px] top-[59px]">
         <div class="w-full h-full relative overflow-scroll p-5" style="padding-bottom: 50px;">
             <div class="layout-main">
@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="layout-mask animate-fadein"></div>
-    <div class="w-full  h-[45px] absolute bottom-0">
+    <div *ngIf="isNotLoginPage" class="w-full  h-[45px] absolute bottom-0">
         <div
             class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600">
             <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">

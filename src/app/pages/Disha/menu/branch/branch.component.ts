@@ -158,25 +158,20 @@ export class BranchComponent {
 
   async addNewBranch() {
     if (this.branchForm.valid) {
-      try {
-        await firstValueFrom(this.branchService.addNewBranch(this.branchForm.value).pipe(
-          tap(
-            (res) => {
-              if (res.body) {
-                this.alertService.success('Branch created successfully');
-                this.showAddState = false;
-                this.fetchBranches();
-              }
-            },
-            (error) => {
-              this.alertService.error(error.error.message);
+      await firstValueFrom(this.branchService.addNewBranch(this.branchForm.value).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.alertService.success('Branch created successfully');
+              this.showAddState = false;
+              this.fetchBranches();
             }
-          )
-        ))
-      }
-      catch (error) {
-        this.alertService.error("Server connection failure please try later !")
-      }
+          },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        )
+      ))
     }
     else{
       this.alertService.error('Please fill all the required fields');

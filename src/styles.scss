@@ -3,23 +3,36 @@
 @use './assets/layout/layout.scss';
 @use 'primeicons/primeicons.css';
 @use './assets/demo/demo.scss';
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+IT+Moderna:wght@100..400&family=Rubik+Maps&display=swap');
 
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+
     &::-webkit-scrollbar {
         display: none;
     }
-    &::-webkit-scrollbar{
+
+    &::-webkit-scrollbar {
         display: none;
     }
 }
 
-html, body { height: 100% !important;  width: 100% !important;}
+html,
+body {
+    height: 100% !important;
+    width: 100% !important;
+}
+
 @media (max-width: 768px) {
     .not-for-mobile {
-      display: none !important;
+        display: none !important;
     }
-  }
-  
+}
+
+.rubik-maps-regular {
+    font-family: "Rubik Maps", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
