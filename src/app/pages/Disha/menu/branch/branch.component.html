@@ -1,69 +1,255 @@
-<div *ngIf="branchList.length" class="flex flex-col bg-slate-100 py-2 min-h-screen">
-    <div *ngFor="let branch of branchList" class="bg-white p-4 mb-3 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
-        
-        <!-- Branch ID and Name -->
-        <div class="flex justify-between items-center mb-2">
-            <p class="text-gray-700 font-semibold text-lg flex items-center">
-                <i class="pi pi-building text-blue-600 mr-2"></i> 
-                Branch ID: <span class="text-blue-600 font-bold ml-1">{{ branch.id }}</span>
-            </p>
-            <p class="text-gray-700 font-medium flex items-center">
-                <i class="pi pi-tag text-green-600 mr-2"></i>
-                <strong>Name:</strong> {{ branch.name }} ({{ branch.alias_name }})
-            </p>
-        </div>
+<div class="flex flex-col bg-slate-100 p-4 h-full w-full relative">
+    <!-- Brach List -->
+    <div *ngIf="branchList.length" class="flex flex-col bg-slate-100 py-2 min-h-screen">
+        <div *ngFor="let branch of branchList"
+            class="bg-white p-4 mb-3 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
 
-        <!-- Address and Contact -->
-        <div class="text-gray-700 mb-2">
-            <p class="flex items-center">
-                <i class="pi pi-map-marker text-red-500 mr-2"></i>
-                <strong>Address:</strong> {{ branch.address }}, Pin: {{ branch.pin_code }}
-            </p>
-            <p class="flex items-center">
-                <i class="pi pi-phone text-purple-500 mr-2"></i>
-                <strong>Contact:</strong> {{ branch.contact_no }}
-            </p>
-            <p class="flex items-center">
-                <i class="pi pi-envelope text-yellow-500 mr-2"></i>
-                <strong>Email:</strong> {{ branch.email }}
-            </p>
-        </div>
-
-        <!-- GST, CIN, UDYAM -->
-        <div *ngIf="branch.showMore" class="bg-gray-50 p-3 rounded-lg mt-2 border border-gray-200">
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-briefcase text-blue-400 mr-2"></i>
-                <strong>Company ID:</strong> {{ branch.company_id }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-id-card text-indigo-500 mr-2"></i>
-                <strong>GST No:</strong> {{ branch.gst_no }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-file text-pink-500 mr-2"></i>
-                <strong>CIN No:</strong> {{ branch.cin_no }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-id-card text-green-500 mr-2"></i>
-                <strong>Udyam No:</strong> {{ branch.udyam_no }}
-            </p>
-            
-            <!-- Action Buttons -->
-            <div class="flex justify-between mt-3">
-                <button (click)="deleteBranch(branch)" class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-all flex items-center">
-                    <i class="pi pi-trash mr-2"></i> Delete
-                </button>
-                <button (click)="updateBranch(branch)" class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-all flex items-center">
-                    <i class="pi pi-pencil mr-2"></i> Update
-                </button>
+            <!-- Branch ID and Name -->
+            <div class="flex justify-between items-center mb-2">
+                <p class="text-gray-700 font-semibold text-lg flex items-center">
+                    <i class="pi pi-building text-blue-600 mr-2"></i>
+                    Branch ID: <span class="text-blue-600 font-bold ml-1">{{ branch.id }}</span>
+                </p>
+                <p class="text-gray-700 font-medium flex items-center">
+                    <i class="pi pi-tag text-green-600 mr-2"></i>
+                    <strong>Name:</strong> {{ branch.name }} ({{ branch.alias_name }})
+                </p>
             </div>
-        </div>
 
-        <!-- Show More / Show Less Button -->
-        <button (click)="branch.showMore = !branch.showMore"
-            class="mt-3 w-full text-blue-600 bg-blue-100 px-4 py-2 rounded-lg font-medium hover:bg-blue-200 transition-all flex items-center justify-center">
-            <i [ngClass]="branch.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
-            {{ branch.showMore ? 'Show Less' : 'Show More' }}
-        </button>
+            <!-- Address and Contact -->
+            <div class="text-gray-700 mb-2">
+                <p class="flex items-center">
+                    <i class="pi pi-map-marker text-red-500 mr-2"></i>
+                    <strong>Address:</strong> {{ branch.address }}, Pin: {{ branch.pin_code }}
+                </p>
+                <p class="flex items-center">
+                    <i class="pi pi-phone text-purple-500 mr-2"></i>
+                    <strong>Contact:</strong> {{ branch.contact_no }}
+                </p>
+                <p class="flex items-center">
+                    <i class="pi pi-envelope text-yellow-500 mr-2"></i>
+                    <strong>Email:</strong> {{ branch.email }}
+                </p>
+            </div>
+
+            <!-- GST, CIN, UDYAM -->
+            <div *ngIf="branch.showMore" class="bg-gray-50 p-3 rounded-lg mt-2 border border-gray-200">
+                <p class="text-gray-700 flex items-center">
+                    <i class="pi pi-briefcase text-blue-400 mr-2"></i>
+                    <strong>Company ID:</strong> {{ branch.company_id }}
+                </p>
+                <p class="text-gray-700 flex items-center">
+                    <i class="pi pi-id-card text-indigo-500 mr-2"></i>
+                    <strong>GST No:</strong> {{ branch.gst_no }}
+                </p>
+                <p class="text-gray-700 flex items-center">
+                    <i class="pi pi-file text-pink-500 mr-2"></i>
+                    <strong>CIN No:</strong> {{ branch.cin_no }}
+                </p>
+                <p class="text-gray-700 flex items-center">
+                    <i class="pi pi-id-card text-green-500 mr-2"></i>
+                    <strong>Udyam No:</strong> {{ branch.udyam_no }}
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between mt-3">
+                    <button (click)="deleteBranch(branch)"
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-all flex items-center">
+                        <i class="pi pi-trash mr-2"></i> Delete
+                    </button>
+                    <button (click)="updateBranch(branch)"
+                        class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-all flex items-center">
+                        <i class="pi pi-pencil mr-2"></i> Update
+                    </button>
+                </div>
+            </div>
+
+            <!-- Show More / Show Less Button -->
+            <button (click)="branch.showMore = !branch.showMore"
+                class="mt-3 w-full text-blue-600 bg-blue-100 px-4 py-2 rounded-lg font-medium hover:bg-blue-200 transition-all flex items-center justify-center">
+                <i [ngClass]="branch.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
+                {{ branch.showMore ? 'Show Less' : 'Show More' }}
+            </button>
+        </div>
     </div>
+
+    <!-- Floating Action Button (FAB) -->
+    <button
+        class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
+        (click)="toggleAddState()">
+        <i class="pi pi-plus"></i>
+    </button>
+
+
+    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
+        (click)="toggleAddState()">
+    </div>
+
+    <!-- Bottom Sheet Modal -->
+    <div  style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
+     min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
+        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)">
+
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New Branch</h2>
+
+        <form class="mb-6 p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="branchForm">
+
+            <!-- Branch Name -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Branch Name</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400">
+                    <i class="pi pi-building text-blue-500 mr-2"></i>
+                    <input formControlName="name" type="text" pInputText placeholder="Enter branch name"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+            <!-- Alias Name -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Alias Name</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-purple-400">
+                    <i class="pi pi-tag text-purple-500 mr-2"></i>
+                    <input formControlName="alias_name" type="text" pInputText placeholder="Alias name"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+
+            <!-- State Dropdown -->
+            <div class="flex flex-col mt-4">
+                <label class="text-gray-700 font-medium">State</label>
+                <p-dropdown formControlName="state_id" class="w-full custom-dropdown" [options]="states"
+                    optionLabel="name" optionValue="id" (onChange)="onStateChange($event.value)" [showClear]="true"
+                    [emptyMessage]="'States not found'" placeholder="Select State">
+                </p-dropdown>
+            </div>
+
+            <!-- City Dropdown -->
+            <div class="flex flex-col mt-4">
+                <label class="text-gray-700 font-medium">City</label>
+                <p-dropdown formControlName="city_id" class="w-full custom-dropdown" [options]="cities"
+                    optionLabel="name" optionValue="id" placeholder="Select City"
+                    (onChange)="onCityChange($event.value)" [showClear]="true" [emptyMessage]="'Cities not recoded for this state'">
+                </p-dropdown>
+            </div>
+
+            <!-- Company Dropdown -->
+            <div class="flex flex-col mt-4">
+                <label class="text-gray-700 font-medium">Company</label>
+                <p-dropdown formControlName="company_id" class="w-full custom-dropdown" [options]="companies"
+                    optionLabel="name" optionValue="id" placeholder="Select Company" [showClear]="true"
+                    [emptyMessage]="'Companies not found for this city'">
+                </p-dropdown>
+            </div>
+
+
+
+            <!-- Address -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Address</label>
+                <span
+                    class="flex items-start border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-red-400">
+                    <i class="pi pi-map-marker text-red-500 mr-2 mt-1"></i>
+                    <textarea formControlName="address" pInputTextarea placeholder="Enter branch address"
+                        class="w-full bg-transparent focus:outline-none"></textarea>
+                </span>
+            </div>
+
+
+            <!-- Address -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Postal Code</label>
+                <span
+                    class="flex items-start border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
+                    <i class="pi pi-truck text-green-500 mr-2 mt-1"></i>
+                    <textarea formControlName="pin_code" pInputTextarea placeholder="Enter Pin Code"
+                        class="w-full bg-transparent focus:outline-none"></textarea>
+                </span>
+            </div>
+
+            <!-- Contact No -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Contact No</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
+                    <i class="pi pi-phone text-green-500 mr-2"></i>
+                    <input formControlName="contact_no" type="text" pInputText placeholder="Enter Contact No"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+            <!-- Email -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">Email</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-yellow-400">
+                    <i class="pi pi-envelope text-yellow-500 mr-2"></i>
+                    <input formControlName="email" type="email" pInputText placeholder="Enter Email"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+            <!-- GST No -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">GST No</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-400">
+                    <i class="pi pi-id-card text-indigo-500 mr-2"></i>
+                    <input formControlName="gst_no" type="text" pInputText placeholder="Enter GST No"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+            <!-- CIN No -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">CIN No</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-400">
+                    <i class="pi pi-id-card text-red-500 mr-2"></i>
+                    <input formControlName="cin_no" type="text" pInputText placeholder="Enter CIN No"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+            <!-- UDYAM No -->
+            <div class="flex flex-col mt-4 gap-2">
+                <label class="text-gray-700 font-medium">UDYAM No</label>
+                <span
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-400">
+                    <i class="pi pi-id-card text-yellow-500 mr-2"></i>
+                    <input formControlName="udyam_no" type="text" pInputText placeholder="Enter UDYAM No"
+                        class="w-full bg-transparent focus:outline-none" />
+                </span>
+            </div>
+
+            <!-- Logo Upload -->
+            <div class="flex flex-col mt-4">
+                <div class="relative w-full">
+                    <input type="file" formControlName="logo" (change)="onFileChange($event)" class="hidden"
+                        id="logoUpload" accept="image/*" />
+                    <label for="logoUpload"
+                        class="w-full text-center bg-gradient-to-r from-blue-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all hover:scale-105 hover:bg-blue-700 active:scale-95">
+                        <i class="pi pi-upload mr-2"></i> Choose Logo
+                    </label>
+                    <p *ngIf="selectedFileName" class="text-sm text-gray-500 mt-1">{{ selectedFileName }}</p>
+                </div>
+            </div>
+
+        </form>
+
+        <!-- Submit Button -->
+        <button
+            class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-3 mt-6 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700 active:scale-95"
+            (click)="addNewBranch()">
+            <i class="pi pi-check-circle mr-2"></i> Save
+        </button>
+
+
+
+    </div>
+
+
 </div>

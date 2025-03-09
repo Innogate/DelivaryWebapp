@@ -20,8 +20,8 @@ export class BranchService {
     return this.apiService.post('/master/branches/byCityId', { city_id: cityId, from });
   }
 
-  addNewBranch(branchName: string, cityId: number, stateId: number): Observable<any> {
-    return this.apiService.post('/master/branches/new', { branch_name: branchName, city_id: cityId, state_id: stateId });
+  addNewBranch(data: any): Observable<any> {
+    return this.apiService.post('/master/branches/new', data);
   }
 
   deleteBranch(branchId: string): Observable<any> {
