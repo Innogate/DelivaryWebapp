@@ -2,11 +2,15 @@
     <!-- Slip and Consignor Details -->
     <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col">
-            <label for="slipNo" class="font-medium">Slip No</label>
+            <label for="slipNo" class="font-medium flex items-center">
+                <i class="pi pi-file text-blue-600 mr-2"></i> Slip No
+            </label>
             <input pInputText id="slipNo" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="consignor" class="font-medium">Consignor</label>
+            <label for="consignor" class="font-medium flex items-center">
+                <i class="pi pi-user text-green-600 mr-2"></i> Consignor
+            </label>
             <input pInputText id="consignor" type="text" class="p-inputtext p-component" />
         </div>
     </div>
@@ -14,15 +18,21 @@
     <!-- Contact Details -->
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div class="flex flex-col">
-            <label for="consignorMobile" class="font-medium">Consignor Mobile</label>
+            <label for="consignorMobile" class="font-medium flex items-center">
+                <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile
+            </label>
             <input pInputText id="consignorMobile" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="consignee" class="font-medium">Consignee</label>
+            <label for="consignee" class="font-medium flex items-center">
+                <i class="pi pi-user text-red-600 mr-2"></i> Consignee
+            </label>
             <input pInputText id="consignee" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="consigneeMobile" class="font-medium">Consignee Mobile</label>
+            <label for="consigneeMobile" class="font-medium flex items-center">
+                <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile
+            </label>
             <input pInputText id="consigneeMobile" type="text" class="p-inputtext p-component" />
         </div>
     </div>
@@ -30,45 +40,58 @@
     <!-- Location Details -->
     <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col">
-            <label for="states" class="font-medium">States</label>
+            <label for="states" class="font-medium flex items-center">
+                <i class="pi pi-globe text-blue-500 mr-2"></i> States
+            </label>
             <p-dropdown [options]="states" [(ngModel)]="selectedState" optionLabel="name" optionValue="id"
                 placeholder="Select State" (onChange)="onStateChange()" class="w-full">
             </p-dropdown>
         </div>
 
         <div class="flex flex-col">
-            <label for="cities" class="font-medium">City</label>
+            <label for="cities" class="font-medium flex items-center">
+                <i class="pi pi-map-marker text-red-500 mr-2"></i> City
+            </label>
             <p-dropdown [options]="cities" [(ngModel)]="selectedCity" optionLabel="name" optionValue="id"
                 placeholder="Select City" (onChange)="onCityChange()" class="w-full">
             </p-dropdown>
         </div>
 
         <div class="flex flex-col">
-            <label for="branches" class="font-medium">Branch</label>
+            <label for="branches" class="font-medium flex items-center">
+                <i class="pi pi-building text-gray-500 mr-2"></i> Branch
+            </label>
             <p-dropdown [options]="branches" [(ngModel)]="selectedBranch" optionLabel="name" optionValue="id"
                 placeholder="Select Branch" class="w-full">
             </p-dropdown>
         </div>
     </div>
 
-
-
     <!-- Transport Details -->
+    <label class="font-medium flex items-center mt-4">
+        <i class="pi pi-truck text-green-600 mr-2"></i> Transport Mode
+    </label>
     <p-dropdown [options]="transportModes" [(ngModel)]="selectedTransportMode" placeholder="Select Transport Mode"
-        class="w-full mt-4"></p-dropdown>
+        class="w-full"></p-dropdown>
 
     <!-- Package Details -->
     <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col">
-            <label for="packages">No of Packages</label>
+            <label for="packages" class="font-medium flex items-center">
+                <i class="pi pi-box text-blue-600 mr-2"></i> No of Packages
+            </label>
             <input pInputText id="packages" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="weight">Weight</label>
+            <label for="weight" class="font-medium flex items-center">
+                <i class="pi pi-weight text-gray-600 mr-2"></i> Weight
+            </label>
             <input pInputText id="weight" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="declaredValue">Declared Value</label>
+            <label for="declaredValue" class="font-medium flex items-center">
+                <i class="pi pi-dollar text-green-500 mr-2"></i> Declared Value
+            </label>
             <input pInputText id="declaredValue" type="text" class="p-inputtext p-component" />
         </div>
     </div>
@@ -76,15 +99,21 @@
     <!-- Additional Details -->
     <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col">
-            <label for="contents">Contents</label>
+            <label for="contents" class="font-medium flex items-center">
+                <i class="pi pi-file text-gray-600 mr-2"></i> Contents
+            </label>
             <input pInputText id="contents" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="charges">Charges</label>
+            <label for="charges" class="font-medium flex items-center">
+                <i class="pi pi-wallet text-purple-600 mr-2"></i> Charges
+            </label>
             <input pInputText id="charges" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="shipper">Shipper</label>
+            <label for="shipper" class="font-medium flex items-center">
+                <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
+            </label>
             <input pInputText id="shipper" type="text" class="p-inputtext p-component" />
         </div>
     </div>
@@ -92,22 +121,30 @@
     <!-- Tax Details -->
     <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col">
-            <label for="cgst">CGST</label>
+            <label for="cgst" class="font-medium flex items-center">
+                <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
+            </label>
             <input pInputText id="cgst" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="sgst">SGST</label>
+            <label for="sgst" class="font-medium flex items-center">
+                <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST
+            </label>
             <input pInputText id="sgst" type="text" class="p-inputtext p-component" />
         </div>
         <div class="flex flex-col">
-            <label for="igst">IGST</label>
+            <label for="igst" class="font-medium flex items-center">
+                <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
+            </label>
             <input pInputText id="igst" type="text" class="p-inputtext p-component" />
         </div>
     </div>
 
     <!-- Total Amount -->
     <div class="flex flex-col mt-4">
-        <label for="total">Total</label>
+        <label for="total" class="font-medium flex items-center">
+            <i class="pi pi-calculator text-blue-600 mr-2"></i> Total
+        </label>
         <input pInputText id="total" type="text" class="p-inputtext p-component" />
     </div>
 
