@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
+import { LoginService } from '../../../services/login.service';
 
 @Component({
     selector: 'app-error',
@@ -29,4 +30,6 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
             </div>
         </div>`
 })
-export class Error {}
+export class Error {
+    
+}

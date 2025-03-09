@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
+import { LoginService } from '../../../services/login.service';
 
 @Component({
     selector: 'app-notfound',
@@ -130,10 +131,20 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
 
                         <span  class="text-surface-900 dark:text-surface-0 lg:text-xl font-large mb-4"> For more details contact with the above email, <b style="color:blue">You may get reply after 24 hours so please be patient.</b> </span>
 
-                        <p-button label="Go to Dashboard" routerLink="/" />
+                        <p-button class="mb-5" label="Go to Dashboard" routerLink="/" />
+                        <p-button label="Logout" (click)="logout()"  />
                     </div>
                 </div>
             </div>
         </div>`
 })
-export class Notfound {}
+export class Notfound {
+    constructor(
+        private loginService: LoginService,
+        private router: Router
+    ) { }
+    logout()    {
+        this.loginService.logout();
+        this.router.navigate(['/pages/login']);
+    }
+}
