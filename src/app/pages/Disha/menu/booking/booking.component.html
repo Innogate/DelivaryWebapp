@@ -177,7 +177,7 @@
                 <label for="weight" class="font-medium flex items-center">
                     <i class="pi pi-weight text-gray-600 mr-2"></i> Weight  <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="weight" formControlName="weight" type="text" class="p-inputtext p-component" />
+                <input pInputText id="weight" formControlName="weight" placeholder="KG" type="text" class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['weight'].hasError('required') && bookingForm.controls['weight'].touched"
                     class="text-red-500">
