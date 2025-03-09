@@ -1,4 +1,4 @@
-package in.timt.app;
+package com.github.dishaAirwaysDelivarySystem;
 
 import org.junit.Test;
 
