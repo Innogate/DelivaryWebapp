@@ -80,6 +80,37 @@ export class UserComponent {
           }
         )
       ))
+<<<<<<< HEAD
+=======
+    }
+    catch (error) {
+      this.alertService.error("Server connection failure please try agen !")
+    }
+  }
+
+
+   // create a new user
+  async addUser() {
+    if (this.addUserForm.valid) {
+      try {
+        await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
+          tap(
+            (res) => {
+              if (res.body) {
+                this.alertService.success(res.message);
+                this.showAddState = false;
+                this.gateAllUser();
+              }
+            },
+            (error) => {
+              this.alertService.error(error.error.message);
+            }
+          )
+        ))
+      } catch {
+        this.alertService.error("Server connection failure please try agen !")
+      }
+>>>>>>> bfef373 (user master add new user)
     } else {
       this.addUserForm.markAllAsTouched(); // Show all validation errors
     }
