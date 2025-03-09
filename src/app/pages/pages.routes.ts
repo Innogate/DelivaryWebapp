@@ -10,10 +10,12 @@ import { EmployComponent } from './Disha/menu/employ/employ.component';
 import { CompanyComponent } from './Disha/menu/company/company.component';
 import { BranchComponent } from './Disha/menu/branch/branch.component';
 import { MenuComponent } from './Disha/menu/menu.component';
+import { LoginComponent } from './login/login.component';
 
 export default [
     { path: 'documentation', component: Documentation },
     { path: 'scan', component: MenuComponent },
+    { path: 'login', component: LoginComponent },
     { path: 'empty', component: Empty },
     {path: 'booking', component: BookingComponent },
     {path: 'state', component: StateComponent},

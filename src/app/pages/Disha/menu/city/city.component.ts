@@ -39,16 +39,33 @@ export class CityComponent {
 
 
   async GetAllState() {
-    try {
-      await firstValueFrom(this.stateService.getAllStates(0).pipe(
+    await firstValueFrom(this.stateService.getAllStates(0).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            if (res.body) {
+              this.dropdownOptions = res.body.map((states: any) => ({
+                value: states.id,
+                label: states.name
+              }));
+            }
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+  async getAllCity(data: any) {
+    if (data?.value) {
+      await firstValueFrom(this.cityService.getCitiesByStateId(data.value).pipe(
         tap(
           (res) => {
             if (res.body) {
               if (res.body) {
-                this.dropdownOptions = res.body.map((states: any) => ({
-                  value: states.id,
-                  label: states.name
-                }));
+                this.cityList = res.body;
               }
             }
           },
@@ -58,52 +75,25 @@ export class CityComponent {
         )
       ))
     }
-    catch (error) {
-      this.alertService.error("Server connection failure please try agen !")
-    }
-  }
-
-  async getAllCity(data: any) {
-    if (data?.value) {
-      try {
-        await firstValueFrom(this.cityService.getCitiesByStateId(data.value).pipe(
-          tap(
-            (res) => {
-              if (res.body) {
-                if (res.body) {
-                  this.cityList = res.body;
-                }
-              }
-            },
-            (error) => {
-              this.alertService.error(error.error.message);
-            }
-          )
-        ))
-      }
-      catch (error) {
-        this.alertService.error("Server connection failure please try agen !")
-      }
-    }
   }
 
 
-  addNewCity() {
+  async addNewCity() {
     if (this.Form.valid) {
-      try {
-        this.cityService.addNewCity(this.Form.value["cityName"], this.Form.value["stateId"]).subscribe(
+      await firstValueFrom(this.cityService.addNewCity(this.Form.value["cityName"], this.Form.value["stateId"]).pipe(
+        tap(
           (res) => {
-            this.alertService.success(res.message);
-            this.showAddState = false;
-            this.Form.reset();
+            if (res.body) {
+              this.alertService.success(res.message);
+              this.showAddState = false;
+              this.Form.reset();
+            }
           },
           (error) => {
             this.alertService.error(error.error.message);
           }
-        );
-      } catch(error){
-        this.alertService.error("Server connection failure please try agen !");
-      }
+        )
+      ))
     }
   }
 

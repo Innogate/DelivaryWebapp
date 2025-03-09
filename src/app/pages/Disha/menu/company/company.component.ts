@@ -74,14 +74,32 @@ export class CompanyComponent {
 
 
   async gateAllCompany() {
-    try {
-      await firstValueFrom(this.companyService.getAllCompanies(0).pipe(
+    await firstValueFrom(this.companyService.getAllCompanies(0).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            if (res.body) {
+              this.companyList = res.body;
+            }
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+
+  async onSubmit() {
+    if (this.companyForm.valid) {
+      await firstValueFrom(this.companyService.addNewCompany(this.companyForm.value).pipe(
         tap(
           (res) => {
             if (res.body) {
-              if (res.body) {
-                this.companyList = res.body;
-              }
+              this.alertService.success(res.message);
+              this.showAddState = false;
+              this.gateAllCompany();
             }
           },
           (error) => {
@@ -89,33 +107,6 @@ export class CompanyComponent {
           }
         )
       ))
-    }
-    catch (error) {
-      this.alertService.error("Server connection failure please try again !")
-    }
-  }
-
-
-  async onSubmit() {
-    if (this.companyForm.valid) {
-      try {
-        await firstValueFrom(this.companyService.addNewCompany(this.companyForm.value).pipe(
-          tap(
-            (res) => {
-              if (res.body) {
-                this.alertService.success(res.message);
-                this.showAddState = false;
-                this.gateAllCompany();
-              }
-            },
-            (error) => {
-              this.alertService.error(error.error.message);
-            }
-          )
-        ))
-      } catch {
-        this.alertService.error("Server connection failure please try agen !")
-      }
     } else {
       this.companyForm.markAllAsTouched(); // Show all validation errors
     }
@@ -124,23 +115,18 @@ export class CompanyComponent {
 
 
   async onStateChange(stateId: any) {
-    try {
-      await firstValueFrom(this.cityService.getCitiesByStateId(stateId).pipe(
-        tap(
-          (res) => {
-            if (res.body) {
-              this.cities = res.body;
-            }
-          },
-          (error) => {
-            this.alertService.error(error.error.message);
+    await firstValueFrom(this.cityService.getCitiesByStateId(stateId).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.cities = res.body;
           }
-        )
-      ))
-    }
-    catch (error) {
-      this.alertService.error("Server connection failure please try agen !")
-    }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
   }
 
   onTouchStart(event: TouchEvent) {
@@ -193,7 +179,6 @@ export class CompanyComponent {
   }
 
   async getAllState() {
-   try {
     await firstValueFrom(this.stateService.getAllStates(0).pipe(
       tap(
         (res) => {
@@ -208,10 +193,6 @@ export class CompanyComponent {
         }
       )
     ))
-   }
-   catch (error) {
-    this.alertService.error("Server connection failure please try later !")
-   }
   }
 
   onFileChange(event: any) {

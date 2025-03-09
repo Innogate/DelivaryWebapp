@@ -46,14 +46,33 @@ export class UserComponent {
   
   // gate all user 
   async gateAllUser() {
-    try {
-      await firstValueFrom(this.userService.getAllUsers(0).pipe(
+    await firstValueFrom(this.userService.getAllUsers(0).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            if (res.body) {
+              this.userList = res.body;
+            }
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+
+   // create a new user
+  async onSave() {
+    if (this.addUserForm.valid) {
+      await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
         tap(
           (res) => {
             if (res.body) {
-              if (res.body) {
-                this.userList = res.body;
-              }
+              this.alertService.success('User created successfully');
+              this.showAddState = false;
+              this.gateAllUser();
             }
           },
           (error) => {
@@ -61,34 +80,6 @@ export class UserComponent {
           }
         )
       ))
-    }
-    catch (error) {
-      this.alertService.error("Server connection failure please try agen !")
-    }
-  }
-
-
-   // create a new user
-  async onSave() {
-    if (this.addUserForm.valid) {
-      try {
-        await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
-          tap(
-            (res) => {
-              if (res.body) {
-                this.alertService.success('User created successfully');
-                this.showAddState = false;
-                this.gateAllUser();
-              }
-            },
-            (error) => {
-              this.alertService.error(error.error.message);
-            }
-          )
-        ))
-      } catch {
-        this.alertService.error("Server connection failure please try agen !")
-      }
     } else {
       this.addUserForm.markAllAsTouched(); // Show all validation errors
     }

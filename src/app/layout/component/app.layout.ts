@@ -1,4 +1,4 @@
-import { Component, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import { LayoutService } from '../service/layout.service';
     imports: [CommonModule, AppTopbar, AppSidebar, RouterModule],
     templateUrl: './pages/layout.html'
 })
-export class AppLayout {
+export class AppLayout implements OnInit {
     overlayMenuOpenSubscription: Subscription;
     navItems = [
         { label: 'Menu', icon: 'pi pi-bars', route: '/menu' },
@@ -21,7 +21,7 @@ export class AppLayout {
         { label: 'Profile', icon: 'pi pi-user', route: '/profile' }
     ];
     menuOutsideClickListener: any;
-
+    isNotLoginPage: boolean = true;
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     @ViewChild(AppTopbar) appTopBar!: AppTopbar;
@@ -48,6 +48,15 @@ export class AppLayout {
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
         });
+
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+            setTimeout(() => this.checkLoginUrl(), 0); // Small delay to ensure route update
+        });
+        
+    }
+
+    ngOnInit() {
+        this.checkLoginUrl();
     }
 
     isOutsideClicked(event: MouseEvent) {
@@ -110,4 +119,10 @@ export class AppLayout {
     navigate(route: string) {
         this.router.navigate([route]);
     }
+
+    checkLoginUrl() {
+    const loginRoutes = ['/pages/login'];
+    this.isNotLoginPage = !loginRoutes.includes(this.router.url);
+}
+
 }

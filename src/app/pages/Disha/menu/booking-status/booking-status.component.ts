@@ -22,26 +22,21 @@ ngOnInit() {
 }
 
   async GetAllBooking() {
-    try {
-      await firstValueFrom(this.bookService.getBookingList(0).pipe(
-        tap(
-          (res) => {
+    await firstValueFrom(this.bookService.getBookingList(0).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
             if (res.body) {
-              if (res.body) {
-                this.bookingList = res.body;
-              }
-              console.log(res.body);
+              this.bookingList = res.body;
             }
-          },
-          (error) => {
-            this.alertService.error(error.error.message);
+            console.log(res.body);
           }
-        )
-      ))
-    }
-    catch (error) {
-      this.alertService.error("Server connection failure please try agen !")
-    }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
   }
 }
 
