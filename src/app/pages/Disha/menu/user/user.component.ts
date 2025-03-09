@@ -65,25 +65,20 @@ export class UserComponent {
   // create a new user
   async addUser() {
     if (this.addUserForm.valid) {
-      try {
-        await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
-          tap(
-
-            (res) => {
-              if (res.body) {
-                this.alertService.success(res.message);
-                this.showAddState = false;
-                this.gateAllUser();
-              }
-            },
-            (error) => {
-              this.alertService.error(error.error.message);
+      await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.alertService.success(res.message);
+              this.showAddState = false;
+              this.gateAllUser();
             }
-          )
-        ))
-      } catch {
-        this.alertService.error("Server connection failure please try agen !")
-      }
+          },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        )
+      ))
     } else {
       this.addUserForm.markAllAsTouched(); // Show all validation errors
     }
