@@ -41,25 +41,28 @@ export class BookingComponent implements OnInit {
     private alertService: AlertService
   ) {
     this.bookingForm = this.fb.group({
-      slip_no: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
-      consignor_name: ['', [Validators.required, Validators.pattern("^[a-zA-Z ]*$")]],
+
+      slip_no: ['', [Validators.required]],
+      consignor_name: ['', [Validators.required]],
       consignor_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      consignee_name: ['', Validators.required, Validators.pattern("^[a-zA-Z ]*$")],
+      consignee_name: ['', [Validators.required]],
       consignee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       destination_city_id: [null, Validators.required],
       destination_branch_id: [null, Validators.required],
       transport_mode: [null, Validators.required],
       count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      weight: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]+)?$')]],
-      value: ['', Validators.pattern('^[0-9]+$')],
+      weight: ['', [Validators.required,]],
+      value: ['',],
+      paid_type: "Prepaid",
       contents: [''],
-      charges: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]+)?$')]],
-      shipper: ['', Validators.pattern('^[0-9]+(.[0-9]+)?$')],
-      other: ['', Validators.pattern('^[0-9]+(.[0-9]+)?$')],
-      cgst: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]+)?$')]],
-      sgst: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]+)?$')]],
-      igst: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]+)?$')]],
-      total: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]+)?$')]],
+      charges: ['', [Validators.required,]],
+      shipper: ['',],
+      other: ['',],
+      cgst: ['', [Validators.required,]],
+      sgst: ['', [Validators.required,]],
+      igst: ['', [Validators.required,]],
+      total: ['', [Validators.required,]]
+
     });
 
   }
@@ -68,6 +71,9 @@ export class BookingComponent implements OnInit {
     this.loadStates();
     this.loadTransportModes();
     this.loadBookings();
+    this.bookingForm.valueChanges.subscribe(() => {
+      this.calculateTotal();
+    });
   }
 
   async loadStates() {
@@ -147,25 +153,40 @@ export class BookingComponent implements OnInit {
 
 
   async saveBooking() {
-    try {
-      if (this.bookingForm.valid) {
-        const booking = this.bookingForm.value;
-        const response = await this.bookingService.addNewBooking(booking).toPromise();
-
-        if (response.success) {
-          this.alertService.success(response.message);
-          this.bookingForm.reset();
-          this.bookingForm.markAsUntouched();
-        } else {
-          this.alertService.error(response.message);
-        }
-      } else {
-        this.alertService.error('Please fill out all required fields correctly.');
-      }
-    } catch (error) {
-      console.error('Error saving booking:', error);
-      this.alertService.error('Something went wrong. Please try again later.');
+    if (this.bookingForm.valid) {
+      await firstValueFrom(this.bookingService.addNewBooking(this.bookingForm.value).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.alertService.success(res.message);
+              this.bookingForm.reset();
+              this.loadBookings();
+            }
+          },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        )
+      ))
     }
   }
 
+  calculateTotal() {
+    const charges = Number(this.bookingForm.get('charges')?.value) || 0;
+    const shipper = Number(this.bookingForm.get('shipper')?.value) || 0;
+    const other = Number(this.bookingForm.get('other')?.value) || 0;
+    const cgst = Number(this.bookingForm.get('cgst')?.value) || 0;
+    const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
+    const igst = Number(this.bookingForm.get('igst')?.value) || 0;
+  
+    const subtotal = charges + shipper;
+    const cgstAmount = (cgst / 100) * subtotal;
+    const sgstAmount = (sgst / 100) * subtotal;
+    const igstAmount = (igst / 100) * subtotal;
+  
+    const total = subtotal + cgstAmount + sgstAmount + igstAmount + other;
+  
+    this.bookingForm.patchValue({ total: total.toFixed(2) });
+  }
+  
 }
