@@ -43,7 +43,7 @@ export class UserComponent {
     this.gateAllUser();
   }
 
-  
+
   // gate all user 
   async gateAllUser() {
     await firstValueFrom(this.userService.getAllUsers(0).pipe(
@@ -62,15 +62,14 @@ export class UserComponent {
     ))
   }
 
-
-   // create a new user
-  async onSave() {
+  // create a new user
+  async addUser() {
     if (this.addUserForm.valid) {
       await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
         tap(
           (res) => {
             if (res.body) {
-              this.alertService.success('User created successfully');
+              this.alertService.success(res.message);
               this.showAddState = false;
               this.gateAllUser();
             }
@@ -104,7 +103,7 @@ export class UserComponent {
     }
   }
 
-  
+
 
   togglePassword(user: any) {
     user.showPassword = !user.showPassword;
