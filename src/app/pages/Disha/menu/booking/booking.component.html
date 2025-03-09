@@ -1,155 +1,303 @@
 <div class="p-6 bg-white rounded-lg shadow-md space-y-4">
     <!-- Slip and Consignor Details -->
-    <div class="grid grid-cols-2 gap-4">
-        <div class="flex flex-col">
-            <label for="slipNo" class="font-medium flex items-center">
-                <i class="pi pi-file text-blue-600 mr-2"></i> Slip No
-            </label>
-            <input pInputText id="slipNo" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="consignor" class="font-medium flex items-center">
-                <i class="pi pi-user text-green-600 mr-2"></i> Consignor
-            </label>
-            <input pInputText id="consignor" type="text" class="p-inputtext p-component" />
-        </div>
-    </div>
+    <form [formGroup]="bookingForm">
+        <div class="grid grid-cols-2 gap-4 mb-2">
+            <div class="flex flex-col">
+                <label for="slipNo" class="font-medium flex items-center">
+                    <i class="pi pi-file text-blue-600 mr-2"></i> Slip No
+                </label>
+                <input pInputText id="slipNo" formControlName="slip_no" type="text" class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['slip_no'].hasError('required') && bookingForm.controls['slip_no'].touched"
+                    class="text-red-500">
+                    Slip No is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['slip_no'].hasError('pattern') && bookingForm.controls['slip_no'].touched"
+                    class="text-red-500">
+                    Slip No must be a number.
+                </small>
 
-    <!-- Contact Details -->
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div class="flex flex-col">
-            <label for="consignorMobile" class="font-medium flex items-center">
-                <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile
-            </label>
-            <input pInputText id="consignorMobile" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="consignee" class="font-medium flex items-center">
-                <i class="pi pi-user text-red-600 mr-2"></i> Consignee
-            </label>
-            <input pInputText id="consignee" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="consigneeMobile" class="font-medium flex items-center">
-                <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile
-            </label>
-            <input pInputText id="consigneeMobile" type="text" class="p-inputtext p-component" />
-        </div>
-    </div>
+            </div>
+            <div class="flex flex-col">
+                <label for="consignor" class="font-medium flex items-center">
+                    <i class="pi pi-user text-green-600 mr-2"></i> Consignor
+                </label>
+                <input pInputText id="consignor" formControlName="consignor_name" type="text"
+                    class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['consignor_name'].hasError('required') && bookingForm.controls['consignor_name'].touched"
+                    class="text-red-500">
+                    Consignor Name is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['consignor_name'].hasError('pattern') && bookingForm.controls['consignor_name'].touched"
+                    class="text-red-500">
+                    Invalid Consignor name
+                </small>
 
-    <!-- Location Details -->
-    <div class="grid grid-cols-3 gap-4">
-        <div class="flex flex-col">
-            <label for="states" class="font-medium flex items-center">
-                <i class="pi pi-globe text-blue-500 mr-2"></i> States
-            </label>
-            <p-dropdown [options]="states" [(ngModel)]="selectedState" optionLabel="name" optionValue="id"
-                placeholder="Select State" (onChange)="onStateChange()" class="w-full">
-            </p-dropdown>
+            </div>
         </div>
 
-        <div class="flex flex-col">
-            <label for="cities" class="font-medium flex items-center">
-                <i class="pi pi-map-marker text-red-500 mr-2"></i> City
-            </label>
-            <p-dropdown [options]="cities" [(ngModel)]="selectedCity" optionLabel="name" optionValue="id"
-                placeholder="Select City" (onChange)="onCityChange()" class="w-full">
-            </p-dropdown>
+        <!-- Contact Details -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-2">
+            <div class="flex flex-col">
+                <label for="consignorMobile" class="font-medium flex items-center">
+                    <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile
+                </label>
+                <input pInputText id="consignorMobile" type="text" formControlName="consignor_mobile"
+                    class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['consignor_mobile'].hasError('required') && bookingForm.controls['consignor_mobile'].touched"
+                    class="text-red-500">
+                    Consignor Mobile is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['consignor_mobile'].hasError('pattern') && bookingForm.controls['consignor_mobile'].touched"
+                    class="text-red-500">
+                    Invalid Mobile Number
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="consignee" class="font-medium flex items-center">
+                    <i class="pi pi-user text-red-600 mr-2"></i> Consignee
+                </label>
+                <input pInputText id="consignee" type="text" formControlName="consignee_name"
+                    class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['consignee_name'].hasError('required') && bookingForm.controls['consignee_name'].touched"
+                    class="text-red-500">
+                    Consignee is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['consignee_name'].hasError('pattern') && bookingForm.controls['consignee_name'].touched"
+                    class="text-red-500">
+                    Invalid Consignee name
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="consigneeMobile" class="font-medium flex items-center">
+                    <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile
+                </label>
+                <input pInputText id="consigneeMobile" type="text" formControlName="consignee_mobile"
+                    class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['consignee_mobile'].hasError('required') && bookingForm.controls['consignee_mobile'].touched"
+                    class="text-red-500">
+                    Consignee Mobile is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['consignee_mobile'].hasError('pattern') && bookingForm.controls['consignee_mobile'].touched"
+                    class="text-red-500">
+                    Invalid Mobile Number
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="contents" class="font-medium flex items-center">
+                    <i class="pi pi-file text-gray-600 mr-2"></i> Contents
+                </label>
+                <input pInputText id="contents" formControlName="contents" type="text"
+                    class="p-inputtext p-component" />
+            </div>
         </div>
 
-        <div class="flex flex-col">
-            <label for="branches" class="font-medium flex items-center">
-                <i class="pi pi-building text-gray-500 mr-2"></i> Branch
-            </label>
-            <p-dropdown [options]="branches" [(ngModel)]="selectedBranch" optionLabel="name" optionValue="id"
-                placeholder="Select Branch" class="w-full">
-            </p-dropdown>
-        </div>
-    </div>
+        <!-- Location Details -->
+        <div class="grid grid-cols-3 gap-4 mb-2">
+            <div class="flex flex-col">
+                <label for="states" class="font-medium flex items-center">
+                    <i class="pi pi-globe text-blue-500 mr-2"></i> States
+                </label>
+                <p-dropdown [options]="states" [(ngModel)]="selectedState" optionLabel="name" optionValue="id"
+                    placeholder="Select State" (onChange)="onStateChange($event.value)" class="w-full">
+                </p-dropdown>
+            </div>
 
-    <!-- Transport Details -->
-    <label class="font-medium flex items-center mt-4">
-        <i class="pi pi-truck text-green-600 mr-2"></i> Transport Mode
-    </label>
-    <p-dropdown [options]="transportModes" [(ngModel)]="selectedTransportMode" placeholder="Select Transport Mode"
-        class="w-full"></p-dropdown>
+            <div class="flex flex-col">
+                <label for="cities" class="font-medium flex items-center">
+                    <i class="pi pi-map-marker text-red-500 mr-2"></i> City
+                </label>
+                <p-dropdown [options]="cities" [(ngModel)]="selectedCity" formControlName="destination_city_id"
+                    optionLabel="name" optionValue="id" placeholder="Select City" (onChange)="onCityChange($event.value)"
+                    class="w-full">
+                </p-dropdown>
+                <small
+                    *ngIf="bookingForm.controls['destination_city_id'].hasError('required') && bookingForm.controls['destination_city_id'].touched"
+                    class="text-red-500">
+                    Please select a city
+                </small>
+            </div>
 
-    <!-- Package Details -->
-    <div class="grid grid-cols-3 gap-4">
-        <div class="flex flex-col">
-            <label for="packages" class="font-medium flex items-center">
-                <i class="pi pi-box text-blue-600 mr-2"></i> No of Packages
-            </label>
-            <input pInputText id="packages" type="text" class="p-inputtext p-component" />
+            <div class="flex flex-col">
+                <label for="branches" class="font-medium flex items-center">
+                    <i class="pi pi-building text-gray-500 mr-2"></i> Branch
+                </label>
+                <p-dropdown [options]="branches" formControlName="destination_branch_id" [(ngModel)]="selectedBranch"
+                    optionLabel="name" optionValue="id" placeholder="Select Branch" class="w-full">
+                </p-dropdown>
+                <small
+                    *ngIf="bookingForm.controls['destination_branch_id'].hasError('required') && bookingForm.controls['destination_branch_id'].touched"
+                    class="text-red-500">
+                    Please select a Branch
+                </small>
+            </div>
         </div>
-        <div class="flex flex-col">
-            <label for="weight" class="font-medium flex items-center">
-                <i class="pi pi-weight text-gray-600 mr-2"></i> Weight
-            </label>
-            <input pInputText id="weight" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="declaredValue" class="font-medium flex items-center">
-                <i class="pi pi-dollar text-green-500 mr-2"></i> Declared Value
-            </label>
-            <input pInputText id="declaredValue" type="text" class="p-inputtext p-component" />
-        </div>
-    </div>
 
-    <!-- Additional Details -->
-    <div class="grid grid-cols-3 gap-4">
-        <div class="flex flex-col">
-            <label for="contents" class="font-medium flex items-center">
-                <i class="pi pi-file text-gray-600 mr-2"></i> Contents
-            </label>
-            <input pInputText id="contents" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="charges" class="font-medium flex items-center">
-                <i class="pi pi-wallet text-purple-600 mr-2"></i> Charges
-            </label>
-            <input pInputText id="charges" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="shipper" class="font-medium flex items-center">
-                <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
-            </label>
-            <input pInputText id="shipper" type="text" class="p-inputtext p-component" />
-        </div>
-    </div>
-
-    <!-- Tax Details -->
-    <div class="grid grid-cols-3 gap-4">
-        <div class="flex flex-col">
-            <label for="cgst" class="font-medium flex items-center">
-                <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
-            </label>
-            <input pInputText id="cgst" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="sgst" class="font-medium flex items-center">
-                <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST
-            </label>
-            <input pInputText id="sgst" type="text" class="p-inputtext p-component" />
-        </div>
-        <div class="flex flex-col">
-            <label for="igst" class="font-medium flex items-center">
-                <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
-            </label>
-            <input pInputText id="igst" type="text" class="p-inputtext p-component" />
-        </div>
-    </div>
-
-    <!-- Total Amount -->
-    <div class="flex flex-col mt-4">
-        <label for="total" class="font-medium flex items-center">
-            <i class="pi pi-calculator text-blue-600 mr-2"></i> Total
+        <!-- Transport Details -->
+        <label class="font-medium flex items-center">
+            <i class="pi pi-truck text-green-600 mr-2"></i> Transport Mode
         </label>
-        <input pInputText id="total" type="text" class="p-inputtext p-component" />
-    </div>
+        <p-dropdown [options]="transportModes" formControlName="transport_mode" [(ngModel)]="selectedTransportMode"
+            placeholder="Select Transport Mode" class="w-full"></p-dropdown>
+        <small
+            *ngIf="bookingForm.controls['transport_mode'].hasError('required') && bookingForm.controls['transport_mode'].touched"
+            class="text-red-500">
+            Please select a transport mode
+        </small>
+        <!-- Package Details -->
+        <div class="grid grid-cols-3 gap-4" style="margin-top: 10px;">
+            <div class="flex flex-col">
+                <label for="packages" class="font-medium flex items-center">
+                    <i class="pi pi-box text-blue-600 mr-2"></i> No of Packages
+                </label>
+                <input pInputText id="packages" formControlName="count" type="text" class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['count'].hasError('required') && bookingForm.controls['count'].touched"
+                    class="text-red-500">
+                    No of Packages is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['count'].hasError('pattern') && bookingForm.controls['count'].touched"
+                    class="text-red-500">
+                    Invalid Packages
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="weight" class="font-medium flex items-center">
+                    <i class="pi pi-weight text-gray-600 mr-2"></i> Weight
+                </label>
+                <input pInputText id="weight" formControlName="weight" type="text" class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['weight'].hasError('required') && bookingForm.controls['weight'].touched"
+                    class="text-red-500">
+                    Weight is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['weight'].hasError('pattern') && bookingForm.controls['weight'].touched"
+                    class="text-red-500">
+                    Invalid Weight
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="declaredValue" class="font-medium flex items-center">
+                    <i class="pi pi-dollar text-green-500 mr-2"></i> Declared Value
+                </label>
+                <input pInputText id="declaredValue" formControlName="value" type="text"
+                    class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['value'].hasError('pattern') && bookingForm.controls['value'].touched"
+                    class="text-red-500">
+                    Invalid Declared Value
+                </small>
+            </div>
+        </div>
 
-    <!-- Submit Button -->
-    <div class="w-full flex justify-center mt-6">
-        <p-button label="Submit" icon="pi pi-check" class="p-button-success" raised></p-button>
-    </div>
+        <!-- Additional Details -->
+        <div class="grid grid-cols-3 gap-4 mb-5 mt-5">
+            <div class="flex flex-col">
+                <label for="other" class="font-medium flex items-center">
+                    <i class="pi pi-file text-gray-600 mr-2"></i> Other
+                </label>
+                <input pInputText formControlName="other" type="text" class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['other'].hasError('pattern') && bookingForm.controls['other'].touched"
+                    class="text-red-500">
+                    Invalid format
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="charges" class="font-medium flex items-center">
+                    <i class="pi pi-wallet text-purple-600 mr-2"></i> Charges
+                </label>
+                <input pInputText id="charges" formControlName="charges" type="text" class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['charges'].hasError('required') && bookingForm.controls['charges'].touched"
+                    class="text-red-500">
+                    Charges is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['charges'].hasError('pattern') && bookingForm.controls['charges'].touched"
+                    class="text-red-500">
+                    Invalid format
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="shipper" class="font-medium flex items-center">
+                    <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
+                </label>
+                <input pInputText id="shipper" formControlName="shipper" type="text" class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['shipper'].hasError('pattern') && bookingForm.controls['shipper'].touched"
+                    class="text-red-500">
+                    Invalid format
+                </small>
+            </div>
+        </div>
+
+        <!-- Tax Details -->
+        <div class="grid grid-cols-3 gap-4">
+            <div class="flex flex-col">
+                <label for="cgst" class="font-medium flex items-center">
+                    <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
+                </label>
+                <input pInputText id="cgst" formControlName="cgst" type="text" class="p-inputtext p-component" />
+                <small *ngIf="bookingForm.controls['cgst'].hasError('pattern') && bookingForm.controls['cgst'].touched"
+                    class="text-red-500">
+                    Invalid format
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="sgst" class="font-medium flex items-center">
+                    <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST
+                </label>
+                <input pInputText id="sgst" formControlName="sgst" type="text" class="p-inputtext p-component" />
+                <small *ngIf="bookingForm.controls['sgst'].hasError('pattern') && bookingForm.controls['sgst'].touched"
+                    class="text-red-500">
+                    Invalid format
+                </small>
+            </div>
+            <div class="flex flex-col">
+                <label for="igst" class="font-medium flex items-center">
+                    <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
+                </label>
+                <input pInputText id="igst" formControlName="igst" type="text" class="p-inputtext p-component" />
+                <small *ngIf="bookingForm.controls['igst'].hasError('pattern') && bookingForm.controls['igst'].touched"
+                    class="text-red-500">
+                    Invalid format
+                </small>
+            </div>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="flex flex-col mt-4">
+            <label for="total" class="font-medium flex items-center">
+                <i class="pi pi-calculator text-blue-600 mr-2"></i> Total
+            </label>
+            <input pInputText id="total" formControlName="total" type="text" class="p-inputtext p-component" />
+            <small
+                *ngIf="bookingForm.controls['total'].hasError('required') && bookingForm.controls['total'].touched"
+                class="text-red-500">
+                Total is required.
+            </small>
+            <small
+                *ngIf="bookingForm.controls['total'].hasError('pattern') && bookingForm.controls['total'].touched"
+                class="text-red-500">
+                Invalid format
+            </small>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="w-full flex justify-center mt-6">
+            <p-button label="Save" icon="pi pi-check" class="p-button-success" raised (click)="saveBooking()"></p-button>
+        </div>
+    </form>
 </div>
