@@ -16,7 +16,6 @@ export class LoginService {
 
   // Login function
   login(data:any): Observable<any> {
-    // Make API call to login
     return this.apiService.post('/login', data)
   }
 
@@ -35,5 +34,13 @@ export class LoginService {
   // Clear token (Logout function)
   logout(): void {
     this.storage.delete('token');
+  }
+  verify(): Observable<any> {
+    return this.apiService.get('/verify').pipe(
+      catchError((error) => {
+        this.logout();
+        return of(error);
+      })
+    );
   }
 }
