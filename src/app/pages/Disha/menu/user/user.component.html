@@ -93,6 +93,8 @@
 
 
 
+
+
     <!-- Floating Action Button (FAB) -->
     <button
         class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
@@ -100,21 +102,20 @@
         <i class="pi pi-plus"></i>
     </button>
 
-    <!-- Background Overlay -->
+
     <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
         (click)="toggleAddState()">
     </div>
 
     <!-- Bottom Sheet Modal -->
-    <div class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
-    min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
+    <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
+ min-h-[60vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
         [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
         (touchend)="onTouchEnd($event)">
 
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New User</h2>
 
-        <form [formGroup]="addUserForm">
-
+        <form class=" p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="addUserForm">
             <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0 gap-1">
                     <label>First Name</label>
@@ -188,15 +189,14 @@
                     Password must be at least 6 characters long
                 </small>
             </div>
-            <button type="submit" class="bg-green-500 text-white px-4 my-4 py-2 rounded-lg w-full hover:bg-green-700"
+            <button type="submit" class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-3 mt-6 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700 active:scale-95"
                 (click)="addUser()">
-                Save
+                <i class="pi pi-check-circle mr-2"></i>  Save
             </button>
-
         </form>
     </div>
 </div>
-
+<!-- 
 
 <style>
     /* Floating Action Button Pulse Effect */
@@ -223,4 +223,4 @@
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(12px);
     }
-</style>
+</style> -->
