@@ -4,7 +4,7 @@
         <!-- User ID and Created Date -->
         <div class="flex justify-between items-center mb-2">
             <p class="text-gray-700 font-semibold text-lg flex items-center">
-                <i class="pi pi-user mr-2 text-blue-500"></i>
+                <i class="pi pi-id-card mr-2 text-blue-500"></i>
                 User ID: <span class="text-blue-600 font-bold">{{ user.id }}</span>
             </p>
             
@@ -17,8 +17,8 @@
         <!-- Name and Status Badge -->
         <div class="flex justify-between items-center mb-2">
             <p class="text-gray-700 font-medium flex items-center">
-                <i class="pi pi-user-edit mr-2 text-green-500"></i>
-                <strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}
+                <i class="pi pi-user mr-2 text-green-500"></i>
+                <strong> </strong> {{ user.first_name }} {{ user.last_name }}
             </p>
             <div [ngClass]="{
                 'bg-green-200 text-green-700': user.status,
