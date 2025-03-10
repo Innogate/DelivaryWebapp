@@ -11,19 +11,19 @@ import { CompanyComponent } from './Disha/menu/company/company.component';
 import { BranchComponent } from './Disha/menu/branch/branch.component';
 import { MenuComponent } from './Disha/menu/menu.component';
 import { LoginComponent } from './login/login.component';
-
+import { AuthGuard } from './auth/auth.guard';
 export default [
     { path: 'documentation', component: Documentation },
     { path: 'scan', component: MenuComponent },
     { path: 'login', component: LoginComponent },
     { path: 'empty', component: Empty },
-    {path: 'booking', component: BookingComponent },
-    {path: 'state', component: StateComponent},
-    {path: 'city', component: CityComponent},
-    {path: 'booking-status', component: BookingStatusComponent},
-    {path: 'employee', component: EmployComponent},
-    {path: 'user', component: UserComponent},
-    {path: 'company', component: CompanyComponent},
+    {path: 'booking', component: BookingComponent, canActivate: [AuthGuard]},
+    {path: 'state', component: StateComponent, canActivate: [AuthGuard]},
+    {path: 'city', component: CityComponent, canActivate: [AuthGuard]},
+    {path: 'booking-status', component: BookingStatusComponent, canActivate: [AuthGuard]},
+    {path: 'employee', component: EmployComponent, canActivate: [AuthGuard]},
+    {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+    {path: 'company', component: CompanyComponent, canActivate: [AuthGuard]},
     {path: 'branch', component: BranchComponent},
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

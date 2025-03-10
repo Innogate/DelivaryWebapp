@@ -5,13 +5,13 @@ import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { Menu } from 'primeng/menu';
 import { MenuComponent } from './app/pages/Disha/menu/menu.component';
-
+import { AuthGuard } from './app/pages/auth/auth.guard';
 export const appRoutes: Routes = [
     {
         path: '',
         component: AppLayout,
         children: [
-            { path: '', component: MenuComponent },
+            { path: '', component: MenuComponent, canActivate: [AuthGuard] },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
