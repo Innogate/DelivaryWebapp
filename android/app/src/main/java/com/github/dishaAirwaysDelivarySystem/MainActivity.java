@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,7 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS = 1;
     private LocalHttpServer localHttpServer;
     private WebView webView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private String savedUrl = "http://localhost:65534";  // Default URL
     private ValueCallback<Uri[]> fileUploadCallback;
     private ActivityResultLauncher<Intent> filePickerLauncher;
@@ -58,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main); // Make sure you have the layout file
 
         webView = findViewById(R.id.webView);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         webView.post(this::adjustWebViewSize); // Adjust size after view is ready
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webView.setInitialScale(290);
         webSettings.setDomStorageEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
@@ -69,21 +73,21 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                Log.d("GeolocationPrompt", "Origin: " + origin);
-                // Check for location permissions at runtime
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    callback.invoke(origin, true, false); // Grant if permissions are already granted
-                } else {
-                    // Request permissions if not granted (and handle the result in onRequestPermissionsResult)
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
-                    // Store callback for later use
-                    pendingGeolocationCallback = callback;
-                    pendingGeolocationOrigin = origin;
-                }
-            }
+//            @Override
+//            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+//                Log.d("GeolocationPrompt", "Origin: " + origin);
+//                // Check for location permissions at runtime
+//                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+//                        ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                    callback.invoke(origin, true, false); // Grant if permissions are already granted
+//                } else {
+//                    // Request permissions if not granted (and handle the result in onRequestPermissionsResult)
+//                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSIONS);
+//                    // Store callback for later use
+//                    pendingGeolocationCallback = callback;
+//                    pendingGeolocationOrigin = origin;
+//                }
+//            }
 
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
@@ -129,37 +133,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize LocationManager and LocationListener for GPS
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d("Location", "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
-                // You can handle location updates here if needed
-            }
+        // add swapper
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false); // Instantly disable refreshing
+            webView.reload(); // Reload the WebView when swiped down
+        });
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
+//        // Initialize LocationManager and LocationListener for GPS
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(Location location) {
+//                Log.d("Location", "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
+//                // You can handle location updates here if needed
+//            }
+//
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {}
+//
+//            @Override
+//            public void onProviderEnabled(String provider) {}
+//
+//            @Override
+//            public void onProviderDisabled(String provider) {}
+//        };
 
         // Check if GPS is enabled and prompt user to turn it on if not
-        boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!isGpsEnabled) {
-//            Toast.makeText(this, "Please enable GPS for this feature", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        } else {
-            // Request location updates once GPS is enabled
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            }
-        }
+//        boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        if (!isGpsEnabled) {
+////            Toast.makeText(this, "Please enable GPS for this feature", Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//            startActivity(intent);
+//        } else {
+//            // Request location updates once GPS is enabled
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+//            }
+//        }
     }
 
     private void adjustWebViewSize() {
