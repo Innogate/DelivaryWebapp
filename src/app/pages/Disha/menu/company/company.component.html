@@ -29,7 +29,7 @@
                 </div>
                 <div class="flex items-start mt-2 md:mt-0 ml-4">
                     <i class="pi pi-tag text-green-600 mr-2"></i>
-                    <p class="text-gray-700 font-medium"><strong>Name:</strong> {{ company.name }}</p>
+                    <p class="text-gray-700 font-medium">{{ company.name }}</p>
                 </div>
             </div>
 
@@ -37,15 +37,15 @@
             <div class="text-gray-700 mb-2 pr-20">
                 <p class="flex items-center">
                     <i class="pi pi-map-marker text-red-500 mr-2"></i>
-                    <strong>Address:</strong> {{ company.address }}, Pin: {{ company.pin_code }}
+                    {{ company.address }}, Pin: {{ company.pin_code }}
                 </p>
                 <p class="flex items-center">
                     <i class="pi pi-phone text-purple-500 mr-2"></i>
-                    <strong>Contact:</strong> {{ company.contact_no }}
+                     {{ company.contact_no }}
                 </p>
                 <p class="flex items-center">
                     <i class="pi pi-envelope text-yellow-500 mr-2"></i>
-                    <strong>Email:</strong> {{ company.email }}
+                     {{ company.email }}
                 </p>
             </div>
 
