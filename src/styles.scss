@@ -18,18 +18,30 @@
     }
 }
 
-html,
-body {
-    height: 100% !important;
-    width: 100% !important;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling when content is within bounds */
 }
+
+.layout-wrapper {
+  height: 100vh; /* Ensure it fills the viewport */
+  overflow: hidden; /* Prevent scrolling */
+  display: flex;
+  flex-direction: column;
+}
+
 
 @media (max-width: 768px) {
     .not-for-mobile {
         display: none !important;
     }
 }
-
+.scrollable-container {
+  overflow-y: auto;
+  max-height: 100%;
+}
 .rubik-maps-regular {
     font-family: "Rubik Maps", system-ui;
     font-weight: 400;

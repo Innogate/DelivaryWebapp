@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main); // Make sure you have the layout file
 
         webView = findViewById(R.id.webView);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+//        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         webView.post(this::adjustWebViewSize); // Adjust size after view is ready
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webView.setInitialScale(290);
+//        webView.setInitialScale(290);
         webSettings.setDomStorageEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
@@ -133,11 +133,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // add swapper
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(false); // Instantly disable refreshing
-            webView.reload(); // Reload the WebView when swiped down
-        });
+//        // add swapper
+//        swipeRefreshLayout.setOnRefreshListener(() -> {
+//            webView.reload();
+//            swipeRefreshLayout.setRefreshing(false);
+//        });
 
 //        // Initialize LocationManager and LocationListener for GPS
 //        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

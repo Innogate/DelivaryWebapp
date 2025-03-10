@@ -5,7 +5,7 @@ import { filter, Subscription } from 'rxjs';
 import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
 import { LayoutService } from '../service/layout.service';
-
+import environments from '../../../environments/environments';
 @Component({
     selector: 'app-layout',
     standalone: true,
@@ -14,6 +14,7 @@ import { LayoutService } from '../service/layout.service';
 })
 export class AppLayout implements OnInit {
     overlayMenuOpenSubscription: Subscription;
+    isprod = environments.production
     navItems = [
         { label: 'Menu', icon: 'pi pi-bars', route: '/menu' },
         { label: 'Scan', icon: 'pi pi-qrcode', route: '/scan' },

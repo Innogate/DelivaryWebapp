@@ -1,9 +1,9 @@
-<div class="layout-wrapper w-full h-full" [ngClass]="containerClass">
+<div class="layout-wrapper w-full h-full relative" [ngClass]="containerClass">
     <app-topbar *ngIf="isNotLoginPage"></app-topbar>
-    <app-sidebar *ngIf="isNotLoginPage"></app-sidebar>
-    <div class="absolute left-0 right-0 buttom-[46px] top-[59px]">
-        <div class="w-full h-full relative overflow-scroll p-5" style="padding-bottom: 50px;">
-            <div class="layout-main">
+    <app-sidebar *ngIf="isNotLoginPage && !isprod"></app-sidebar>
+    <div class="h-full w-full relative">
+        <div class="w-full h-full absolute top-[60px]">
+            <div class=" w-full h-full relative" style="padding-bottom: 64px;">
                 <router-outlet></router-outlet>
             </div>
         </div>
