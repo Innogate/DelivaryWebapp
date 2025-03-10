@@ -1,4 +1,4 @@
-<div class="flex flex-col bg-slate-100 p-4 h-full w-full relative">
+<div class="flex flex-col bg-slate-100 p-2 h-full w-full relative">
     <!-- Brach List -->
     <div *ngIf="branchList.length" class="flex flex-col bg-slate-100 py-2 min-h-screen">
         <div *ngFor="let branch of branchList"
@@ -12,7 +12,7 @@
                 </p>
                 <p class="text-gray-700 font-medium flex items-center">
                     <i class="pi pi-tag text-green-600 mr-2"></i>
-                    <strong>Name:</strong> {{ branch.name }} ({{ branch.alias_name }})
+                    {{ branch.name }} ({{ branch.alias_name }})
                 </p>
             </div>
 
@@ -20,15 +20,15 @@
             <div class="text-gray-700 mb-2">
                 <p class="flex items-center">
                     <i class="pi pi-map-marker text-red-500 mr-2"></i>
-                    <strong>Address:</strong> {{ branch.address }}, Pin: {{ branch.pin_code }}
+                    {{ branch.address }}, Pin: {{ branch.pin_code }}
                 </p>
                 <p class="flex items-center">
                     <i class="pi pi-phone text-purple-500 mr-2"></i>
-                    <strong>Contact:</strong> {{ branch.contact_no }}
+                    {{ branch.contact_no }}
                 </p>
                 <p class="flex items-center">
                     <i class="pi pi-envelope text-yellow-500 mr-2"></i>
-                    <strong>Email:</strong> {{ branch.email }}
+                    {{ branch.email }}
                 </p>
             </div>
 
