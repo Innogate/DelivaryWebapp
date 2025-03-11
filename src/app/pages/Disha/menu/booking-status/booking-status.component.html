@@ -16,9 +16,9 @@
 
         <!-- Weight and Paid Type -->
         <div class="flex justify-between items-center mb-2">
-            <div class="bg-gray-100 px-4 py-2 rounded-full text-gray-800 font-medium text-sm flex items-center">
-                <i class="pi pi-weight mr-2 text-gray-500"></i>
-                {{ booking.weight }} KG
+            <div class=" bg-green-200 text-green-700 px-4 py-2 rounded-full font-medium text-sm flex items-center">
+                <i class="pi pi-indian-rupee mr-2 text-green-700"></i>
+                {{ booking.total }}
             </div>
             <div [ngClass]="{
                 'bg-green-200 text-green-700': booking.paid_type === 'Prepaid',
@@ -49,7 +49,7 @@
             </p>
             <p class="text-gray-700 flex items-center">
                 <i class="pi pi-map-marker mr-2 text-purple-500"></i>
-                <strong>Destination:</strong> Branch #{{ booking.destination_branch_id }}, City #{{ booking.destination_city_id }}
+                <strong>Destination:</strong> Branch #{{ booking.destination_branch_name }}, City #{{ booking.destination_city_name}}
             </p>
             <p class="text-gray-700 flex items-center">
                 <i class="pi pi-box mr-2 text-yellow-500"></i>
