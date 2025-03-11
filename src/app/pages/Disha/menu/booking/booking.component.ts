@@ -179,12 +179,12 @@ export class BookingComponent implements OnInit {
     const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
     const igst = Number(this.bookingForm.get('igst')?.value) || 0;
   
-    const subtotal = charges + shipper;
+    const subtotal = charges + shipper + other;
     const cgstAmount = (cgst / 100) * subtotal;
     const sgstAmount = (sgst / 100) * subtotal;
     const igstAmount = (igst / 100) * subtotal;
   
-    const total = subtotal + cgstAmount + sgstAmount + igstAmount + other;
+    const total = subtotal + cgstAmount + sgstAmount + igstAmount;
   
     this.bookingForm.patchValue({ total: total.toFixed(2) });
   }
