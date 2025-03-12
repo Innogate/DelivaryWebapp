@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
+import { payload } from '../../interfaces/payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -8,8 +9,8 @@ import { Observable } from 'rxjs';
 export class UserService {
   constructor(private apiService: ApiService) {}
 
-  getAllUsers(from: number = 0): Observable<any> {
-    return this.apiService.post('/master/users', { from });
+  getAllUsers(payload: any): Observable<any> {
+    return this.apiService.post('/master/users', payload);
   }
 
   addNewUser(data: any): Observable<any> {

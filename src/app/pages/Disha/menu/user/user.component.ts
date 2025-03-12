@@ -46,7 +46,13 @@ export class UserComponent {
 
   // gate all user 
   async gateAllUser() {
-    await firstValueFrom(this.userService.getAllUsers(0).pipe(
+    const payload = {
+      fields : ["users.*","user_info.*"],
+      max : 10,
+      current : 0,
+      relation : "users.id=user_info.id"
+    }
+    await firstValueFrom(this.userService.getAllUsers(payload).pipe(      
       tap(
         (res) => {
           if (res.body) {

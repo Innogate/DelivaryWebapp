@@ -82,7 +82,12 @@ export class BranchComponent {
 
   async loadStates() {
     await firstValueFrom(
-      this.stateService.getAllStates().pipe(
+      this.stateService.getAllStates({
+        fields : ["states.id","states.name"],
+        max : 12,
+        current : 0,
+        relation : null
+      }).pipe(
         tap(
           (res) => {
             if (res.body) {
@@ -95,7 +100,13 @@ export class BranchComponent {
   }
 
   async onStateChange(stateId: any) {
-    await firstValueFrom(this.cityService.getCitiesByStateId(stateId).pipe(
+    await firstValueFrom(this.cityService.getCitiesByStateId({
+      "fields" : ["cities.id","cities.name"],
+      "max" : 12,
+      "current" : 0,
+      "relation" : null,
+      "state_id": stateId
+    }).pipe(
       tap(
         (res) => {
           if (res.body) {

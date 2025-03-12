@@ -77,7 +77,12 @@ export class BookingComponent implements OnInit {
   }
 
   async loadStates() {
-    await firstValueFrom(this.stateService.getAllStates(0).pipe(
+    await firstValueFrom(this.stateService.getAllStates({
+      fields : ["states.id","states.name"],
+      max : 12,
+      current : 0,
+      relation : null
+    }).pipe(
       tap(
         (res) => {
           if (res.body) {
@@ -90,7 +95,13 @@ export class BookingComponent implements OnInit {
 
   async onStateChange($event: any) {
     if ($event) {
-      await firstValueFrom(this.cityService.getCitiesByStateId($event).pipe(
+      await firstValueFrom(this.cityService.getCitiesByStateId({
+        "fields" : ["cities.id","cities.name"],
+        "max" : 12,
+        "current" : 0,
+        "relation" : null,
+        "state_id": $event
+      }).pipe(
         tap(
           (res) => {
             if (res.body) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
+import { payload } from '../../interfaces/payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -8,12 +9,12 @@ import { Observable } from 'rxjs';
 export class StateService {
   constructor(private apiService: ApiService) {}
 
-  getAllStates(from: number = 0): Observable<any> {
-    return this.apiService.post('/master/states', { from });
+  getAllStates(payload: payload): Observable<any> {
+    return this.apiService.post('/master/states',  payload);
   }
 
-  getStateById(stateId: number): Observable<any> {
-    return this.apiService.post('/master/states/byId', { state_id: stateId, from: 0 });
+  getStateById(payload: payload): Observable<any> {
+    return this.apiService.post('/master/states/byId', payload);
   }
 
   addNewState(stateName: string): Observable<any> {

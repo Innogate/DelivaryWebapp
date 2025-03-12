@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { catchError, tap, throwError } from 'rxjs';
 import { StateService } from '../../../../../services/state.service';
 import { AlertService } from '../../../../../services/alert.service';
+import { payload } from '../../../../../../interfaces/payload.interface';
 @Component({
   selector: 'app-state',
   imports: [DialogModule, ButtonModule, FormsModule, CommonModule, ReactiveFormsModule, CommonModule],
@@ -49,7 +50,13 @@ export class StateComponent {
   }
 
   GetAllState() {
-    this.service.getAllStates(0).pipe(
+    const payload : payload ={
+      fields : ["states.*"],
+      max : 12,
+      current : 0,
+      relation : null
+    }
+    this.service.getAllStates(payload).pipe(
       tap((res) => {
         if (res.body) {
           this.states = res.body;

@@ -39,7 +39,12 @@ export class CityComponent {
 
 
   async GetAllState() {
-    await firstValueFrom(this.stateService.getAllStates(0).pipe(
+    await firstValueFrom(this.stateService.getAllStates({
+      fields: ["states.id", "states.name"],
+      max: 12,
+      current: 0,
+      relation: null
+    }).pipe(
       tap(
         (res) => {
           if (res.body) {
@@ -60,7 +65,13 @@ export class CityComponent {
 
   async getAllCity(data: any) {
     if (data?.value) {
-      await firstValueFrom(this.cityService.getCitiesByStateId(data.value).pipe(
+      await firstValueFrom(this.cityService.getCitiesByStateId({
+        "fields": ["cities.id", "cities.name"],
+        "max": 12,
+        "current": 0,
+        "relation": null,
+        "state_id": data.value
+      }).pipe(
         tap(
           (res) => {
             if (res.body) {
