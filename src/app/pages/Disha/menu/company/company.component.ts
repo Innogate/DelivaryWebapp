@@ -55,15 +55,15 @@ export class CompanyComponent {
 
     this.companyForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      address: ['', [Validators.required, Validators.minLength(3)]],
+      address: ['', [Validators.minLength(3)]],
       city_id: ['', [Validators.required, Validators.min(1)]],
-      state_id: ['', [Validators.required, Validators.min(1)]],
-      pin_code: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
-      contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      gst_no: ['', [Validators.required]],
-      cin_no: ['', [Validators.required]],
-      udyam_no: ['', [Validators.required]],
+      state_id: ['', [Validators.required,Validators.min(1)]],
+      pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
+      contact_no: ['', [Validators.pattern(/^[0-9]{10}$/)]],
+      email: ['', [Validators.email]],
+      gst_no: ['',],
+      cin_no: ['',],
+      udyam_no: ['',],
       logo: ['']
     });
   }
@@ -117,7 +117,7 @@ export class CompanyComponent {
   async onStateChange(stateId: any) {
     await firstValueFrom(this.cityService.getCitiesByStateId({
       "fields": ["cities.id", "cities.name"],
-      "max": 12,
+      "max": 100,
       "current": 0,
       "relation": null,
       "state_id": stateId
@@ -187,7 +187,7 @@ export class CompanyComponent {
   async getAllState() {
     await firstValueFrom(this.stateService.getAllStates({
       fields: ["states.id", "states.name"],
-      max: 12,
+      max: 50,
       current: 0,
       relation: null
     }).pipe(

@@ -4,10 +4,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { CityService } from '../../../../../services/city.service';
 import { StateService } from '../../../../../services/state.service';
-import { catchError, firstValueFrom, tap } from 'rxjs';
+import { catchError, firstValueFrom, last, tap } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertService } from '../../../../../services/alert.service';
 import { throwError as rxjsThrowError } from 'rxjs';
+import { Theme } from '@primeng/themes';
 
 @Component({
   selector: 'app-city',
@@ -41,7 +42,7 @@ export class CityComponent {
   async GetAllState() {
     await firstValueFrom(this.stateService.getAllStates({
       fields: ["states.id", "states.name"],
-      max: 12,
+      max: 50,
       current: 0,
       relation: null
     }).pipe(
@@ -66,8 +67,8 @@ export class CityComponent {
   async getAllCity(data: any) {
     if (data?.value) {
       await firstValueFrom(this.cityService.getCitiesByStateId({
-        "fields": ["cities.id", "cities.name"],
-        "max": 12,
+        "fields": ["cities.id", "cities.name", "cities.state_id"],
+        "max": 300,
         "current": 0,
         "relation": null,
         "state_id": data.value
@@ -109,6 +110,38 @@ export class CityComponent {
   }
 
 
+  async deleteCity(city: any) {
+    if (city.id) {
+      const responce = await this.alertService.confirm('you want to delete this city');
+      if (responce === false) {
+        return;
+      } else {
+        await firstValueFrom(this.cityService.deleteCity(city.id).pipe(
+          tap((response) => {
+            this.alertService.success(response.message);
+            this.getAllCity({ value: city.state_id, });
+          },
+            (error) => {
+              this.alertService.error(error.error.message);
+            }
+          )
+        ))
+      }
+    }
+  }
+
+
+  async viewCity(city: any){
+    if(city){
+      this.showAddState = true;
+      this.Form.patchValue({
+        stateId: this.dropdownOptions.find((state:any) => state.id == city.state_id) as any,
+        cityName: city.name // Reset city name when state changes
+    });
+    }
+  }
+
+
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
@@ -124,8 +157,6 @@ export class CityComponent {
       this.showAddState = false;
     }
   }
-}
-function throwError(message: string) {
-  return rxjsThrowError(() => new Error(message));
-}
 
+
+}

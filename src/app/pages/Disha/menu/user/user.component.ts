@@ -32,7 +32,7 @@ export class UserComponent {
       last_name: ['', Validators.required],
       address: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['example@gmail.com', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       birth_date: [null, Validators.required],
       gender: [null, Validators.required]
@@ -48,7 +48,7 @@ export class UserComponent {
   async gateAllUser() {
     const payload = {
       fields : ["users.*","user_info.*"],
-      max : 10,
+      max : 100,
       current : 0,
       relation : "users.id=user_info.id"
     }
@@ -78,6 +78,7 @@ export class UserComponent {
               this.alertService.success(res.message);
               this.showAddState = false;
               this.gateAllUser();
+              this.addUserForm.reset();
             }
           },
           (error) => {
@@ -109,8 +110,6 @@ export class UserComponent {
     }
   }
 
-
-
   togglePassword(user: any) {
     user.showPassword = !user.showPassword;
   }
@@ -126,4 +125,5 @@ export class UserComponent {
   getGenderLabel(value: string) {
     return this.dropdownOptions.find(option => option.value === value)?.label || 'Unknown';
   }
+
 }

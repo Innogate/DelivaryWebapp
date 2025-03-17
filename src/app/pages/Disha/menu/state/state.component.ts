@@ -3,10 +3,11 @@ import { DialogModule } from 'primeng/dialog'; // ✅ Import DialogModule
 import { ButtonModule } from 'primeng/button'; // ✅ Import ButtonModule
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
 import { StateService } from '../../../../../services/state.service';
 import { AlertService } from '../../../../../services/alert.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
+import { Theme } from '@primeng/themes';
 @Component({
   selector: 'app-state',
   imports: [DialogModule, ButtonModule, FormsModule, CommonModule, ReactiveFormsModule, CommonModule],
@@ -17,6 +18,8 @@ export class StateComponent {
 
   showAddState: boolean = false;
   stateForm: FormGroup;
+  stateId?: number;
+  isEditing: boolean = false;
 
   constructor(private service: StateService, private fb: FormBuilder, private alertservice: AlertService) {
     this.stateForm = this.fb.group({
@@ -27,6 +30,8 @@ export class StateComponent {
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
+    this.isEditing = false;
+    this.stateForm.reset();
   }
 
   onTouchStart(event: TouchEvent) {
@@ -50,11 +55,11 @@ export class StateComponent {
   }
 
   GetAllState() {
-    const payload : payload ={
-      fields : ["states.*"],
-      max : 12,
-      current : 0,
-      relation : null
+    const payload: payload = {
+      fields: ["states.id", "states.name"],
+      max: 50,
+      current: 0,
+      relation: null
     }
     this.service.getAllStates(payload).pipe(
       tap((res) => {
@@ -71,26 +76,78 @@ export class StateComponent {
 
 
 
-  addState() {
-    try {
-      if (this.stateForm.valid) {
-        const newState: any = this.stateForm.value.stateName;
-        this.service.addNewState(newState).subscribe(
-          (res) => {
-            this.alertservice.success(res.message);
+  async addState() {
+    if (this.stateForm.valid) {
+      const newState = this.stateForm.value.stateName;
+      await firstValueFrom(
+        this.service.addNewState(newState).pipe(
+          tap((response) => {
+            this.alertservice.success(response.message);
             this.GetAllState();
             this.showAddState = false;
             this.stateForm.reset();
           },
-          (error) => {
-            console.error('Error adding state:', error);
-          }
-        );
+            (error) => {
+              this.alertservice.error(error.error.message);
+            })
+        )
+      );
+    }
+  }
+
+  viewState(state: any) {
+    if (state) {
+      this.isEditing = true;
+      this.showAddState = true;
+      this.stateForm.patchValue({ stateName: state.name });
+      this.stateId = state.id;
+    } else {
+      this.isEditing = false;
+      this.stateForm.reset();
+    }
+  }
+
+  updateState() {
+    // if (this.stateId) {
+    //   if (this.stateForm.valid) {
+    //     this.service.updateState(updates: {
+    //       "states.name": "W"
+    //     },
+    //       "conditions": {
+    //       "states.id": 36
+    //     }).subscribe(
+    //       (res) => {
+    //         this.alertservice.success(res.message);
+    //         this.GetAllState();
+    //         this.showAddState = false;
+    //         this.stateForm.reset();
+    //       },
+    //       (error) => {
+    //         console.error('Error updating state:', error);
+    //       }
+    //     );
+
+    //   }
+    // }
+  }
+
+  async deleteState(state: any) {
+    if (state) {
+      const confirmation = this.alertservice.confirm("You want to delete this state ? ");
+      if (await confirmation === false) {
+        return;
       } else {
-        this.alertservice.error("Validation failed. Please check the input.");
+        await firstValueFrom(this.service.deleteState(state.id).pipe(
+          tap((response) => {
+            this.alertservice.success(response.message);
+            this.GetAllState();
+          },
+            (error) => {
+              this.alertservice.error(error.error.message);
+            }
+          ))
+        )
       }
-    } catch (error) {
-      this.alertservice.error("Network error. Please try again later.");
     }
   }
 }
