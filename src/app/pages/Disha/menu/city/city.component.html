@@ -36,12 +36,14 @@
             <!-- Right: Action Buttons -->
             <div class="flex flex-col gap-2">
                 <button pButton
-                    class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-blue-600 transition-all" (click)="viewCity(city)">
+                    class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-blue-600 transition-all"
+                    (click)="viewCity(city)">
                     <i class="pi pi-eye"></i> View
                 </button>
 
                 <button pButton
-                    class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all" (click)="deleteCity(city)">
+                    class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all"
+                    (click)="deleteCity(city)">
                     <i class="pi pi-trash"></i> Delete
                 </button>
             </div>
@@ -64,7 +66,7 @@
      min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
         [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New City</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">{{ isEditing ? 'Update City' : 'Add New City' }} </h2>
 
         <form class="mb-4" [formGroup]="Form">
             <div class="flex flex-wrap w-full mt-4">
@@ -92,10 +94,10 @@
             </button>
 
             <button *ngIf="isEditing"
-            class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
-            (click)="addNewCity()">
-            Update
-        </button>
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="updateCity()">
+                Update
+            </button>
         </div>
     </div>
 </div>
