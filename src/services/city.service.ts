@@ -1,3 +1,4 @@
+import { payload } from './../../interfaces/payload.interface';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
@@ -22,11 +23,11 @@ export class CityService {
     return this.apiService.post('/master/cities/byStateId', payload);
   }
 
-  addNewCity(cityName: string, stateId: number): Observable<any> {
-    return this.apiService.post('/master/cities/new', { city_name: cityName, state_id: stateId });
+  addNewCity(payload: any): Observable<any> {
+    return this.apiService.post('/master/cities/new', payload);
   }
 
-  deleteCity(cityId: string): Observable<any> {
-    return this.apiService.post('/master/cities/delete', { city_id: cityId });
+  deleteCity(payload: any): Observable<any> {
+    return this.apiService.post('/master/cities/delete', payload);
   }
 }

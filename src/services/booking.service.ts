@@ -1,3 +1,4 @@
+import { payload } from './../../interfaces/payload.interface';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
@@ -8,23 +9,15 @@ import { Observable } from 'rxjs';
 export class BookingService {
   constructor(private apiService: ApiService) {}
 
-  addNewBooking(data: any): Observable<any> {
-    return this.apiService.post('/booking/new', data);
+  addNewBooking(payload: any): Observable<any> {
+    return this.apiService.post('/booking/new', payload);
   }
 
-  getBookingList(from: number = 0): Observable<any> {
-    return this.apiService.post('/booking', { from });
+  getBookingList(payload: any): Observable<any> {
+    return this.apiService.post('/booking', payload);
   }
 
   getBookingById(bookingId: number): Observable<any> {
     return this.apiService.post('/booking/details', { booking_id: bookingId });
-  }
-
-  updateBooking(bookingId: number, data: any): Observable<any> {
-    return this.apiService.post('/booking/update', { booking_id: bookingId, ...data });
-  }
-
-  deleteBooking(bookingId: number): Observable<any> {
-    return this.apiService.post('/booking/delete', { booking_id: bookingId });
   }
 }

@@ -1,3 +1,4 @@
+import { payload } from './../../interfaces/payload.interface';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
@@ -12,19 +13,31 @@ export class EmployeesService {
     return this.apiService.post('/master/employees', payload);
   }
 
-  getBranchById(branchId: number): Observable<any> {
-    return this.apiService.post('/master/branches/byId', { employees_id: branchId });
+  getAllEmployeesNotExist(payload: any): Observable<any> {
+    return this.apiService.post('/master/employees/notExist', payload);
+  }
+
+  getAllEmployeesById(payload: any): Observable<any> {
+    return this.apiService.post('/master/branches/byId', payload);
+  }
+
+  getAllEmployeesByBranchId(payload:any): Observable<any>{
+    return this.apiService.post('/master/employees/byBranchId', payload);
   }
 
   getBranchesByCityId(cityId: number, from: number = 0): Observable<any> {
     return this.apiService.post('/master/employees/byBrachId', { brach_id: cityId, from });
   }
 
-  addNewBranch(data: any): Observable<any> {
+  addNewEmployee(data: any): Observable<any> {
     return this.apiService.post('/master/employees/new', data);
   }
 
-  deleteBranch(branchId: string): Observable<any> {
-    return this.apiService.post('/master/employees/delete', { branch_id: branchId });
+  updateEmployee(payload: any): Observable<any> {
+    return this.apiService.post('/master/employees/new', payload);
+  }
+
+  deleteEmployee(employee_id: string): Observable<any> {
+    return this.apiService.post('/master/employees/delete', { employee_id: employee_id });
   }
 }

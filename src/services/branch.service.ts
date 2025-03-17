@@ -1,3 +1,4 @@
+import { payload } from './../../interfaces/payload.interface';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
@@ -12,19 +13,19 @@ export class BranchService {
     return this.apiService.post('/master/branches', payload);
   }
 
-  getBranchById(branchId: number): Observable<any> {
-    return this.apiService.post('/master/branches/byId', { branch_id: branchId });
+  getBranchById(payload: any): Observable<any> {
+    return this.apiService.post('/master/branches/byId', payload);
   }
 
-  getBranchesByCityId(cityId: number, from: number = 0): Observable<any> {
-    return this.apiService.post('/master/branches/byCityId', { city_id: cityId, from });
+  getBranchesByCityId(payload: any): Observable<any> {
+    return this.apiService.post('/master/branches/byCityId', payload);
   }
 
-  addNewBranch(data: any): Observable<any> {
-    return this.apiService.post('/master/branches/new', data);
+  addNewBranch(payload: any): Observable<any> {
+    return this.apiService.post('/master/branches/new', payload);
   }
 
-  deleteBranch(branchId: string): Observable<any> {
-    return this.apiService.post('/master/branches/delete', { branch_id: branchId });
+  deleteBranch(payload: any): Observable<any> {
+    return this.apiService.post('/master/branches/delete', payload);
   }
 }
