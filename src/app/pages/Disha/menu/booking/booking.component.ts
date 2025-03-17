@@ -142,7 +142,12 @@ export class BookingComponent implements OnInit {
   }
 
   loadBookings(): void {
-    this.bookingService.getBookingList().subscribe(response => {
+    this.bookingService.getBookingList(
+      {
+        max: 10,
+        current: 0
+      }
+    ).subscribe(response => {
       this.bookings = response.data || [];
     });
   }
@@ -189,15 +194,15 @@ export class BookingComponent implements OnInit {
     const cgst = Number(this.bookingForm.get('cgst')?.value) || 0;
     const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
     const igst = Number(this.bookingForm.get('igst')?.value) || 0;
-  
+
     const subtotal = charges + shipper + other;
     const cgstAmount = (cgst / 100) * subtotal;
     const sgstAmount = (sgst / 100) * subtotal;
     const igstAmount = (igst / 100) * subtotal;
-  
+
     const total = subtotal + cgstAmount + sgstAmount + igstAmount;
-  
+
     this.bookingForm.patchValue({ total: total.toFixed(2) });
   }
-  
+
 }

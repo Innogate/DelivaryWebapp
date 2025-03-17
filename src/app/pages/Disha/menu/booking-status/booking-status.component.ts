@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, tap } from 'rxjs';
 import { BookingService } from '../../../../../services/booking.service';
 import { AlertService } from '../../../../../services/alert.service';
 import { StateService } from '../../../../../services/state.service';
@@ -16,6 +16,8 @@ import { CityService } from '../../../../../services/city.service';
 export class BookingStatusComponent implements OnInit {
 
   bookingList?: any[];
+  current = 0;
+  max = 10;
 
   constructor(
     private bookService: BookingService,
@@ -28,21 +30,23 @@ export class BookingStatusComponent implements OnInit {
 
   async getAllBooking() {
     try {
-      const res = await firstValueFrom(this.bookService.getBookingList());
+      await firstValueFrom(this.bookService.getBookingList({
+        max: this.max,
+        current: this.current,
+      }).pipe(
+        tap(
+          (res) => {
+            if (res?.body && Array.isArray(res.body)) {
+              this.current += 10;
+              this.bookingList = this.bookingList ? [...this.bookingList, ...res.body] : res.body;
+            }
+          },
+          (error) => {
+            this.alertService.error(error?.error?.message || 'An error occurred while fetching bookings.');
+          }
+        )
+      ))
 
-      if (res?.body && Array.isArray(res.body)) {
-        this.bookingList = res.body.map((item: { charges: number | undefined; shipper: number | undefined; other: number | undefined; cgst: number | undefined; sgst: number | undefined; igst: number | undefined; }) => ({
-          ...item,
-          total: this.calculateTotal(
-            item.charges, 
-            item.shipper, 
-            item.other, 
-            item.cgst, 
-            item.sgst, 
-            item.igst
-          )
-        }));
-      }
 
     } catch (error: any) {
       this.alertService.error(error?.error?.message || 'An error occurred while fetching bookings.');
@@ -64,5 +68,12 @@ export class BookingStatusComponent implements OnInit {
     const igstAmount = (igstVal / 100) * subtotal;
 
     return subtotal + cgstAmount + sgstAmount + igstAmount;
+  }
+
+  onScroll(event: any): void {
+    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
+    if (bottom) {
+      this.getAllBooking();
+    }
   }
 }
