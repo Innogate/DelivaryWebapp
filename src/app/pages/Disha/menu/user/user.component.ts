@@ -9,16 +9,17 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { UserService } from '../../../../../services/user.service';
-
+import { PasswordModule } from 'primeng/password'
 @Component({
   selector: 'app-user',
   imports: [DialogModule, ButtonModule, FormsModule, CommonModule, InputTextModule,
-    DatePickerModule, DropdownModule, ReactiveFormsModule],
+    DatePickerModule, DropdownModule, ReactiveFormsModule, PasswordModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
 })
 export class UserComponent {
   showAddState: boolean = false;
+  showPassword: boolean = false;
   userList?: any[];
   addUserForm: FormGroup;
   private touchStartY: number = 0;
@@ -44,8 +45,11 @@ export class UserComponent {
     this.gateAllUser();
   }
 
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 
-  // gate all user 
+  // gate all user
   async gateAllUser() {
     const payload = {
       fields : ["users.*","user_info.*"],
@@ -53,7 +57,7 @@ export class UserComponent {
       current : 0,
       relation : "users.id=user_info.id"
     }
-    await firstValueFrom(this.userService.getAllUsers(payload).pipe(      
+    await firstValueFrom(this.userService.getAllUsers(payload).pipe(
       tap(
         (res) => {
           if (res.body) {

@@ -51,7 +51,7 @@ export class BranchComponent {
     private alertService: AlertService
   ) {
     this.branchForm = this.fb.group({
-      company_id: [this.company_id, [Validators.required, Validators.min(1)]], 
+      company_id: [this.company_id],
       name: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
       alias_name: ['', [Validators.minLength(3)]],
@@ -73,20 +73,22 @@ export class BranchComponent {
   }
 
   async fetchBranches() {
-    const payload: payload = {
-      fields: ["branches.*"],
-      max: 100,
-      current: 0,
-      relation: null
-    };
-    await firstValueFrom(this.branchService.getAllBranches(payload).pipe(
-      tap((res) => {
-        if (res.body) {
-          this.branchList = res.body;
-        }
-      })
-    ));
+    try {
+      const payload = {
+        fields: ["branches.*"],
+        max: 100,
+        current: 0,
+        relation: null
+      };
+      const res = await firstValueFrom(this.branchService.getAllBranches(payload));
+      if (res.body) {
+        this.branchList = res.body;
+      }
+    } catch (error: any) {
+      this.alertService.error(error.error?.message || 'Failed to fetch branches.');
+    }
   }
+
 
 
 
@@ -162,6 +164,7 @@ export class BranchComponent {
   viewBranch(branch: any) {
     console.log(branch);
     this.isEditing = true;
+    this.onStateChange(branch.state_id);
     if (branch) {
       this.showAddState = true;
       this.branchForm.patchValue({
@@ -221,26 +224,37 @@ export class BranchComponent {
 
 
   async addNewBranch() {
-    if (this.branchForm.valid && this.company_id) {
-      await firstValueFrom(
-        this.branchService.addNewBranch(this.branchForm.value).pipe(
-          tap((res) => {
-            if (res.body) {
-              this.alertService.success('Branch created successfully');
-              this.showAddState = false;
-              this.fetchBranches();
-            }
-          }),
-          catchError((error) => {
-            this.alertService.error(error?.error?.message || 'An error occurred while creating the branch.');
-            return []; // Return an empty array to gracefully handle errors
-          })
-        )
-      );
+    if (this.branchForm.valid) {
+      try {
+        let data = this.branchForm.value;
+        data.company_id=1;
+        const response = await firstValueFrom(
+          this.branchService.addNewBranch(data).pipe(
+            tap((res) => {
+              if (res.body) {
+                this.alertService.success('Branch created successfully!');
+                this.showAddState = false; // Close form
+                this.fetchBranches(); // Refresh the list
+              }
+            })
+          )
+        );
+
+        // (Optional) log response for debugging
+        console.log('Branch added:', response);
+
+      } catch (error:any) {
+        // Catch any errors and display a user-friendly message
+        const errorMessage = error.error.message || 'An error occurred while creating the branch.';
+        this.alertService.error(errorMessage);
+        console.error('Error adding branch:', error);
+      }
     } else {
-      console.log(this.branchForm.value, this.company_id);
-      this.alertService.error('Please fill all the required fields');
+      // If the form is invalid, show relevant errors
+      console.log('Invalid Form Data:');
+      this.alertService.error('Please fill in all the required fields correctly.');
     }
   }
-  
+
+
 }
