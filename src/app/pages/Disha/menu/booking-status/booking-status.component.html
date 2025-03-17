@@ -1,6 +1,5 @@
-<div *ngIf="bookingList" class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen">
+<div *ngIf="bookingList" class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen overflow-auto pb-[500px]" style="max-height: 100vh;">
     <div *ngFor="let booking of bookingList" class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
-
       <!-- Slip Details -->
       <div class="flex justify-between items-center mb-3">
         <p class="text-blue-800 font-semibold text-lg flex items-center">
@@ -88,10 +87,10 @@
       </div>
 
        <!-- Show More / Less Button -->
-       <button (click)="booking.showMore = !booking.showMore"
-       class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
-       <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
-       {{ booking.showMore ? 'Show Less' : 'Show More' }}
-     </button>
+      <button (click)="booking.showMore = !booking.showMore"
+        class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
+        <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
+        {{ booking.showMore ? 'Show Less' : 'Show More' }}
+      </button>
     </div>
   </div>
