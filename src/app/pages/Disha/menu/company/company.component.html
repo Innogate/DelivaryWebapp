@@ -96,27 +96,28 @@
     </button>
 
 
-    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
-        (click)="toggleAddState()">
+    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
     </div>
 
     <!-- Bottom Sheet Modal -->
     <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
  min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
-        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
-        (touchend)="onTouchEnd($event)">
+        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New Company</h2>
+        <h2 class="text-2xl font-bold mb-2 text-gray-800">Add New Company</h2>
 
         <form class="mb-6 p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="companyForm">
 
             <!-- Branch Name -->
-            <div class="flex flex-col mt-4 gap-2">
-                <label class="text-gray-700 font-medium">Company Name</label>
+            <div class="flex flex-col">
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">Company Name</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div>
                 <span
                     class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400">
                     <i class="pi pi-building text-blue-500 mr-2"></i>
-                    <input formControlName="name" type="text" pInputText placeholder="Enter branch name"
+                    <input formControlName="name" type="text" pInputText placeholder="Enter Company name"
                         class="w-full bg-transparent focus:outline-none" />
                 </span>
             </div>
@@ -135,7 +136,10 @@
 
             <!-- State Dropdown -->
             <div class="flex flex-col mt-4">
-                <label class="text-gray-700 font-medium">State</label>
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">State</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div>
                 <p-dropdown formControlName="state_id" class="w-full custom-dropdown" [options]="states"
                     optionLabel="name" optionValue="id" (onChange)="onStateChange($event.value)" [showClear]="true"
                     [emptyMessage]="'States not found'" placeholder="Select State">
@@ -144,7 +148,10 @@
 
             <!-- City Dropdown -->
             <div class="flex flex-col mt-4">
-                <label class="text-gray-700 font-medium">City</label>
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">City</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div>
                 <p-dropdown formControlName="city_id" class="w-full custom-dropdown" [options]="cities"
                     optionLabel="name" optionValue="id" placeholder="Select City" [showClear]="true"
                     [emptyMessage]="'Cities not recoded for this state'">
@@ -169,7 +176,7 @@
                 <span
                     class="flex items-start border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
                     <i class="pi pi-truck text-green-500 mr-2 mt-1"></i>
-                    <textarea formControlName="pin_code" pInputTextarea placeholder="Enter Pin Code"
+                    <textarea formControlName="pin_code" pInputText placeholder="Enter Pin Code"
                         class="w-full bg-transparent focus:outline-none"></textarea>
                 </span>
             </div>
@@ -245,13 +252,17 @@
         </form>
 
         <!-- Submit Button -->
-        <button
-            class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-3 mt-6 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700 active:scale-95"
-            (click)="onSubmit()">
-            <i class="pi pi-check-circle mr-2"></i> Save
-        </button>
-
-
-
+        <div class="flex items-center gap-4 mt-6">
+            <button
+                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                (click)="toggleAddState()">
+                Cancel
+            </button>
+            <button
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="onSubmit()">
+                <i class="pi pi-check-circle mr-2"></i>Save
+            </button>
+        </div>
     </div>
 </div>

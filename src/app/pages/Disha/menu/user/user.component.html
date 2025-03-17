@@ -90,11 +90,6 @@
         </div>
     </div>
 
-
-
-
-
-
     <!-- Floating Action Button (FAB) -->
     <button
         class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
@@ -103,30 +98,33 @@
     </button>
 
 
-    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
-        (click)="toggleAddState()">
+    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
     </div>
 
     <!-- Bottom Sheet Modal -->
     <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
  min-h-[60vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
-        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()" (touchstart)="onTouchStart($event)"
-        (touchend)="onTouchEnd($event)">
+        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New User</h2>
 
         <form class=" p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="addUserForm">
             <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0 gap-1">
-                    <label>First Name</label>
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">First Name</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div>
                     <input pInputText type="text" formControlName="first_name" />
                     <small class="text-red-500"
                         *ngIf="addUserForm.get('first_name')?.touched && addUserForm.get('first_name')?.invalid">First
                         Name is required</small>
                 </div>
                 <div class="flex flex-col grow basis-0 gap-1">
-                    <label>Last Name</label>
-                    <input pInputText type="text" formControlName="last_name" />
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">Last Name</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div> <input pInputText type="text" formControlName="last_name" />
                     <small class="text-red-500"
                         *ngIf="addUserForm.get('last_name')?.touched && addUserForm.get('last_name')?.invalid">Last Name
                         is required</small>
@@ -134,16 +132,20 @@
             </div>
 
             <div class="flex flex-col mt-2 gap-1">
-                <label>Address</label>
-                <input pInputText type="text" formControlName="address" />
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">Address</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div> <input pInputText type="text" formControlName="address" />
                 <small class="text-red-500"
                     *ngIf="addUserForm.get('address')?.touched && addUserForm.get('address')?.invalid">Address is
                     required</small>
             </div>
 
             <div class="flex flex-col mt-2 gap-1">
-                <label>Phone Number</label>
-                <input pInputText type="text" formControlName="mobile" />
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">Phone Number</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div> <input pInputText type="text" formControlName="mobile" />
                 <small class="text-red-500"
                     *ngIf="addUserForm.get('mobile')?.touched && addUserForm.get('mobile')?.invalid">
                     Enter a valid 10-digit phone number
@@ -162,8 +164,11 @@
             <div class="flex flex-wrap gap-4 w-full mt-4">
                 <!-- Date of Birth -->
                 <div class="flex flex-col flex-1 mt-2 gap-1">
-                    <label>Date of Birth</label>
-                    <p-datepicker [showIcon]="true" [showButtonBar]="true" formControlName="birth_date"></p-datepicker>
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">Date of Birth</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div> <p-datepicker [showIcon]="true" [showButtonBar]="true"
+                        formControlName="birth_date"></p-datepicker>
                     <small class="text-red-500"
                         *ngIf="addUserForm.get('birth_date')?.touched && addUserForm.get('birth_date')?.invalid">
                         Date of birth is required
@@ -172,8 +177,11 @@
 
                 <!-- Gender Dropdown -->
                 <div class="flex flex-col flex-1 mt-2 gap-1">
-                    <label>Gender</label>
-                    <p-dropdown [options]="dropdownOptions" formControlName="gender" placeholder="Gender"></p-dropdown>
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">Gender</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div> <p-dropdown [options]="dropdownOptions" formControlName="gender"
+                        placeholder="Gender"></p-dropdown>
                     <small class="text-red-500"
                         *ngIf="addUserForm.get('gender')?.touched && addUserForm.get('gender')?.invalid">
                         Please select a gender
@@ -182,17 +190,27 @@
             </div>
 
             <div class="flex flex-col mt-2 gap-1">
-                <label>Password</label>
-                <input pInputText type="password" formControlName="password" />
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">Password</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div> <input pInputText type="password" formControlName="password" />
                 <small class="text-red-500"
                     *ngIf="addUserForm.get('password')?.touched && addUserForm.get('password')?.invalid">
                     Password must be at least 6 characters long
                 </small>
             </div>
-            <button type="submit" class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-3 mt-6 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700 active:scale-95"
-                (click)="addUser()">
-                <i class="pi pi-check-circle mr-2"></i>  Save
-            </button>
+            <div class="flex items-center gap-4 mt-6">
+                <button
+                    class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                    (click)="toggleAddState()">
+                    Cancel
+                </button>
+                <button
+                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                    (click)="addUser()">
+                    Save
+                </button>
+            </div>
         </form>
     </div>
 </div>

@@ -24,4 +24,8 @@ export class StateService {
   deleteState(stateId: string): Observable<any> {
     return this.apiService.post('/master/states/delete', { state_id: stateId });
   }
+
+  updateState(payload: any): Observable<any> {
+    return this.apiService.post('/master/states/update',  payload);
+  }
 }

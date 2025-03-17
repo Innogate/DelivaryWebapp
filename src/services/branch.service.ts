@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 export class BranchService {
   constructor(private apiService: ApiService) {}
 
-  getAllBranches(from: number = 0): Observable<any> {
-    return this.apiService.post('/master/branches', { from });
+  getAllBranches(payload:any): Observable<any> {
+    return this.apiService.post('/master/branches', payload);
   }
 
   getBranchById(branchId: number): Observable<any> {

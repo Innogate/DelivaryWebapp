@@ -14,6 +14,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { CardModule } from 'primeng/card';
 import { firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
+import { payload } from '../../../../../../interfaces/payload.interface';
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -49,44 +50,52 @@ export class BranchComponent {
     private alertService: AlertService
   ) {
     this.branchForm = this.fb.group({
-      company_id: ['', [Validators.required, Validators.min(1)]],
+      company_id: [1, [Validators.required, Validators.min(1)]],
       name: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
-      alias_name: ['', [Validators.required, Validators.minLength(3)]],
+      alias_name: ['', [Validators.minLength(3)]],
       city_id: ['', [Validators.required, Validators.min(1)]],
       state_id: ['', [Validators.required, Validators.min(1)]],
       pin_code: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
       contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      gst_no: ['', [Validators.required]],
-      cin_no: ['', [Validators.required]],
-      udyam_no: ['', [Validators.required]],
-      logo: ['']
+      email: ['',],
+      gst_no: ['',],
+      cin_no: ['',],
+      udyam_no: ['',],
+      logo: [''],
+      cgst:['', [Validators.required,]],
+      sgst:['', [Validators.required]],
+      igst:['', [Validators.required]],
     });
     this.fetchBranches();
     this.loadStates();
   }
 
   async fetchBranches() {
-    await firstValueFrom(this.branchService.getAllBranches(0).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.branchList = res.body;
-          }
+    const payload: payload = {
+      fields: ["branches.*"],
+      max: 100,
+      current: 0,
+      relation: null
+    };
+    await firstValueFrom(this.branchService.getAllBranches(payload).pipe(
+      tap((res) => {
+        if (res.body) {
+          this.branchList = res.body;
         }
-      )
+      })
     ));
   }
+
 
 
   async loadStates() {
     await firstValueFrom(
       this.stateService.getAllStates({
-        fields : ["states.id","states.name"],
-        max : 12,
-        current : 0,
-        relation : null
+        fields: ["states.id", "states.name"],
+        max: 50,
+        current: 0,
+        relation: null
       }).pipe(
         tap(
           (res) => {
@@ -101,10 +110,10 @@ export class BranchComponent {
 
   async onStateChange(stateId: any) {
     await firstValueFrom(this.cityService.getCitiesByStateId({
-      "fields" : ["cities.id","cities.name"],
-      "max" : 12,
-      "current" : 0,
-      "relation" : null,
+      "fields": ["cities.id", "cities.name"],
+      "max": 100,
+      "current": 0,
+      "relation": null,
       "state_id": stateId
     }).pipe(
       tap(
@@ -184,7 +193,7 @@ export class BranchComponent {
         )
       ))
     }
-    else{
+    else {
       this.alertService.error('Please fill all the required fields');
       console.log(this.branchForm.value)
     }
