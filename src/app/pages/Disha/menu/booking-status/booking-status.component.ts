@@ -28,7 +28,7 @@ export class BookingStatusComponent implements OnInit {
 
   async getAllBooking() {
     try {
-      const res = await firstValueFrom(this.bookService.getBookingList(0));
+      const res = await firstValueFrom(this.bookService.getBookingList());
 
       if (res?.body && Array.isArray(res.body)) {
         this.bookingList = res.body.map((item: { charges: number | undefined; shipper: number | undefined; other: number | undefined; cgst: number | undefined; sgst: number | undefined; igst: number | undefined; }) => ({

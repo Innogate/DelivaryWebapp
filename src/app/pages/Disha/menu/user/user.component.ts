@@ -25,6 +25,7 @@ export class UserComponent {
   dropdownOptions = [{ label: 'Male', value: 'M' }, { label: 'Female', value: 'F' }];
   selectedValue: any;
   passwordVisible = false;
+  isEditing: boolean = false;
 
   constructor(private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
     this.addUserForm = this.fb.group({
@@ -87,13 +88,51 @@ export class UserComponent {
         )
       ))
     } else {
-      this.addUserForm.markAllAsTouched(); // Show all validation errors
+      this.addUserForm.markAllAsTouched();
     }
   }
 
 
+  async deleteUser(data: any) {
+    if (data) {
+      const confirmation = this.alertService.confirm("You want to delete this User ? ");
+      if (await confirmation === false) {
+        return;
+      } else {
+        await firstValueFrom(this.userService.deleteUser(data.id).pipe(
+          tap((response) => {
+            this.alertService.success(response.message);
+            this.gateAllUser();
+          },
+            (error) => {
+              this.alertService.error(error.error.message);
+            }
+          ))
+        )
+      }
+    }
+  }
 
+  viewUser(data: any){
+    if(data){
+      this.showAddState = true;
+      this.isEditing = true;
+      this.addUserForm.patchValue({
+        first_name: data.first_name,
+        last_name: data.last_name,
+        address: data.address,
+        mobile: data.mobile,
+        email: data.email,
+        birth_date: new Date(data.birth_date),
+        gender: data.gender,
+        password: data.password
+      });
+    }
+  }
 
+  updateUser() {
+    console.log(this.addUserForm.value);
+  }
 
   onTouchStart(event: TouchEvent) {
     // Store the initial touch position
@@ -120,6 +159,8 @@ export class UserComponent {
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
+    this.isEditing = false;
+    this.addUserForm.reset();
   }
 
   getGenderLabel(value: string) {

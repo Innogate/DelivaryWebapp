@@ -57,7 +57,7 @@
                         class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-all flex items-center">
                         <i class="pi pi-trash mr-2"></i> Delete
                     </button>
-                    <button (click)="updateBranch(branch)"
+                    <button (click)="viewBranch(branch)"
                         class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-all flex items-center">
                         <i class="pi pi-pencil mr-2"></i> Update
                     </button>
@@ -89,7 +89,7 @@
      min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
         [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New Branch</h2>
+        <h2 class="text-2xl font-bold mb-2 text-gray-800">{{ isEditing ? 'Update Branch' : 'Add New Branch' }}</h2>
 
         <form class="mb-6 p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="branchForm">
 
@@ -231,7 +231,8 @@
                         <i class="pi pi-percentage text-red-600 mr-2"></i> CGST <span class="text-red-500">*</span>
                     </label>
                     <input pInputText id="cgst" formControlName="cgst" type="text" class="p-inputtext p-component" />
-                    <small *ngIf="branchForm.controls['cgst'].hasError('required') && branchForm.controls['cgst'].touched"
+                    <small
+                        *ngIf="branchForm.controls['cgst'].hasError('required') && branchForm.controls['cgst'].touched"
                         class="text-red-500">
                         CGST is required.
                     </small>
@@ -245,7 +246,8 @@
                         <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST <span class="text-red-500">*</span>
                     </label>
                     <input pInputText id="sgst" formControlName="sgst" type="text" class="p-inputtext p-component" />
-                    <small *ngIf="branchForm.controls['sgst'].hasError('required') && branchForm.controls['sgst'].touched"
+                    <small
+                        *ngIf="branchForm.controls['sgst'].hasError('required') && branchForm.controls['sgst'].touched"
                         class="text-red-500">
                         SGST is required.
                     </small>
@@ -259,7 +261,8 @@
                         <i class="pi pi-percentage text-green-600 mr-2"></i> IGST <span class="text-red-500">*</span>
                     </label>
                     <input pInputText id="igst" formControlName="igst" type="text" class="p-inputtext p-component" />
-                    <small *ngIf="branchForm.controls['igst'].hasError('required') && branchForm.controls['igst'].touched"
+                    <small
+                        *ngIf="branchForm.controls['igst'].hasError('required') && branchForm.controls['igst'].touched"
                         class="text-red-500">
                         IGST is required.
                     </small>
@@ -316,10 +319,15 @@
                 (click)="toggleAddState()">
                 Cancel
             </button>
-            <button
+            <button *ngIf="!isEditing"
                 class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
                 (click)="addNewBranch()">
                 Save
+            </button>
+
+            <button *ngIf="isEditing"
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700" (click)="updateBranch()">
+                Update
             </button>
         </div>
     </div>

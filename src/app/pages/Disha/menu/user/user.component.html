@@ -67,7 +67,8 @@
                 <!-- Action Buttons -->
                 <div class="flex justify-between mt-3">
                     <button
-                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all">
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all"
+                        (click)="deleteUser(user)">
                         <i class="pi pi-ban mr-2"></i> Disable
                     </button>
                     <button
@@ -75,7 +76,8 @@
                         <i class="pi pi-key mr-2"></i> Grand
                     </button>
                     <button
-                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all">
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all"
+                        (click)="viewUser(user)">
                         <i class="pi pi-pencil mr-2"></i> Update
                     </button>
                 </div>
@@ -106,7 +108,7 @@
  min-h-[60vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
         [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add New User</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">   {{ isEditing ? 'Update User' : 'Add New User' }}</h2>
 
         <form class=" p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="addUserForm">
             <div class="flex flex-wrap gap-6">
@@ -205,11 +207,16 @@
                     (click)="toggleAddState()">
                     Cancel
                 </button>
-                <button
+                <button *ngIf="!isEditing"
                     class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
                     (click)="addUser()">
                     Save
                 </button>
+                <button *ngIf="isEditing"
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="updateUser()">
+                Update
+            </button>
             </div>
         </form>
     </div>

@@ -25,21 +25,17 @@
         <!-- Right: Action Buttons -->
         <div class="flex flex-col gap-2">
             <button pButton
-                class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-blue-600 transition-all"  (click)="viewState(state)">
+                class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-blue-600 transition-all"
+                (click)="viewState(state)">
                 <i class="pi pi-eye"></i> View
             </button>
             <button pButton
-                class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all" (click)="deleteState(state)">
+                class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all"
+                (click)="deleteState(state)">
                 <i class="pi pi-trash"></i> Delete
             </button>
         </div>
     </div>
-
-
-
-
-
-
 
     <!-- Floating Action Button (FAB) -->
     <button
@@ -49,8 +45,7 @@
     </button>
 
     <!-- Background Overlay -->
-    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
-        >
+    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
     </div>
 
     <!-- Bottom Sheet Modal -->
@@ -60,8 +55,8 @@
 
         <h2 class="text-2xl font-bold mb-4 text-gray-800">
             {{ isEditing ? 'Update State' : 'Add New State' }}
-          </h2>
-          
+        </h2>
+
         <form class="mb-4" [formGroup]="stateForm">
             <div class="flex flex-col mt-4 gap-2">
                 <label class="text-gray-700 font-medium">Enter State</label>
@@ -79,22 +74,25 @@
         </form>
         <div class="flex items-center gap-4 mt-6">
             <button
-            class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
-            (click)="toggleAddState()">
-            Cancel
-         </button>
-            <button
+                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                (click)="toggleAddState()">
+                Cancel
+            </button>
+            <button *ngIf="!isEditing"
                 class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
                 (click)="addState()">
                 Save
             </button>
+
+            <button *ngIf="isEditing"
+            class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+            (click)="updateState()">
+            Update
+        </button>
         </div>
-        
+
     </div>
 </div>
-
-
-
 <style>
     /* Floating Action Button Pulse Effect */
     .pulse {

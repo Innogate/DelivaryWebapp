@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AlertService } from '../../../../../services/alert.service';
 import { throwError as rxjsThrowError } from 'rxjs';
 import { Theme } from '@primeng/themes';
+import { ThLargeIcon } from 'primeng/icons';
 
 @Component({
   selector: 'app-city',
@@ -24,6 +25,7 @@ export class CityComponent {
   private touchStartY: number = 0;
   selectedValue: any;
   Form: FormGroup;
+  isEditing: boolean = false;
 
 
   constructor(private service: StateService, private cityService: CityService, private stateService: StateService,
@@ -92,7 +94,8 @@ export class CityComponent {
 
   async addNewCity() {
     if (this.Form.valid) {
-      await firstValueFrom(this.cityService.addNewCity(this.Form.value["cityName"], this.Form.value["stateId"]).pipe(
+      const payload = this.Form.value;
+      await firstValueFrom(this.cityService.addNewCity(payload).pipe(
         tap(
           (res) => {
             if (res.body) {
@@ -131,13 +134,14 @@ export class CityComponent {
   }
 
 
-  async viewCity(city: any){
-    if(city){
+  async viewCity(city: any) {
+   console.log(city);
+    if (city) {
       this.showAddState = true;
       this.Form.patchValue({
-        stateId: this.dropdownOptions.find((state:any) => state.id == city.state_id) as any,
-        cityName: city.name // Reset city name when state changes
-    });
+        stateId: city.state_id,
+        cityName: city.name
+      });
     }
   }
 
@@ -145,6 +149,7 @@ export class CityComponent {
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
+    this.Form.reset();
   }
 
   onTouchStart(event: TouchEvent) {

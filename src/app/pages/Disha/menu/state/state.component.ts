@@ -10,7 +10,7 @@ import { payload } from '../../../../../../interfaces/payload.interface';
 import { Theme } from '@primeng/themes';
 @Component({
   selector: 'app-state',
-  imports: [DialogModule, ButtonModule, FormsModule, CommonModule, ReactiveFormsModule, CommonModule],
+  imports: [DialogModule, FormsModule, CommonModule, ReactiveFormsModule, CommonModule],
   templateUrl: './state.component.html',
   styleUrl: './state.component.scss'
 })
@@ -108,28 +108,29 @@ export class StateComponent {
   }
 
   updateState() {
-    // if (this.stateId) {
-    //   if (this.stateForm.valid) {
-    //     this.service.updateState(updates: {
-    //       "states.name": "W"
-    //     },
-    //       "conditions": {
-    //       "states.id": 36
-    //     }).subscribe(
-    //       (res) => {
-    //         this.alertservice.success(res.message);
-    //         this.GetAllState();
-    //         this.showAddState = false;
-    //         this.stateForm.reset();
-    //       },
-    //       (error) => {
-    //         console.error('Error updating state:', error);
-    //       }
-    //     );
-
-    //   }
-    // }
+    if (this.stateId && this.stateForm.valid) {
+      const payload: any = {
+        updates: {
+          "states.name": this.stateForm.get('stateName')?.value,
+        },
+        conditions: {
+          "states.id": this.stateId
+        }
+      };
+  
+      firstValueFrom(
+        this.service.updateState(payload).pipe(
+          tap((res) => {
+            this.alertservice.success(res.message);
+            this.GetAllState();
+            this.showAddState = false;
+            this.stateForm.reset();
+          })
+        )
+      ).catch((error) => console.error('Error updating state:', error));
+    }
   }
+  
 
   async deleteState(state: any) {
     if (state) {
