@@ -118,7 +118,7 @@ export class BookingComponent implements OnInit {
 
   async onCityChange($event: any) {
     if ($event) {
-      await firstValueFrom(this.branchService.getBranchesByCityId($event, 0).pipe(
+      await firstValueFrom(this.branchService.getBranchesByCityId($event).pipe(
         tap(
           (res) => {
             if (res.body) {
@@ -151,16 +151,16 @@ export class BookingComponent implements OnInit {
     console.log("Not implemented");
   }
 
-  deleteBooking(bookingId: number): void {
-    this.bookingService.deleteBooking(bookingId).subscribe(response => {
-      if (response.success) {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Booking deleted successfully' });
-        this.loadBookings();
-      } else {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete booking' });
-      }
-    });
-  }
+  // deleteBooking(bookingId: number): void {
+  //   this.bookingService.deleteBooking(bookingId).subscribe(response => {
+  //     if (response.success) {
+  //       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Booking deleted successfully' });
+  //       this.loadBookings();
+  //     } else {
+  //       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete booking' });
+  //     }
+  //   });
+  // }
 
 
   async saveBooking() {

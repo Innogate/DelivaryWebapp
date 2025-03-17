@@ -2,7 +2,6 @@ import { payload } from './../../interfaces/payload.interface';
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
-import { payload } from '../../interfaces/payload.interface';
 
 @Injectable({
   providedIn: 'root',

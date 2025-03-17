@@ -13,8 +13,8 @@ export class BookingService {
     return this.apiService.post('/booking/new', payload);
   }
 
-  getBookingList(payload: any): Observable<any> {
-    return this.apiService.post('/booking', payload);
+  getBookingList(): Observable<any> {
+    return this.apiService.post('/booking', {});
   }
 
   getBookingById(bookingId: number): Observable<any> {

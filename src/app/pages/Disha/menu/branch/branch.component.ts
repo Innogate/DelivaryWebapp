@@ -12,7 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CardModule } from 'primeng/card';
-import { firstValueFrom, tap } from 'rxjs';
+import { catchError, firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
 @Component({
@@ -40,7 +40,8 @@ export class BranchComponent {
   showAddState: boolean = false;
   selectedFileName: string = '';
   private touchStartY: number = 0;
-
+  isEditing: boolean = false;
+  company_id: number = 1;
   constructor(
     private fb: FormBuilder,
     private branchService: BranchService,
@@ -50,7 +51,7 @@ export class BranchComponent {
     private alertService: AlertService
   ) {
     this.branchForm = this.fb.group({
-      company_id: [1, [Validators.required, Validators.min(1)]],
+      company_id: [this.company_id, [Validators.required, Validators.min(1)]], 
       name: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
       alias_name: ['', [Validators.minLength(3)]],
@@ -63,9 +64,9 @@ export class BranchComponent {
       cin_no: ['',],
       udyam_no: ['',],
       logo: [''],
-      cgst:['', [Validators.required,]],
-      sgst:['', [Validators.required]],
-      igst:['', [Validators.required]],
+      cgst: ['', [Validators.required,]],
+      sgst: ['', [Validators.required]],
+      igst: ['', [Validators.required]],
     });
     this.fetchBranches();
     this.loadStates();
@@ -138,16 +139,59 @@ export class BranchComponent {
     ))
   }
 
-  deleteBranch(branch: any) {
-    console.log("Delete branch", branch);
+  async deleteBranch(branch: any) {
+    if (branch) {
+      const confirmation = this.alertService.confirm("You want to delete this state ? ");
+      if (await confirmation === false) {
+        return;
+      } else {
+        await firstValueFrom(this.branchService.deleteBranch(branch.id).pipe(
+          tap((response) => {
+            this.alertService.success(response.message);
+            this.fetchBranches();
+          },
+            (error) => {
+              this.alertService.error(error.error.message);
+            }
+          ))
+        )
+      }
+    }
   }
 
-  updateBranch(branch: any) {
-    console.log('Update branch', branch);
+  viewBranch(branch: any) {
+    console.log(branch);
+    this.isEditing = true;
+    if (branch) {
+      this.showAddState = true;
+      this.branchForm.patchValue({
+        company_id: branch.company_id,
+        name: branch.name,
+        address: branch.address,
+        alias_name: branch.alias_name,
+        city_id: branch.city_id,
+        state_id: branch.state_id,
+        pin_code: branch.pin_code,
+        contact_no: branch.contact_no,
+        email: branch.email,
+        gst_no: branch.gst_no,
+        cin_no: branch.cin_no,
+        udyam_no: branch.udyam_no,
+        cgst: branch.cgst,
+        sgst: branch.sgst,
+        igst: branch.igst,
+      });
+    }
+  }
+
+  updateBranch(){
+    console.log(this.branchForm.value);
   }
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
+    this.isEditing = false;
+    this.branchForm.reset();
   }
 
   onTouchStart(event: TouchEvent) {
@@ -177,25 +221,26 @@ export class BranchComponent {
 
 
   async addNewBranch() {
-    if (this.branchForm.valid) {
-      await firstValueFrom(this.branchService.addNewBranch(this.branchForm.value).pipe(
-        tap(
-          (res) => {
+    if (this.branchForm.valid && this.company_id) {
+      await firstValueFrom(
+        this.branchService.addNewBranch(this.branchForm.value).pipe(
+          tap((res) => {
             if (res.body) {
               this.alertService.success('Branch created successfully');
               this.showAddState = false;
               this.fetchBranches();
             }
-          },
-          (error) => {
-            this.alertService.error(error.error.message);
-          }
+          }),
+          catchError((error) => {
+            this.alertService.error(error?.error?.message || 'An error occurred while creating the branch.');
+            return []; // Return an empty array to gracefully handle errors
+          })
         )
-      ))
-    }
-    else {
+      );
+    } else {
+      console.log(this.branchForm.value, this.company_id);
       this.alertService.error('Please fill all the required fields');
-      console.log(this.branchForm.value)
     }
   }
+  
 }

@@ -21,7 +21,7 @@
             <div class="flex justify-between items-center mb-2">
                 <p class="text-gray-700 font-medium flex items-center">
                     <i class="pi pi-user mr-2 text-green-500"></i>
-                    <!-- <strong> </strong> {{ user.first_name }} {{ user.last_name }} -->
+                    <strong> </strong> {{ employee.first_name }} {{ employee.last_name }}
                 </p>
                 <div [ngClass]="{
                 'bg-green-200 text-green-700': employee.status,
@@ -37,11 +37,11 @@
             <div class="bg-gray-50 p-3 rounded-lg mt-2 border border-gray-200" *ngIf="employee.showMore">
                 <p class="text-gray-700 flex items-center">
                     <i class="pi pi-envelope mr-2 text-blue-500"></i>
-                    <!-- <strong>Email:</strong> {{ user.email }} -->
+                    <strong>Email:</strong> {{ employee.email }}
                 </p>
                 <p class="text-gray-700 flex items-center">
-                    <i class="pi pi-phone mr-2 text-green-500"></i>
-                    <!-- <strong>Mobile:</strong> {{ user.mobile }} -->
+                    <i class="pi  pi-id-card  mr-2 text-green-500"></i>
+                    <strong>Aadhar:</strong> {{ employee.aadhar_no }}
                 </p>
                 <!-- <p class="text-gray-700 flex items-center">
                     <i class="pi pi-user mr-2 text-purple-500"></i>
@@ -67,7 +67,7 @@
                 <!-- Action Buttons -->
                 <div class="flex justify-between mt-3">
                     <button
-                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all">
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all" (click)="deleteEmployee(employee)">
                         <i class="pi pi-ban mr-2"></i> Disable
                     </button>
                     <button
@@ -154,7 +154,7 @@
 
             <div class="flex flex-col mt-2 gap-1">
                 <label>Aadhar No</label>
-                <input pInputText id="age1" type="text" formControlName="aadharNo" />
+                <input pInputText id="age1" type="text" formControlName="adhara_no" />
             </div>
 
 
