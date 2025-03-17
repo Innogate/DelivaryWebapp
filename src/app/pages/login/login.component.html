@@ -1,53 +1,56 @@
 <div class="h-full w-full bg-gray-100 overflow-hidden flex justify-center items-center flex-col">
     <div class="h-full flex justify-center items-center flex-col p-8 w-96">
-        <div class="flex justify-center  mb-10">
-            <h1 class="rubik-maps-regular">Disha Airways</h1>
-        </div>
+      <div class="flex justify-center mb-10">
+        <h1 class="rubik-maps-regular">Disha Airways</h1>
+      </div>
 
-        
-        <form class="w-full" *ngIf="userFrom" [formGroup]="userFrom">
-            <div class="flex w-full flex-col space-y-4">
-                <div>
-                    <label for="mobile" class="block text-sm font-medium text-gray-700">Mobile Number</label>
-                    <div class="relative mt-1">
-                        <i class="pi pi-phone absolute left-3 top-3 text-gray-500"></i>
-                        <input id="mobile" type="tel" placeholder="Enter mobile number"
-                            formControlName="id"
-                            class="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                    </div>
-                </div>
-    
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <div class="relative mt-1">
-                        <i class="pi pi-lock absolute left-3 top-3 text-gray-500"></i>
-                        <input id="password" type="password" placeholder="Enter password"
-                            formControlName="passwd"
-                            class="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                        <button id="togglePassword" type="button" class="absolute right-3 top-3 text-gray-500">
-                            <i class="pi pi-eye"></i>
-                        </button>
-                    </div>
-                </div>
-    
-                <button (click)="onSubmit()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-md">Login</button>
+      <form class="w-full" *ngIf="userFrom" [formGroup]="userFrom">
+        <div class="flex w-full flex-col space-y-4">
+          <div>
+            <label for="mobile" class="block text-sm font-medium text-gray-700">Mobile Number</label>
+            <div class="relative mt-1">
+              <i class="pi pi-phone absolute left-3 top-3 text-gray-500"></i>
+              <input
+                id="mobile"
+                type="tel"
+                placeholder="Enter mobile number"
+                formControlName="id"
+                class="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
             </div>
-        </form>
+          </div>
 
-        <p class="text-center text-sm text-gray-600 mt-4">Forgot password? <a href="#" class="text-blue-600 hover:underline">Reset here</a></p>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <div class="relative mt-1">
+              <i class="pi pi-lock absolute left-3 top-3 text-gray-500"></i>
+              <input
+                id="password"
+                [type]="passwordVisible ? 'text' : 'password'"
+                placeholder="Enter password"
+                formControlName="passwd"
+                class="w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+              <button
+                id="togglePassword"
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="absolute right-3 top-3 text-gray-500"
+              >
+                <!-- <i class="pi" [class.pi-eye]="!passwordVisible" [class.pi-eye-slash]="passwordVisible"></i> -->
+              </button>
+            </div>
+          </div>
+
+          <button
+            (click)="onSubmit()"
+            class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-md"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+
+      <p class="text-center text-sm text-gray-600 mt-4">Forgot password? <a href="#" class="text-blue-600 hover:underline">Reset here</a></p>
     </div>
-</div>
-
-<script>
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        const passwordField = document.getElementById('password');
-        const icon = this.querySelector('i');
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            icon.classList.replace('pi-eye', 'pi-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            icon.classList.replace('pi-eye-slash', 'pi-eye');
-        }
-    });
-</script>
+  </div>

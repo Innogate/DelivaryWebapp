@@ -1,79 +1,97 @@
-<div *ngIf="bookingList" class="flex flex-col bg-slate-100 py-2 min-h-screen scrollable-container">
-    <div *ngFor="let booking of bookingList" class="bg-white p-4 mb-3 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
-        
-        <!-- Slip No with Icon -->
-        <div class="flex justify-between items-center mb-2">
-            <p class="text-gray-700 font-semibold text-lg flex items-center">
-                <i class="pi pi-file mr-2 text-blue-500"></i>
-                Slip No: <span class="text-blue-600 font-bold">{{ booking.slip_no }}</span>
-            </p>
-            
-            <div class="flex items-center text-gray-500 text-sm">
-                <i class="pi pi-calendar mr-1 text-gray-400"></i>
-                {{ booking.created_at | date: 'dd-MM-yyyy HH:mm' }}
-            </div>
-        </div>
+<div *ngIf="bookingList" class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen">
+    <div *ngFor="let booking of bookingList" class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
 
-        <!-- Weight and Paid Type -->
-        <div class="flex justify-between items-center mb-2">
-            <div class=" bg-green-200 text-green-700 px-4 py-2 rounded-full font-medium text-sm flex items-center">
-                <i class="pi pi-indian-rupee mr-2 text-green-700"></i>
-                {{ booking.total }}
-            </div>
-            <div [ngClass]="{
-                'bg-green-200 text-green-700': booking.paid_type === 'Prepaid',
-                'bg-yellow-200 text-yellow-700': booking.paid_type === 'COD'
-            }" class="px-4 py-2 rounded-full font-medium text-sm">
-                <i class="pi pi-wallet mr-2"></i>
-                {{ booking.paid_type }}
-            </div>
-        </div>
+      <!-- Slip Details -->
+      <div class="flex justify-between items-center mb-3">
+        <p class="text-blue-800 font-semibold text-lg flex items-center">
+          <i class="pi pi-file mr-2 text-blue-600"></i>
+          Slip No: <span class="text-blue-600 font-bold ml-1">{{ booking.slip_no }}</span>
+        </p>
+        <p class="text-sm text-gray-600 flex items-center">
+          <i class="pi pi-calendar mr-1 text-gray-400"></i>
+          {{ booking.created_at | date: 'dd-MM-yyyy HH:mm' }}
+        </p>
+      </div>
 
-        <!-- Details Section -->
-        <div *ngIf="booking.showMore" class="bg-gray-50 p-3 rounded-lg mt-2 border border-gray-200">
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-user mr-2 text-blue-500"></i>
-                <strong>Consignee:</strong> {{ booking.consignee_name }} 
-                <i class="pi pi-phone mr-1 ml-2 text-green-500"></i>
-                ({{ booking.consignee_mobile }})
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-user mr-2 text-red-500"></i>
-                <strong>Consignor:</strong> {{ booking.consignor_name }} 
-                <i class="pi pi-phone mr-1 ml-2 text-green-500"></i>
-                ({{ booking.consignor_mobile }})
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-truck mr-2 text-gray-500"></i>
-                <strong>Transport Mode:</strong> {{ booking.transport_mode }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-map-marker mr-2 text-purple-500"></i>
-                <strong>Destination:</strong> Branch #{{ booking.destination_branch_name }}, City #{{ booking.destination_city_name}}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-box mr-2 text-yellow-500"></i>
-                <strong>Package ID:</strong> {{ booking.package_id }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-info-circle mr-2 text-blue-500"></i>
-                <strong>Contents:</strong> {{ booking.contents }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-dollar mr-2 text-green-600"></i>
-                <strong>Charges:</strong> ₹{{ booking.charges }}
-            </p>
-            <p class="text-gray-700 flex items-center">
-                <i class="pi pi-percentage mr-2 text-indigo-500"></i>
-                <strong>GST (CGST + SGST + IGST):</strong> {{ booking.cgst }}% + {{ booking.sgst }}% + {{ booking.igst }}%
-            </p>
+      <!-- Payment Details -->
+      <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
+          <i class="pi pi-rupee mr-2 text-green-600"></i> ₹{{ booking.total }}
         </div>
+        <div [ngClass]="{
+            'bg-green-100 text-green-800': booking.paid_type === 'Prepaid',
+            'bg-yellow-100 text-yellow-800': booking.paid_type === 'COD'
+          }"
+          class="px-4 py-2 rounded-full text-sm font-medium">
+          <i class="pi pi-wallet mr-2"></i> {{ booking.paid_type }}
+        </div>
+      </div>
 
-        <!-- Show More / Show Less Button -->
-        <button (click)="booking.showMore = !booking.showMore"
-            class="mt-3 w-full text-blue-600 bg-blue-100 px-4 py-2 rounded-lg font-medium hover:bg-blue-200 transition-all">
-            <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
-            {{ booking.showMore ? 'Show Less' : 'Show More' }}
-        </button>
+      <!-- Show More / Less Button -->
+      <button (click)="booking.showMore = !booking.showMore"
+        class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
+        <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
+        {{ booking.showMore ? 'Show Less' : 'Show More' }}
+      </button>
+
+      <!-- Additional Details -->
+      <div *ngIf="booking.showMore" class="bg-gray-100 p-4 rounded-lg mt-3 border border-gray-300">
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+          <i class="pi pi-user mr-2 text-blue-500"></i>
+          <strong>Consignee:</strong> {{ booking.consignee_name }} ({{ booking.consignee_mobile }})
+        </p>
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+          <i class="pi pi-user mr-2 text-red-500"></i>
+          <strong>Consignor:</strong> {{ booking.consignor_name }} ({{ booking.consignor_mobile }})
+        </p>
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+          <i class="pi pi-truck mr-2 text-gray-500"></i>
+          <strong>Transport Mode:</strong> {{ booking.transport_mode }}
+        </p>
+
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+            <i class="pi pi-building mr-2 text-purple-500"></i>
+            <strong>Branch:</strong> {{ booking.branch_name }}
+        </p>
+
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+            <i class="pi pi-map-marker mr-2 text-purple-500"></i>
+            <strong>City:</strong> {{ booking.city_name }}
+        </p>
+
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+          <i class="pi pi-box mr-2 text-yellow-500"></i>
+          <strong>Package ID:</strong> {{ booking.package_id }}
+        </p>
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+          <i class="pi pi-info-circle mr-2 text-blue-500"></i>
+          <strong>Contents:</strong> {{ booking.contents }}
+        </p>
+        <p class="text-gray-700 text-sm flex items-center mb-2">
+          <i class="pi pi-percentage mr-2 text-indigo-500"></i>
+          <strong>GST:</strong> {{ booking.cgst }}% + {{ booking.sgst }}% + {{ booking.igst }}%
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-2 mt-2">
+            <button pButton *ngIf="booking.status <= 2 && booking.status != 0"
+              class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-red-700 active:bg-red-800 transition-all">
+              <i class="pi pi-times-circle"></i>
+              <span>Cancel Order</span>
+            </button>
+
+            <button pButton
+              class="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-green-700 active:bg-green-800 transition-all">
+              <i class="pi pi-check-circle"></i>
+              <span>Received Order</span>
+            </button>
+
+            <button pButton
+              class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
+              <i class="pi pi-arrow-right"></i>
+              <span>Forward Order</span>
+            </button>
+          </div>
+
+      </div>
     </div>
-</div>
+  </div>
