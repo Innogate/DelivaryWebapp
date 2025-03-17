@@ -26,6 +26,8 @@ export class CityComponent {
   selectedValue: any;
   Form: FormGroup;
   isEditing: boolean = false;
+  stateId: any;
+  cityId: any;
 
 
   constructor(private service: StateService, private cityService: CityService, private stateService: StateService,
@@ -133,10 +135,11 @@ export class CityComponent {
     }
   }
 
-
   async viewCity(city: any) {
-   console.log(city);
     if (city) {
+      console.log(city, city.id);
+      this.cityId = city.id;
+      this.isEditing = true;
       this.showAddState = true;
       this.Form.patchValue({
         stateId: city.state_id,
@@ -146,9 +149,35 @@ export class CityComponent {
   }
 
 
+  updateCity() {
+    if (this.cityId && this.Form.valid) {
+      const payload: any = {
+        updates: {
+          "cities.name": this.Form.get('cityName')?.value,
+        },
+        conditions: {
+          "cities.id": this.cityId
+        }
+      };
+      firstValueFrom(
+        this.service.updateState(payload).pipe(
+          tap((res) => {
+            this.alertService.success(res.message);
+            // this.getAllCity(this.Form.get('stateId')?.value);
+            this.showAddState = false;
+            this.Form.reset();
+          })
+        )
+      ).catch((error) => console.error('Error updating state:', error));
+    }
+  }
+  
+
+
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
+    this.isEditing=false;
     this.Form.reset();
   }
 
