@@ -27,13 +27,6 @@
         </div>
       </div>
 
-      <!-- Show More / Less Button -->
-      <button (click)="booking.showMore = !booking.showMore"
-        class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
-        <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
-        {{ booking.showMore ? 'Show Less' : 'Show More' }}
-      </button>
-
       <!-- Additional Details -->
       <div *ngIf="booking.showMore" class="bg-gray-100 p-4 rounded-lg mt-3 border border-gray-300">
         <p class="text-gray-700 text-sm flex items-center mb-2">
@@ -93,5 +86,12 @@
           </div>
 
       </div>
+
+       <!-- Show More / Less Button -->
+       <button (click)="booking.showMore = !booking.showMore"
+       class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
+       <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
+       {{ booking.showMore ? 'Show Less' : 'Show More' }}
+     </button>
     </div>
   </div>
