@@ -33,7 +33,7 @@ export class UserComponent {
     this.addUserForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
-      address: ['', Validators.required],
+      // address: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['example@gmail.com', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -127,7 +127,7 @@ export class UserComponent {
       this.addUserForm.patchValue({
         first_name: data.first_name,
         last_name: data.last_name,
-        address: data.address,
+        // address: data.address,
         mobile: data.mobile,
         email: data.email,
         birth_date: new Date(data.birth_date),
@@ -146,7 +146,7 @@ export class UserComponent {
         updates: {
           "user_info.first_name": this.addUserForm.value.first_name,
           "user_info.last_name": this.addUserForm.value.last_name,
-          "user_info.address": this.addUserForm.value.address,
+          // "user_info.address": this.addUserForm.value.address,
           "users.mobile": this.addUserForm.value.mobile,
           "user_info.email": this.addUserForm.value.email,
           "user_info.birth_date": this.addUserForm.value.birth_date.toISOString(),
