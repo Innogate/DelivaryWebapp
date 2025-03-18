@@ -1,7 +1,26 @@
-<div class="flex flex-col bg-slate-100 p-4 min-h-screen relative scrollable-container">
+<div class="flex justify-center space-x-4 p-4">
+    <button (click)="setFilter('all')"
+        [ngClass]="filterType === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'"
+        class="px-4 py-2 rounded-lg">
+        All Users
+    </button>
+    <button (click)="setFilter('active')"
+        [ngClass]="filterType === 'active' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'"
+        class="px-4 py-2 rounded-lg">
+        Active Users
+    </button>
+    <button (click)="setFilter('inactive')"
+        [ngClass]="filterType === 'inactive' ? 'bg-red-500 text-white' : 'bg-gray-300 text-gray-700'"
+        class="px-4 py-2 rounded-lg">
+        Inactive Users
+    </button>
+</div>
+
+<div class="flex flex-col bg-slate-100 px-4 min-h-screen relative scrollable-container">
+
     <!-- State List -->
-    <div *ngIf="employeeList" class="flex flex-col bg-slate-100 py-2 min-h-screen">
-        <div *ngFor="let employee of employeeList"
+    <div *ngIf="filteredEmployees" class="flex flex-col bg-slate-100 py-2 min-h-screen">
+        <div *ngFor="let employee of filteredEmployees"
             class="bg-white p-4 mb-3 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
 
             <!-- User ID and Created Date -->
@@ -75,7 +94,7 @@
                         <i class="pi pi-key mr-2"></i> Grand
                     </button>
                     <button
-                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all">
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all" (click)="viewEmployee(employee)">
                         <i class="pi pi-pencil mr-2"></i> Update
                     </button>
                 </div>
@@ -183,11 +202,16 @@
                     (click)="toggleAddState()">
                     Cancel
                 </button>
-                <button
+                <button *ngIf="!isEditing"
                     class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
                     (click)="onSave()">
                     Save
                 </button>
+                <button *ngIf="isEditing"
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="onSave()">
+                update
+            </button>
             </div>
         </div>
     </form>

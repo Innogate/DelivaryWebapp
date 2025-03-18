@@ -20,4 +20,9 @@ export class UserService {
   deleteUser(userId: string): Observable<any> {
     return this.apiService.post('/master/users/delete', { user_id: userId });
   }
+
+
+  updateUser(payload: any): Observable<any> {
+    return this.apiService.post('/master/users/update',  payload);
+  }
 }

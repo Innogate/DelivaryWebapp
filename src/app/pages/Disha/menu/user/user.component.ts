@@ -27,6 +27,7 @@ export class UserComponent {
   selectedValue: any;
   passwordVisible = false;
   isEditing: boolean = false;
+  userId?: number;
 
   constructor(private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
     this.addUserForm = this.fb.group({
@@ -52,10 +53,10 @@ export class UserComponent {
   // gate all user
   async gateAllUser() {
     const payload = {
-      fields : ["users.*","user_info.*"],
-      max : 100,
-      current : 0,
-      relation : "users.id=user_info.id"
+      fields: ["users.*", "user_info.*"],
+      max: 100,
+      current: 0,
+      relation: "users.id=user_info.id"
     }
     await firstValueFrom(this.userService.getAllUsers(payload).pipe(
       tap(
@@ -96,7 +97,7 @@ export class UserComponent {
     }
   }
 
-
+  // Delete User
   async deleteUser(data: any) {
     if (data) {
       const confirmation = this.alertService.confirm("You want to delete this User ? ");
@@ -116,11 +117,13 @@ export class UserComponent {
       }
     }
   }
-
-  viewUser(data: any){
-    if(data){
+  // View User
+  viewUser(data: any) {
+    if (data) {
       this.showAddState = true;
       this.isEditing = true;
+      console.log(data);
+      this.userId = data.id;
       this.addUserForm.patchValue({
         first_name: data.first_name,
         last_name: data.last_name,
@@ -134,9 +137,42 @@ export class UserComponent {
     }
   }
 
-  updateUser() {
+  // update user
+  async updateUser() {
     console.log(this.addUserForm.value);
+    
+    if (this.addUserForm.valid) {
+      const payload = {
+        updates: {
+          "user_info.first_name": this.addUserForm.value.first_name,
+          "user_info.last_name": this.addUserForm.value.last_name,
+          "user_info.address": this.addUserForm.value.address,
+          "users.mobile": this.addUserForm.value.mobile,
+          "user_info.email": this.addUserForm.value.email,
+          "user_info.birth_date": this.addUserForm.value.birth_date.toISOString(),
+          "user_info.gender": this.addUserForm.value.gender,
+        },
+        conditions: {
+          "user_info.id": this.userId,
+          "users.id": this.userId
+        }
+      };
+  
+      this.userService.updateUser(payload).pipe(
+        tap((response) => {
+          this.alertService.success(response.message);
+          this.gateAllUser();
+          this.showAddState = false;
+          this.addUserForm.reset(); // Reset the form after successful update
+        })
+      ).subscribe({
+        error: (error) => {
+          this.alertService.error(error.error.message);
+        }
+      });
+    }
   }
+  
 
   onTouchStart(event: TouchEvent) {
     // Store the initial touch position

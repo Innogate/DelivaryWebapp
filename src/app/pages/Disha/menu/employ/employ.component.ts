@@ -12,6 +12,7 @@ import { firstValueFrom, tap } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
 import { BranchService } from '../../../../../services/branch.service';
+import { ThLargeIcon } from 'primeng/icons';
 
 @Component({
   selector: 'app-employ',
@@ -29,6 +30,8 @@ export class EmployComponent {
   userList?: any[];
   employeeName?: any[];
   branchList?: any[];
+  isEditing: boolean = false;
+  filterType: string = 'all'; // Default filter
 
   constructor(private EmployeeService: EmployeesService, private branchService: BranchService, private datePipe: DatePipe,
     private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
@@ -53,6 +56,7 @@ export class EmployComponent {
     if (this.showAddState == true) {
       this.gateAllUser();
       this.fetchBranches();
+      this.isEditing = false;
     }
   }
 
@@ -179,7 +183,22 @@ export class EmployComponent {
     }
   }
 
-
+  viewEmployee(employee: any) {
+    this.isEditing = true;
+    this.showAddState = true;
+    console.log(employee);
+    this.employeeForm.patchValue({
+      user_id: employee.user_id,
+      address: employee.address,
+      phone: employee.phone,
+      adhara_no: employee.aadhar_no,
+      gender: employee.gender,
+      joining_date: new Date(employee.joining_date),
+      birthDate: new Date(employee.birth_date),
+      branch_id: employee.branch_id,
+      type: employee.type
+    });
+  }
 
 
 
@@ -211,4 +230,16 @@ export class EmployComponent {
     { label: 'Female', value: 'F' }
   ];
   selectedValue: any;
+  get filteredEmployees() {
+    if (this.filterType === 'active') {
+      return this.employeeList?.filter(emp => emp.status);
+    } else if (this.filterType === 'inactive') {
+      return this.employeeList?.filter(emp => !emp.status);
+    }
+    return this.employeeList; // Show all
+  }
+
+  setFilter(type: string) {
+    this.filterType = type;
+  }
 }

@@ -108,7 +108,7 @@
  min-h-[60vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
         [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">   {{ isEditing ? 'Update User' : 'Add New User' }}</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">{{ isEditing ? 'Update User' : 'Add New User' }}</h2>
 
         <form class=" p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="addUserForm">
             <div class="flex flex-wrap gap-6">
@@ -226,10 +226,10 @@
                     Save
                 </button>
                 <button *ngIf="isEditing"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
-                (click)="updateUser()">
-                Update
-            </button>
+                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                    (click)="updateUser()">
+                    Update
+                </button>
             </div>
         </form>
     </div>
