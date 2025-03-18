@@ -47,6 +47,12 @@ export class MenuComponent {
       this.router.navigate(["/pages/company"]);
     } else if (card === "branch") {
       this.router.navigate(["/pages/branch"]);
+    } else if (card === "co-loader"){
+      this.router.navigate(["/pages/co-loader"]);
+    } else if (card === "manifest") {
+    this.router.navigate(["/pages/manifest"]);
+    } else if (card === "booking-slip") {
+      this.router.navigate(["/pages/booking-slip"]);
     }
   }
   

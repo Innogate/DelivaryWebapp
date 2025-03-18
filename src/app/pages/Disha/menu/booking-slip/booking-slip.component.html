@@ -1,0 +1,120 @@
+<div class="flex flex-col bg-slate-100 p-2 h-full w-full relative scrollable-container">
+    <!-- Brach List -->
+    <div *ngIf="tokenList.length" class="flex flex-col bg-slate-100 py-2 min-h-screen">
+        <div *ngFor="let tokenList of tokenList"
+            class="bg-white p-4 mb-3 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
+
+            <!-- Branch ID and Name -->
+            <div class="flex justify-between items-center mb-2">
+                <p class="text-gray-700 font-semibold text-lg flex items-center">
+                    <i class="pi pi-building text-blue-600 mr-2"></i>
+                    Branch Name: <span class="text-blue-600 font-bold ml-1">{{ tokenList.branch_name ?? "unknown"
+                        }}</span>
+                </p>
+                <p class="text-gray-700 font-medium flex items-center">
+                    <i class="pi pi-map text-green-600 mr-2"></i>
+                    City : {{ tokenList.branch_city ?? "unknown"}}
+                </p>
+            </div>
+
+            <!-- Address and Contact -->
+            <div class="text-gray-700 mb-2">
+                <p class="flex items-center justify-between">
+                  <span class="flex items-center">
+                    <i class="pi pi-file-check text-red-500 mr-2"></i>
+                    Slips : {{ tokenList.start_no }} -To- {{ tokenList.end_no }}
+                  </span>
+                </p>
+              
+                <p class="flex items-center justify-between">
+                  <span class="flex items-center">
+                    <i class="pi pi-file text-purple-500 mr-2"></i>
+                    Unused : {{ tokenList.unused }}
+                  </span>
+                  <i class="pi pi-trash text-white bg-red-500 p-3 rounded-full hover:bg-red-700 cursor-pointer" (click)="deleteToken(tokenList)"></i>
+                </p>
+              </div>
+              
+        </div>
+    </div>
+
+    <!-- Floating Action Button (FAB) -->
+    <button
+        class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
+        (click)="toggleAddState()">
+        <i class="pi pi-plus"></i>
+    </button>
+
+
+    <div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+    </div>
+
+    <!-- Bottom Sheet Modal -->
+
+    <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
+    min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
+        [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
+
+        <h2 class="text-2xl font-bold mb-2 text-gray-800">Add New Token</h2>
+
+        <form [formGroup]="BookingSlip" class="mb-6 p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl">
+            <div class="flex flex-col mt-4">
+                <div class="flex items-center">
+                    <label class="text-gray-700 font-medium">Branch</label>
+                    <span class="text-red-500 ml-1">*</span>
+                </div>
+                <p-dropdown formControlName="branch_id" class="w-full custom-dropdown" optionValue="id"
+                    [options]="branchList" optionLabel="name" placeholder="Select Branch" [showClear]="true">
+                </p-dropdown>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-2">
+                <div class="flex flex-col">
+                    <label class="font-medium flex items-center">
+                        <i class="text-red-600 mr-2"></i> Start <span class="text-red-500">*</span>
+                    </label>
+                    <input pInputText formControlName="start_no" type="text" class="p-inputtext p-component" />
+                    <!-- <small
+                        *ngIf="branchForm.controls['cgst'].hasError('required') && branchForm.controls['cgst'].touched"
+                        class="text-red-500">
+                        CGST is required.
+                    </small> -->
+                    <!-- <small *ngIf="branchForm.controls['cgst'].hasError('pattern') && branchForm.controls['cgst'].touched"
+                        class="text-red-500">
+                        Invalid format
+                    </small> -->
+                </div>
+                <div class="flex flex-col">
+                    <label class="font-medium flex items-center">
+                        <i class="text-yellow-600 mr-2"></i> End <span class="text-red-500">*</span>
+                    </label>
+                    <input pInputText formControlName="end_no" type="text" class="p-inputtext p-component" />
+                    <!-- <small
+                        *ngIf="branchForm.controls['sgst'].hasError('required') && branchForm.controls['sgst'].touched"
+                        class="text-red-500">
+                        SGST is required.
+                    </small> -->
+                    <!-- <small *ngIf="branchForm.controls['sgst'].hasError('pattern') && branchForm.controls['sgst'].touched"
+                        class="text-red-500">
+                        Invalid format
+                    </small> -->
+                </div>
+            </div>
+        </form>
+
+        <!-- Submit Button -->
+        <div class="flex items-center gap-4 mt-6">
+            <button
+                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                (click)="toggleAddState()">
+                Cancel
+            </button>
+            <button
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="onSave()">
+                Save
+            </button>
+        </div>
+    </div>
+
+</div>
