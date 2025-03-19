@@ -79,7 +79,7 @@ export class BookingComponent implements OnInit {
   async loadStates() {
     await firstValueFrom(this.stateService.getAllStates({
       fields : ["states.id","states.name"],
-      max : 12,
+      max : 50,
       current : 0,
       relation : null
     }).pipe(
@@ -97,7 +97,7 @@ export class BookingComponent implements OnInit {
     if ($event) {
       await firstValueFrom(this.cityService.getCitiesByStateId({
         "fields" : ["cities.id","cities.name"],
-        "max" : 12,
+        "max" : 100,
         "current" : 0,
         "relation" : null,
         "state_id": $event

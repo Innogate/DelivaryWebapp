@@ -54,13 +54,13 @@ export class BranchComponent {
       id: [],
       company_id: [this.company_id],
       name: ['', [Validators.required, Validators.minLength(3)]],
-      address: ['', [Validators.required, Validators.minLength(3)]],
+      address: ['', [Validators.minLength(3)]],
       alias_name: ['', [Validators.minLength(3)]],
       city_id: ['', [Validators.required, Validators.min(1)]],
       state_id: ['', [Validators.required, Validators.min(1)]],
-      pin_code: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+      pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
       contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      email: ['',],
+      email: ['', [Validators.email]],
       gst_no: ['',],
       cin_no: ['',],
       udyam_no: ['',],
@@ -209,7 +209,7 @@ export class BranchComponent {
           "branches.sgst": this.branchForm.value.sgst,
           "branches.igst": this.branchForm.value.igst,
           "branches.logo": this.branchForm.value.logo,
-          },
+        },
         "conditions": {
           "branches.id": this.branchForm.value.id,
         }
@@ -282,6 +282,7 @@ export class BranchComponent {
 
       } catch (error: any) {
         // Catch any errors and display a user-friendly message
+        console.log(error)
         const errorMessage = error.error.message || 'An error occurred while creating the branch.';
         this.alertService.error(errorMessage);
         console.error('Error adding branch:', error);

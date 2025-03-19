@@ -225,7 +225,7 @@ export class EmployComponent {
         }),
         catchError(error => {
           this.alertService.error(error?.error?.message);
-          return EMPTY; // Prevents breaking the observable chain
+          return EMPTY;
         })
       ))
     }
