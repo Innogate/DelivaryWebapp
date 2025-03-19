@@ -43,7 +43,7 @@ export class UserComponent {
       mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['example@gmail.com', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      birth_date: [null, Validators.required],
+      birth_date: [null],
       gender: [null, Validators.required]
     });
   }

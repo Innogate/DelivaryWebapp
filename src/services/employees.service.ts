@@ -34,7 +34,7 @@ export class EmployeesService {
   }
 
   updateEmployee(payload: any): Observable<any> {
-    return this.apiService.post('/master/employees/new', payload);
+    return this.apiService.post('/master/employees/update', payload);
   }
 
   deleteEmployee(employee_id: string): Observable<any> {
