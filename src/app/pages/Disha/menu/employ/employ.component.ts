@@ -8,7 +8,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { EmployeesService } from '../../../../../services/employees.service';
 import { AlertService } from '../../../../../services/alert.service';
-import { firstValueFrom, tap } from 'rxjs';
+import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
 import { BranchService } from '../../../../../services/branch.service';
@@ -44,7 +44,7 @@ export class EmployComponent {
       joining_date: [null],
       birthDate: [null, Validators.required],
       branch_id: [''],
-      type: [2]
+      type: ['2']
 
     });
   }
@@ -56,6 +56,7 @@ export class EmployComponent {
     if (this.showAddState == true) {
       this.gateAllUser();
       this.fetchBranches();
+      this.employeeForm.reset();
       this.isEditing = false;
     }
   }
@@ -73,6 +74,7 @@ export class EmployComponent {
       tap(
         (res) => {
           if (res.body) {
+            console.log(res.body);
             this.employeeList = res.body;
           }
         },
@@ -150,14 +152,19 @@ export class EmployComponent {
     console.log(formData); // Verify the formatted date
 
     if (this.employeeForm.valid) {
-      await firstValueFrom(this.EmployeeService.addNewEmployee(formData).pipe(
-        tap(response => {
-          this.alertService.success(response.message);
-          this.gateAllEmployee();
-          this.showAddState = false;
-          this.employeeForm.reset();
-        })
-      )
+      await firstValueFrom(
+        this.EmployeeService.addNewEmployee(formData).pipe(
+          tap(response => {
+            this.alertService.success(response.message);
+            this.gateAllEmployee();
+            this.showAddState = false;
+            this.employeeForm.reset();
+          }),
+          catchError(error => {
+            this.alertService.error(error?.error?.message || "Failed to add employee");
+            return EMPTY; // Prevents breaking the observable chain
+          })
+        )
       );
     }
   }

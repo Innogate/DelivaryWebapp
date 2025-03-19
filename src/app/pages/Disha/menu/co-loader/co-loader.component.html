@@ -97,14 +97,13 @@
             <!-- Branch Name -->
             <div class="flex flex-col mt-4 gap-2">
                 <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Branch Name</label>
+                    <label class="text-gray-700 font-medium">Co-loader Name</label>
                     <span class="text-red-500 ml-1">*</span>
                 </div>
-
                 <span
                     class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400">
                     <i class="pi pi-building text-blue-500 mr-2"></i>
-                    <input formControlName="name" type="text" pInputText placeholder="Enter branch name"
+                    <input formControlName="name" type="text" pInputText placeholder="Enter Co-loader name"
                         class="w-full bg-transparent focus:outline-none" />
                 </span>
             </div>
@@ -112,50 +111,20 @@
             <!-- Alias Name -->
             <div class="flex flex-col mt-4 gap-2">
                 <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Alias Name</label>
+                    <label class="text-gray-700 font-medium">Contact No</label>
                 </div>
                 <span
-                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-purple-400">
-                    <i class="pi pi-tag text-purple-500 mr-2"></i>
-                    <input formControlName="alias_name" type="text" pInputText placeholder="Alias name"
+                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
+                    <i class="pi pi-phone text-green-500 mr-2"></i>
+                    <input formControlName="contact_no" type="text" pInputText placeholder="Enter Contact No"
                         class="w-full bg-transparent focus:outline-none" />
                 </span>
             </div>
-
-
-            <!-- State Dropdown -->
-            <!-- City Dropdown -->
-            <!-- <div class="flex flex-col mt-4">
-                <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">City</label>
-                    <span class="text-red-500 ml-1">*</span>
-                </div>
-                <p-dropdown formControlName="city_id" class="w-full custom-dropdown" [options]="cities"
-                    optionLabel="name" optionValue="id" placeholder="Select City"
-                    (onChange)="onCityChange($event.value)" [showClear]="true"
-                    [emptyMessage]="'Cities not recoded for this state'">
-                </p-dropdown>
-            </div> -->
-
-            <!-- Company Dropdown -->
-            <!-- <div class="flex flex-col mt-4">
-               <div class="flex items-center">
-                   <label class="text-gray-700 font-medium">Company</label>
-                   <span class="text-red-500 ml-1">*</span>
-               </div>
-               <p-dropdown class="w-full custom-dropdown" [options]="companies"
-                   optionLabel="name" optionValue="id" placeholder="Select Company" [showClear]="true"
-                   [emptyMessage]="'Companies not found for this city'">
-               </p-dropdown>
-           </div> -->
-
-
 
             <!-- Address -->
             <div class="flex flex-col mt-4 gap-2">
                 <div class="flex items-center">
                     <label class="text-gray-700 font-medium">Address</label>
-                    <span class="text-red-500 ml-1">*</span>
                 </div>
                 <span
                     class="flex items-start border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-red-400">
@@ -169,7 +138,6 @@
             <div class="flex flex-col mt-4 gap-2">
                 <div class="flex items-center">
                     <label class="text-gray-700 font-medium">Postal Code</label>
-                    <span class="text-red-500 ml-1">*</span>
                 </div>
                 <span
                     class="flex items-start border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
@@ -180,19 +148,7 @@
             </div>
 
             <!-- Contact No -->
-            <div class="flex flex-col mt-4 gap-2">
-                <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Contact No</label>
-                    <span class="text-red-500 ml-1">*</span>
-                </div>
-                <span
-                    class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
-                    <i class="pi pi-phone text-green-500 mr-2"></i>
-                    <input formControlName="contact_no" type="text" pInputText placeholder="Enter Contact No"
-                        class="w-full bg-transparent focus:outline-none" />
-                </span>
-            </div>
-
+          
             <!-- Email -->
             <div class="flex flex-col mt-4 gap-2">
                 <label class="text-gray-700 font-medium">Email</label>
@@ -208,8 +164,9 @@
         <!-- Submit Button -->
 
         <div class="flex items-center gap-4 mt-6">
-            <button 
-                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700" (click)="toggleAddState()">
+            <button
+                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                (click)="toggleAddState()">
                 Cancel
             </button>
             <button *ngIf="!isEditing"

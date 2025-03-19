@@ -51,6 +51,7 @@ export class BranchComponent {
     private alertService: AlertService
   ) {
     this.branchForm = this.fb.group({
+      id: [],
       company_id: [this.company_id],
       name: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
@@ -168,6 +169,7 @@ export class BranchComponent {
     if (branch) {
       this.showAddState = true;
       this.branchForm.patchValue({
+        id: branch.id,
         company_id: branch.company_id,
         name: branch.name,
         address: branch.address,
@@ -187,8 +189,43 @@ export class BranchComponent {
     }
   }
 
-  updateBranch(){
+  async updateBranch() {
     console.log(this.branchForm.value);
+    if (this.branchForm.valid) {
+      const payload = {
+        updates: {
+          "branches.name": this.branchForm.value.name,
+          "branches.address": this.branchForm.value.address,
+          "branches.alias_name": this.branchForm.value.alias_name,
+          "branches.city_id": this.branchForm.value.city_id,
+          "branches.state_id": this.branchForm.value.state_id,
+          "branches.pin_code": this.branchForm.value.pin_code,
+          "branches.contact_no": this.branchForm.value.contact_no,
+          "branches.email": this.branchForm.value.email,
+          "branches.gst_no": this.branchForm.value.gst_no,
+          "branches.cin_no": this.branchForm.value.cin_no,
+          "branches.udyam_no": this.branchForm.value.udyam_no,
+          "branches.cgst": this.branchForm.value.cgst,
+          "branches.sgst": this.branchForm.value.sgst,
+          "branches.igst": this.branchForm.value.igst,
+          "branches.logo": this.branchForm.value.logo,
+          },
+        "conditions": {
+          "branches.id": this.branchForm.value.id,
+        }
+      }
+      await firstValueFrom(this.branchService.updateBranch(payload).pipe(
+        tap((response) => {
+          this.alertService.success(response.message);
+          this.fetchBranches();
+          this.toggleAddState();
+        },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        ))
+      )
+    }
   }
 
   toggleAddState() {
@@ -227,7 +264,7 @@ export class BranchComponent {
     if (this.branchForm.valid) {
       try {
         let data = this.branchForm.value;
-        data.company_id=1;
+        data.company_id = 1;
         const response = await firstValueFrom(
           this.branchService.addNewBranch(data).pipe(
             tap((res) => {
@@ -243,7 +280,7 @@ export class BranchComponent {
         // (Optional) log response for debugging
         console.log('Branch added:', response);
 
-      } catch (error:any) {
+      } catch (error: any) {
         // Catch any errors and display a user-friendly message
         const errorMessage = error.error.message || 'An error occurred while creating the branch.';
         this.alertService.error(errorMessage);

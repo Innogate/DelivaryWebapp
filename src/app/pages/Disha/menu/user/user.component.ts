@@ -6,7 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
-import { firstValueFrom, tap } from 'rxjs';
+import { firstValueFrom, switchMap, tap, throwError } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { UserService } from '../../../../../services/user.service';
 import { PasswordModule } from 'primeng/password'
@@ -39,7 +39,7 @@ export class UserComponent {
     this.addUserForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
-      // address: ['', Validators.required],
+      address: [null],
       mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['example@gmail.com', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -133,7 +133,6 @@ export class UserComponent {
       this.addUserForm.patchValue({
         first_name: data.first_name,
         last_name: data.last_name,
-        // address: data.address,
         mobile: data.mobile,
         email: data.email,
         birth_date: new Date(data.birth_date),
@@ -143,41 +142,55 @@ export class UserComponent {
     }
   }
 
-  // update user
   async updateUser() {
-    console.log(this.addUserForm.value);
-
     if (this.addUserForm.valid) {
       const payload = {
         updates: {
           "user_info.first_name": this.addUserForm.value.first_name,
           "user_info.last_name": this.addUserForm.value.last_name,
-          // "user_info.address": this.addUserForm.value.address,
-          "users.mobile": this.addUserForm.value.mobile,
           "user_info.email": this.addUserForm.value.email,
           "user_info.birth_date": this.addUserForm.value.birth_date.toISOString(),
           "user_info.gender": this.addUserForm.value.gender,
         },
         conditions: {
           "user_info.id": this.userId,
-          "users.id": this.userId
         }
       };
 
-      this.userService.updateUser(payload).pipe(
-        tap((response) => {
-          this.alertService.success(response.message);
-          this.gateAllUser();
-          this.showAddState = false;
-          this.addUserForm.reset(); // Reset the form after successful update
-        })
-      ).subscribe({
-        error: (error) => {
-          this.alertService.error(error.error.message);
+      const payload2 = {
+        updates: {
+          "users.password": this.addUserForm.value.password,
+          "users.mobile": this.addUserForm.value.mobile,
+        },
+        conditions: {
+          "users.id": this.userId
         }
-      });
+      }
+
+      await firstValueFrom(this.userService.updateUser(payload).pipe(
+        tap(async (response) => {
+          if (response.status == 200) {
+            await firstValueFrom(this.userService.updateUser(payload2).pipe(
+              tap((res) => {
+                if (res.status == 200) {
+                  this.alertService.success(res.message);
+                  this.gateAllUser();
+                  this.showAddState = false;
+                  this.addUserForm.reset();
+                }
+              },
+                (error) => {
+                  this.alertService.error(error.error.message);
+                })
+            ))
+          }
+        }, (error) => {
+          this.alertService.error(error.error.message);
+        })
+      ))
     }
   }
+
 
 
   onTouchStart(event: TouchEvent) {
