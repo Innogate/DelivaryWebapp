@@ -10,6 +10,7 @@ import { firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { UserService } from '../../../../../services/user.service';
 import { PasswordModule } from 'primeng/password'
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-user',
   imports: [DialogModule, ButtonModule, FormsModule, CommonModule, InputTextModule,
@@ -29,7 +30,12 @@ export class UserComponent {
   isEditing: boolean = false;
   userId?: number;
 
-  constructor(private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
+  constructor(
+    private alertService: AlertService,
+    private userService: UserService,
+    private fb: FormBuilder,
+    private router: Router
+) {
     this.addUserForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
@@ -140,7 +146,7 @@ export class UserComponent {
   // update user
   async updateUser() {
     console.log(this.addUserForm.value);
-    
+
     if (this.addUserForm.valid) {
       const payload = {
         updates: {
@@ -157,7 +163,7 @@ export class UserComponent {
           "users.id": this.userId
         }
       };
-  
+
       this.userService.updateUser(payload).pipe(
         tap((response) => {
           this.alertService.success(response.message);
@@ -172,7 +178,7 @@ export class UserComponent {
       });
     }
   }
-  
+
 
   onTouchStart(event: TouchEvent) {
     // Store the initial touch position
@@ -207,4 +213,7 @@ export class UserComponent {
     return this.dropdownOptions.find(option => option.value === value)?.label || 'Unknown';
   }
 
+  grandUser(user: any) {
+    this.router.navigate(["/pages/access/" + user.id]);
+  }
 }

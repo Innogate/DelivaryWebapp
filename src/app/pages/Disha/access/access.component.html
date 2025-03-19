@@ -1,0 +1,76 @@
+<div class="flex flex-col bg-gray-100 p-4 min-h-screen relative scrollable-container">
+    <!-- Access List -->
+    <div *ngIf="accessList.length" class="flex flex-col py-4 min-h-screen">
+        <div *ngFor="let access of accessList"
+            class="bg-white p-6 mb-4 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
+
+            <!-- Page Name and Permission Status -->
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-gray-700 font-semibold text-lg flex items-center">
+                    <i class="pi pi-file mr-2 text-blue-500"></i>
+                    Page Name: <span class="text-blue-600 font-bold">{{ access.name }}</span>
+                </p>
+            </div>
+
+            <!-- Permission Status Badge -->
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-gray-700 font-medium flex items-center">
+                    <i class="pi pi-check-circle mr-2 text-green-500"></i>
+                    Permission Status:
+                </p>
+                <div [ngClass]="{
+                    'bg-green-200 text-green-700': access.permission_status === true,
+                    'bg-red-200 text-red-700': access.permission_status !== true
+                }" class="px-4 py-2 rounded-full font-medium text-sm flex items-center">
+                    <i class="pi"
+                        [ngClass]="access.permission_status === 'true' ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                    <span class="ml-2">{{ access.permission_status ? 'Active' : 'Not Assigned' }}</span>
+                </div>
+            </div>
+
+            <!-- Permission Toggles -->
+            <div class="mb-6">
+                <p class="text-gray-700 font-medium">Permissions:</p>
+                <div class="grid grid-cols-2 gap-4 mt-3">
+                    <div class="flex items-center space-x-2">
+                        <label for="read" class="text-gray-600">Read</label>
+                        <p-toggleButton id="read" [(ngModel)]="access.permission_code[0]"
+                            (onChange)="togglePermission(0, access)"
+                            onLabel="Allow" offLabel="Deny" onIcon="pi pi-check" offIcon="pi pi-times" class="toggle-btn"></p-toggleButton>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="write" class="text-gray-600">Write</label>
+                        <p-toggleButton id="write" [(ngModel)]="access.permission_code[1]"
+                            (onChange)="togglePermission(1, access)"
+                            onLabel="Allow" offLabel="Deny" onIcon="pi pi-check" offIcon="pi pi-times" class="toggle-btn"></p-toggleButton>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="update" class="text-gray-600">Update</label>
+                        <p-toggleButton id="update" [(ngModel)]="access.permission_code[2]"
+                            (onChange)="togglePermission(2, access)"
+                            onLabel="Allow" offLabel="Deny" onIcon="pi pi-check" offIcon="pi pi-times" class="toggle-btn"></p-toggleButton>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="delete" class="text-gray-600">Delete</label>
+                        <p-toggleButton id="delete" [(ngModel)]="access.permission_code[3]"
+                            (onChange)="togglePermission(3, access)"
+                            onLabel="Allow" offLabel="Deny" onIcon="pi pi-check" offIcon="pi pi-times" class="toggle-btn"></p-toggleButton>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="admin" class="text-gray-600">Admin</label>
+                        <p-toggleButton id="admin" [(ngModel)]="access.permission_code[4]"
+                            (onChange)="togglePermission(4, access)"
+                            onLabel="Allow" offLabel="Deny" onIcon="pi pi-check" offIcon="pi pi-times" class="toggle-btn"></p-toggleButton>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <button (click)="updatePermissionCode(access)"
+                class="mt-4 w-full text-white bg-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all flex items-center justify-center">
+                <i class="pi pi-save mr-2"></i>
+                Save
+            </button>
+        </div>
+    </div>
+</div>

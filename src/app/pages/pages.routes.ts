@@ -15,6 +15,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { CoLoaderComponent } from './Disha/menu/co-loader/co-loader.component';
 import { ManifestComponent } from './Disha/menu/manifest/manifest.component';
 import { BookingSlipComponent } from './Disha/menu/booking-slip/booking-slip.component';
+import { Access } from './auth/access';
+import { AccessComponent } from './Disha/access/access.component';
 export default [
     {path: 'documentation', component: Documentation },
     {path: 'scan', component: MenuComponent },
@@ -31,5 +33,6 @@ export default [
     {path: 'manifest', component: ManifestComponent, canActivate: [AuthGuard]},
     {path: 'booking-slip', component: BookingSlipComponent, canActivate: [AuthGuard]},
     {path: 'branch', component: BranchComponent},
+    {path: 'access/:userId', component: AccessComponent},
     {path: '**', redirectTo: '/notfound' }
 ] as Routes;
