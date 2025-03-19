@@ -29,6 +29,7 @@ export class AccessComponent implements OnInit {
     accessList: any[] = [];
     showAddState: boolean = false;
     isEditing: boolean = false;
+    userId: any;
     accessForm: any = {
         name: '',
         permission_code: ['0', '0', '0', '0', '0'],  // Default permission codes (Read, Write, Update, Delete, Admin)
@@ -41,9 +42,9 @@ export class AccessComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        const userId = this.route.snapshot.paramMap.get('userId');
+        this.userId = this.route.snapshot.paramMap.get('userId');
         this.getAllPageList();
-        this.getUserAccess(userId);
+        this.getUserAccess(this.userId);
     }
 
     async getAllPageList() {
@@ -81,7 +82,7 @@ export class AccessComponent implements OnInit {
             return {
                 ...page, // Spread the page data
                 page_id: page.id, // Explicitly add page_id
-                user_id: permission ? permission.user_id : null, // Add user_id from permission if available
+                user_id: permission ? permission.user_id : this.userId, // Add user_id from permission if available
                 permission_code: permissionCodeArray, // Converted permission codes (boolean)
                 permission_status: permission ? permission.status : null, // Status from permission
                 created_at: permission ? permission.created_at : null, // Created at date
