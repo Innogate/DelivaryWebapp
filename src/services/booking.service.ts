@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class BookingService {
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   addNewBooking(payload: any): Observable<any> {
     return this.apiService.post('/booking/new', payload);
@@ -20,4 +20,23 @@ export class BookingService {
   getBookingById(bookingId: number): Observable<any> {
     return this.apiService.post('/booking/details', { booking_id: bookingId });
   }
+
+  GetConsigneebyMobileNumber(payload: any): Observable<any> {
+    return this.apiService.post('/consignee/byMobile', payload);
+  }
+
+  CreateConsignee(payload: any): Observable<any> {
+    return this.apiService.post('/consignee/new', payload);
+  }
+
+
+  CreateConsignor(payload: any): Observable<any> {
+    return this.apiService.post('/consignor/new', payload);
+  }
+
+  GetConsignorbyMobileNumber(payload: any): Observable<any> {
+    return this.apiService.post('/consignor/byMobile', payload);
+  }
+
+
 }
