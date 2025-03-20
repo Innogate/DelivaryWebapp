@@ -1,4 +1,4 @@
-<div class="p-4 bg-white rounded-lg shadow-md space-y-4 m-0 scrollable-container">
+<div class="p-4 bg-white rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full">
     <!-- Slip and Consignor Details -->
     <form [formGroup]="bookingForm">
         <div class="grid grid-cols-2 gap-4 mb-2">
@@ -19,6 +19,25 @@
                 </small>
 
             </div> -->
+            <div class="flex flex-col">
+                <label for="consignorMobile" class="font-medium flex items-center">
+                    <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile <span
+                        class="text-red-500">*</span>
+                </label>
+                <input pInputText id="consignorMobile" type="text" formControlName="consignor_mobile"
+                    class="p-inputtext p-component" (blur)="gateConsignor()" />
+                <small
+                    *ngIf="bookingForm.controls['consignor_mobile'].hasError('required') && bookingForm.controls['consignor_mobile'].touched"
+                    class="text-red-500">
+                    Consignor Mobile is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['consignor_mobile'].hasError('pattern') && bookingForm.controls['consignor_mobile'].touched"
+                    class="text-red-500">
+                    Invalid Mobile Number
+                </small>
+            </div>
+
             <div class="flex flex-col">
                 <label for="consignor" class="font-medium flex items-center">
                     <i class="pi pi-user text-green-600 mr-2"></i> Consignor <span class="text-red-500">*</span>
@@ -41,41 +60,7 @@
 
         <!-- Contact Details -->
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-2">
-            <div class="flex flex-col">
-                <label for="consignorMobile" class="font-medium flex items-center">
-                    <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile <span
-                        class="text-red-500">*</span>
-                </label>
-                <input pInputText id="consignorMobile" type="text" formControlName="consignor_mobile"
-                    class="p-inputtext p-component" (blur)="gateConsignor()"/>
-                <small
-                    *ngIf="bookingForm.controls['consignor_mobile'].hasError('required') && bookingForm.controls['consignor_mobile'].touched"
-                    class="text-red-500">
-                    Consignor Mobile is required.
-                </small>
-                <small
-                    *ngIf="bookingForm.controls['consignor_mobile'].hasError('pattern') && bookingForm.controls['consignor_mobile'].touched"
-                    class="text-red-500">
-                    Invalid Mobile Number
-                </small>
-            </div>
-            <div class="flex flex-col">
-                <label for="consignee" class="font-medium flex items-center">
-                    <i class="pi pi-user text-red-600 mr-2"></i> Consignee <span class="text-red-500">*</span>
-                </label>
-                <input pInputText id="consignee" type="text" formControlName="consignee_name"
-                    class="p-inputtext p-component" />
-                <small
-                    *ngIf="bookingForm.controls['consignee_name'].hasError('required') && bookingForm.controls['consignee_name'].touched"
-                    class="text-red-500">
-                    Consignee is required.
-                </small>
-                <small
-                    *ngIf="bookingForm.controls['consignee_name'].hasError('pattern') && bookingForm.controls['consignee_name'].touched"
-                    class="text-red-500">
-                    Invalid Consignee name
-                </small>
-            </div>
+
             <div class="flex flex-col">
                 <label for="consigneeMobile" class="font-medium flex items-center">
                     <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile <span
@@ -94,13 +79,32 @@
                     Invalid Mobile Number
                 </small>
             </div>
+
             <div class="flex flex-col">
+                <label for="consignee" class="font-medium flex items-center">
+                    <i class="pi pi-user text-red-600 mr-2"></i> Consignee <span class="text-red-500">*</span>
+                </label>
+                <input pInputText id="consignee" type="text" formControlName="consignee_name"
+                    class="p-inputtext p-component" />
+                <small
+                    *ngIf="bookingForm.controls['consignee_name'].hasError('required') && bookingForm.controls['consignee_name'].touched"
+                    class="text-red-500">
+                    Consignee is required.
+                </small>
+                <small
+                    *ngIf="bookingForm.controls['consignee_name'].hasError('pattern') && bookingForm.controls['consignee_name'].touched"
+                    class="text-red-500">
+                    Invalid Consignee name
+                </small>
+            </div>
+
+            <!-- <div class="flex flex-col">
                 <label for="contents" class="font-medium flex items-center">
                     <i class="pi pi-file text-gray-600 mr-2"></i> Contents  <span class="text-red-500">*</span>
                 </label>
                 <input pInputText id="contents" formControlName="contents" type="text"
                     class="p-inputtext p-component" />
-            </div>
+            </div> -->
         </div>
 
         <!-- Location Details -->
@@ -109,18 +113,17 @@
                 <label for="states" class="font-medium flex items-center">
                     <i class="pi pi-globe text-blue-500 mr-2"></i> States <span class="text-red-500">*</span>
                 </label>
-                <p-select [options]="states" optionLabel="name" optionValue="id"
-                    placeholder="Select State" (onChange)="onStateChange($event.value)" class="w-full">
+                <p-select [options]="states" optionLabel="name" optionValue="id" placeholder="Select State"
+                    (onChange)="onStateChange($event.value)" class="w-full">
                 </p-select>
             </div>
 
             <div class="flex flex-col">
                 <label for="cities" class="font-medium flex items-center">
                     <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
-                </label> 
+                </label>
                 <p-select [options]="cities" formControlName="destination_city_id" optionLabel="name" optionValue="id"
-                    placeholder="Select City"
-                    class="w-full">
+                    placeholder="Select City" class="w-full">
                 </p-select>
                 <small
                     *ngIf="bookingForm.controls['destination_city_id'].hasError('required') && bookingForm.controls['destination_city_id'].touched"
@@ -133,8 +136,8 @@
                 <label for="branches" class="font-medium flex items-center">
                     <i class="pi pi-building text-gray-500 mr-2"></i> Branch <span class="text-red-500">*</span>
                 </label>
-                <p-dropdown [options]="branches" formControlName="destination_branch_id"
-                 placeholder="Select Branch" class="w-full">
+                <p-dropdown [options]="branches" formControlName="destination_branch_id" placeholder="Select Branch"
+                    class="w-full">
                 </p-dropdown>
                 <small
                     *ngIf="bookingForm.controls['destination_branch_id'].hasError('required') && bookingForm.controls['destination_branch_id'].touched"
@@ -159,7 +162,7 @@
         <div class="grid grid-cols-3 gap-4" style="margin-top: 10px;">
             <div class="flex flex-col">
                 <label for="packages" class="font-medium flex items-center">
-                    <i class="pi pi-box text-blue-600 mr-2"></i> No of Packages  <span class="text-red-500">*</span>
+                    <i class="pi pi-box text-blue-600 mr-2"></i> No of Packages <span class="text-red-500">*</span>
                 </label>
                 <input pInputText id="packages" formControlName="count" type="text" class="p-inputtext p-component" />
                 <small
@@ -175,9 +178,10 @@
             </div>
             <div class="flex flex-col">
                 <label for="weight" class="font-medium flex items-center">
-                    <i class="pi pi-weight text-gray-600 mr-2"></i> Weight  <span class="text-red-500">*</span>
+                    <i class="pi pi-weight text-gray-600 mr-2"></i> Weight <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="weight" formControlName="weight" placeholder="KG" type="text" class="p-inputtext p-component" />
+                <input pInputText id="weight" formControlName="weight" placeholder="KG" type="text"
+                    class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['weight'].hasError('required') && bookingForm.controls['weight'].touched"
                     class="text-red-500">
@@ -191,7 +195,7 @@
             </div>
             <div class="flex flex-col">
                 <label for="declaredValue" class="font-medium flex items-center">
-                    <i class="pi pi-dollar text-green-500 mr-2"></i> Declared Value  <span class="text-red-500">*</span>
+                    <i class="pi pi-dollar text-green-500 mr-2"></i> Declared Value <span class="text-red-500">*</span>
                 </label>
                 <input pInputText id="declaredValue" formControlName="value" type="text"
                     class="p-inputtext p-component" />
@@ -207,7 +211,7 @@
         <div class="grid grid-cols-3 gap-4 mb-5 mt-5">
             <div class="flex flex-col">
                 <label for="other" class="font-medium flex items-center">
-                    <i class="pi pi-file text-gray-600 mr-2"></i> Other   <span class="text-red-500">*</span>
+                    <i class="pi pi-file text-gray-600 mr-2"></i> Other <span class="text-red-500">*</span>
                 </label>
                 <input pInputText formControlName="other" type="text" class="p-inputtext p-component" />
                 <small
@@ -234,7 +238,7 @@
             </div>
             <div class="flex flex-col">
                 <label for="shipper" class="font-medium flex items-center">
-                    <i class="pi pi-send text-blue-500 mr-2"></i> Shipper  <span class="text-red-500">*</span>
+                    <i class="pi pi-send text-blue-500 mr-2"></i> Shipper <span class="text-red-500">*</span>
                 </label>
                 <input pInputText id="shipper" formControlName="shipper" type="text" class="p-inputtext p-component" />
                 <small
@@ -309,8 +313,14 @@
 
         <!-- Submit Button -->
         <div class="w-full flex justify-center mt-6">
-            <p-button label="Save" icon="pi pi-check" class="p-button-success" raised
-                (click)="saveBooking()"></p-button>
+            <!-- <p-button label="Save" icon="pi pi-check" class="p-button-success" raised
+                (click)="saveBooking()"></p-button> -->
+
+            <button
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="saveBooking()">
+                Save
+            </button>
         </div>
     </form>
 </div>

@@ -57,6 +57,10 @@
                         class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-all flex items-center">
                         <i class="pi pi-trash mr-2"></i> Delete
                     </button>
+                    <button (click)="grandUser(branch)"
+                    class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all">
+                    <i class="pi pi-key mr-2"></i> Grand
+                </button>
                     <button (click)="viewBranch(branch)"
                         class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-all flex items-center">
                         <i class="pi pi-pencil mr-2"></i> Update
@@ -335,9 +339,9 @@
                 (click)="addNewBranch()">
                 Save
             </button>
-
             <button *ngIf="isEditing"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700" (click)="updateBranch()">
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="updateBranch()">
                 Update
             </button>
         </div>

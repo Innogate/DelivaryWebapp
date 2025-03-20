@@ -16,6 +16,7 @@ import { catchError, firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
 import { Password } from 'primeng/password';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -49,7 +50,8 @@ export class BranchComponent {
     private companyService: CompanyService,
     private stateService: StateService,
     private cityService: CityService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private router: Router
   ) {
     this.branchForm = this.fb.group({
       id: [],
@@ -302,6 +304,12 @@ export class BranchComponent {
       console.log('Invalid Form Data:');
       this.alertService.error('Please fill in all the required fields correctly.');
     }
+  }
+
+
+
+  grandUser(branch: any) {
+    this.router.navigate(["/pages/access/" + branch.user_id]);
   }
 
 

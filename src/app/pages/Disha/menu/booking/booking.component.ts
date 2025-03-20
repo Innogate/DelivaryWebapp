@@ -12,6 +12,7 @@ import { debounceTime, firstValueFrom, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../../../../services/alert.service';
 import { SelectModule } from 'primeng/select';
+import { EmployeesService } from '../../../../../services/employees.service';
 
 @Component({
   selector: 'app-booking',
@@ -39,7 +40,8 @@ export class BookingComponent implements OnInit {
     private bookingService: BookingService,
     private messageService: MessageService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private employeeService: EmployeesService
   ) {
     this.bookingForm = this.fb.group({
 
@@ -56,7 +58,7 @@ export class BookingComponent implements OnInit {
       weight: ['', [Validators.required,]],
       value: ['',],
       paid_type: "Prepaid",
-      contents: [''],
+      contents: ['0'],
       address: ['0'],
       charges: ['', [Validators.required,]],
       shipper: ['',],
@@ -73,10 +75,11 @@ export class BookingComponent implements OnInit {
   ngOnInit(): void {
     this.loadStates();
     this.loadTransportModes();
-    this.loadBookings();
+    // this.loadBookings();
     this.gateAllBranch();
+    this.gateEmployeeInfo();
     this.bookingForm.valueChanges
-      .pipe(debounceTime(300)) // ✅ Prevents too frequent calls
+      .pipe(debounceTime(300))
       .subscribe(() => this.calculateTotal());
   }
 
@@ -112,9 +115,9 @@ export class BookingComponent implements OnInit {
             });
           }
         },
-        error => {
-          this.alertService.error(error.error.message);
-        }
+        // error => {
+        //   this.alertService.error(error.error.message);
+        // }
       )
     ))
   }
@@ -134,9 +137,9 @@ export class BookingComponent implements OnInit {
             });
           }
         },
-        error => {
-          this.alertService.error(error.error.message);
-        }
+        // error => {
+        //   this.alertService.error(error.error.message);
+        // }
       )
     ))
   }
@@ -177,7 +180,7 @@ export class BookingComponent implements OnInit {
         (res) => {
           if (res.body) {
             this.bookingForm.patchValue({
-              consignor_id: res.body.id,
+              consignor_id: res.body.consignor_id,
             });
           }
         },
@@ -254,14 +257,54 @@ export class BookingComponent implements OnInit {
         (res) => {
           if (res.body) {
             this.branches = res.body.map((branch: any) => ({
-              label: branch.name,   // Adjust according to actual API response field
-              value: branch.id      // Adjust according to actual API response field
+              label: branch.name,  
+              value: branch.id      
             }));
           }
         }
       )
     ))
   }
+
+
+  async gateEmployeeInfo(){
+   
+    await firstValueFrom(this.employeeService.employeeInfo().pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.getBranchInfo(res.body.branch_id);
+          }
+        }
+      )
+    ))
+  }
+
+
+  async getBranchInfo(branchId: any){
+    const payload = 
+    {
+        fields: ["branches.*"],
+        relation: null,
+        branch_id:branchId
+    }
+    await firstValueFrom(this.branchService.getBranchById(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            console.log(res.body);
+            this.bookingForm.patchValue({
+              cgst: res.body.cgst,
+              sgst: res.body.sgst,
+              igst: res.body.igst,
+            })
+          }
+        }
+      )
+    ))
+  }
+
+
 
   loadTransportModes(): void {
     this.transportModes = [

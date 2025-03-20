@@ -44,6 +44,11 @@ export class MenuComponent {
   }
 
 
+  hasPageAccess(pageId: number): boolean {
+    return this.allowedPageIds.includes(pageId);
+  }
+
+
 
   selectCard(card: string) {
     this.selectedCard = card;
