@@ -2,6 +2,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { PagesService } from '../../../../services/pages.service';
+import { AlertService } from '../../../../services/alert.service';
 
 @Component({
   selector: 'app-menu',
@@ -13,11 +16,13 @@ export class MenuComponent {
 
   constructor(
     private router: Router,
+    private pageService: PagesService,
+    private alertService: AlertService
   ) { }
   selectedCard: string = ''; // Initially, no card is selected
-
+  allowedPageIds: number[] = [];
   ngOnInit(): void {
-
+  this.getAccess();
   }
   gotoBooking(Data: any) {
     if (Data === "booking") {
@@ -25,6 +30,22 @@ export class MenuComponent {
     } else if (Data === "booking-status") {
       this.router.navigate(["/Dashboard/booking-status"]);
     }
+  }
+
+
+  async getAccess() {
+    try {
+      const res:any = await firstValueFrom(this.pageService.getMyAccess());
+      this.allowedPageIds = res.body;
+      console.log(this.allowedPageIds);
+    } catch (error: any) {
+      this.alertService.error(error.error.message);
+    }
+  }
+
+
+  hasPageAccess(pageId: number): boolean {
+    return this.allowedPageIds.includes(pageId);
   }
 
 

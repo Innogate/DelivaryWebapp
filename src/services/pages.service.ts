@@ -15,7 +15,6 @@ export class PagesService {
   getMypages(from: number = 0): Observable<any> {
     return this.apiService.post('/master/companies', { from });
   }
-
   getUserAccess(user_id:any):Observable<any>{
     return this.apiService.post('/master/access/userId', { user_id });
   }
@@ -23,4 +22,9 @@ export class PagesService {
   updateAccess(user_id:any, permission_code:any, page_id:any): Observable<any> {
     return this.apiService.post('/master/access/update', { user_id, permission_code, page_id });
   }
+
+  getMyAccess(){
+    return this.apiService.post('/master/access', {  });
+  }
+
 }

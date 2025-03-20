@@ -62,7 +62,7 @@ export class BookingSlipComponent {
   async gateAllToken() {
     const payload = {
       current: 0,
-      max: 10
+      max: 100
     };
     await firstValueFrom(
       this.tokenService.getAllToken(payload).pipe(
@@ -71,6 +71,9 @@ export class BookingSlipComponent {
             if (res.body) {
               this.tokenList = res.body;
             }
+          },
+          (error) => {
+            this.alertService.error(error.error.message);
           }
         )
       )

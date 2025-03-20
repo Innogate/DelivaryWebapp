@@ -15,6 +15,8 @@ import { CardModule } from 'primeng/card';
 import { catchError, firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
+import { Password } from 'primeng/password';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -48,10 +50,12 @@ export class BranchComponent {
     private companyService: CompanyService,
     private stateService: StateService,
     private cityService: CityService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private router: Router
   ) {
     this.branchForm = this.fb.group({
       id: [],
+      user_id: [],
       company_id: [this.company_id],
       name: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.minLength(3)]],
@@ -68,6 +72,7 @@ export class BranchComponent {
       cgst: ['', [Validators.required,]],
       sgst: ['', [Validators.required]],
       igst: ['', [Validators.required]],
+      password: ['', [Validators.required]],
     });
     this.fetchBranches();
     this.loadStates();
@@ -79,7 +84,7 @@ export class BranchComponent {
         fields: ["branches.*"],
         max: 100,
         current: 0,
-        relation: null
+        relation: "branches.user_id"
       };
       const res = await firstValueFrom(this.branchService.getAllBranches(payload));
       if (res.body) {
@@ -170,6 +175,7 @@ export class BranchComponent {
       this.showAddState = true;
       this.branchForm.patchValue({
         id: branch.id,
+        user_id: branch.user_id,
         company_id: branch.company_id,
         name: branch.name,
         address: branch.address,
@@ -214,6 +220,16 @@ export class BranchComponent {
           "branches.id": this.branchForm.value.id,
         }
       }
+
+      const payload2 = {
+        "updates": {
+          "users.mobile": this.branchForm.value.contact_no,
+        },
+        "conditions": {
+          "users.id": this.branchForm.value.user_id,
+        }
+      }
+
       await firstValueFrom(this.branchService.updateBranch(payload).pipe(
         tap((response) => {
           this.alertService.success(response.message);
@@ -276,10 +292,6 @@ export class BranchComponent {
             })
           )
         );
-
-        // (Optional) log response for debugging
-        console.log('Branch added:', response);
-
       } catch (error: any) {
         // Catch any errors and display a user-friendly message
         console.log(error)
@@ -292,6 +304,12 @@ export class BranchComponent {
       console.log('Invalid Form Data:');
       this.alertService.error('Please fill in all the required fields correctly.');
     }
+  }
+
+
+
+  grandUser(branch: any) {
+    this.router.navigate(["/pages/access/" + branch.user_id]);
   }
 
 

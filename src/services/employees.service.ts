@@ -40,4 +40,8 @@ export class EmployeesService {
   deleteEmployee(employee_id: string): Observable<any> {
     return this.apiService.post('/master/employees/delete', { employee_id: employee_id });
   }
+
+  employeeInfo(): Observable<any> {
+  return this.apiService.post('/master/employees/myInfo', {});
+  }
 }
