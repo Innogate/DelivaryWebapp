@@ -8,7 +8,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { EmployeesService } from '../../../../../services/employees.service';
 import { AlertService } from '../../../../../services/alert.service';
-import { firstValueFrom, tap } from 'rxjs';
+import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
 import { UserService } from '../../../../../services/user.service';
 import { payload } from '../../../../../../interfaces/payload.interface';
 import { BranchService } from '../../../../../services/branch.service';
@@ -39,23 +39,22 @@ export class EmployComponent {
       user_id: ['', Validators.required],
       address: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      adhara_no: ['', [Validators.pattern('^[0-9]{12}$')]],
-      gender: ['', Validators.required],
+      aadhar_no: ['', [Validators.pattern('^[0-9]{12}$')]],
       joining_date: [null],
-      birthDate: [null, Validators.required],
       branch_id: [''],
-      type: [2]
+      type: ['2']
 
     });
   }
   ngOnInit() {
     this.gateAllEmployee();
+    this.gateAllUser();
+    this.fetchBranches();
   }
   toggleAddState() {
     this.showAddState = !this.showAddState;
     if (this.showAddState == true) {
-      this.gateAllUser();
-      this.fetchBranches();
+      this.employeeForm.reset();
       this.isEditing = false;
     }
   }
@@ -64,15 +63,16 @@ export class EmployComponent {
   // Get all employ
   async gateAllEmployee() {
     const payload: payload = {
-      fields: ["employees.*", "user_info.*"],
+      fields: ["users.*", "employees.*"],
       max: 100,
       current: 0,
-      relation: "employees.user_id=user_info.id"
+      relation: "users.id=employees.user_id"
     }
     await firstValueFrom(this.EmployeeService.getAllEmployees(payload).pipe(
       tap(
         (res) => {
           if (res.body) {
+            console.log(res.body);
             this.employeeList = res.body;
           }
         },
@@ -109,7 +109,6 @@ export class EmployComponent {
     if (selectedUser) {
       this.employeeForm.patchValue({
         phone: selectedUser.mobile,
-        address: selectedUser.address,
         birthDate: new Date(selectedUser.birth_date),
         gender: selectedUser.gender
       });
@@ -150,17 +149,24 @@ export class EmployComponent {
     console.log(formData); // Verify the formatted date
 
     if (this.employeeForm.valid) {
-      await firstValueFrom(this.EmployeeService.addNewEmployee(formData).pipe(
-        tap(response => {
-          this.alertService.success(response.message);
-          this.gateAllEmployee();
-          this.showAddState = false;
-          this.employeeForm.reset();
-        })
-      )
+      await firstValueFrom(
+        this.EmployeeService.addNewEmployee(formData).pipe(
+          tap(response => {
+            this.alertService.success(response.message);
+            this.gateAllEmployee();
+            this.showAddState = false;
+            this.employeeForm.reset();
+          }),
+          catchError(error => {
+            this.alertService.error(error?.error?.message || "Failed to add employee");
+            return EMPTY; // Prevents breaking the observable chain
+          })
+        )
       );
     }
   }
+
+
 
 
   async deleteEmployee(employee: any) {
@@ -190,17 +196,41 @@ export class EmployComponent {
     this.employeeForm.patchValue({
       user_id: employee.user_id,
       address: employee.address,
-      phone: employee.phone,
-      adhara_no: employee.aadhar_no,
-      gender: employee.gender,
+      phone: employee.mobile,
+      aadhar_no: employee.aadhar_no,
       joining_date: new Date(employee.joining_date),
-      birthDate: new Date(employee.birth_date),
       branch_id: employee.branch_id,
       type: employee.type
     });
   }
 
 
+  async updateEmployee() {
+    const payload = {
+      updates: {
+        "employees.address": this.employeeForm.controls['address'].value,
+        "employees.aadhar_no": this.employeeForm.controls['aadhar_no'].value,
+        "employees.joining_date": this.datePipe.transform(this.employeeForm.controls['joining_date'].value, 'dd-MM-yyyy'),
+        "employees.branch_id": this.employeeForm.controls['branch_id'].value,
+      },
+      conditions: {
+        "employees.user_id": this.employeeForm.controls['user_id'].value
+      }
+    }
+    if (this.employeeForm.valid) {
+      await firstValueFrom(this.EmployeeService.updateEmployee(payload).pipe(
+        tap(response => {
+          this.alertService.success(response.message);
+          this.gateAllEmployee();
+        }),
+        catchError(error => {
+          this.alertService.error(error?.error?.message);
+          return EMPTY;
+        })
+      ))
+    }
+
+  }
 
 
 

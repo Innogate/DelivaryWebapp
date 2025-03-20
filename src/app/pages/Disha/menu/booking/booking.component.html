@@ -2,7 +2,7 @@
     <!-- Slip and Consignor Details -->
     <form [formGroup]="bookingForm">
         <div class="grid grid-cols-2 gap-4 mb-2">
-            <div class="flex flex-col">
+            <!-- <div class="flex flex-col">
                 <label for="slipNo" class="font-medium flex items-center">
                     <i class="pi pi-file text-blue-600 mr-2"></i> Slip No <span class="text-red-500">*</span>
                 </label>
@@ -18,7 +18,7 @@
                     Slip No must be a number.
                 </small>
 
-            </div>
+            </div> -->
             <div class="flex flex-col">
                 <label for="consignor" class="font-medium flex items-center">
                     <i class="pi pi-user text-green-600 mr-2"></i> Consignor <span class="text-red-500">*</span>
@@ -47,7 +47,7 @@
                         class="text-red-500">*</span>
                 </label>
                 <input pInputText id="consignorMobile" type="text" formControlName="consignor_mobile"
-                    class="p-inputtext p-component" />
+                    class="p-inputtext p-component" (blur)="gateConsignor()"/>
                 <small
                     *ngIf="bookingForm.controls['consignor_mobile'].hasError('required') && bookingForm.controls['consignor_mobile'].touched"
                     class="text-red-500">
@@ -82,7 +82,7 @@
                         class="text-red-500">*</span>
                 </label>
                 <input pInputText id="consigneeMobile" type="text" formControlName="consignee_mobile"
-                    class="p-inputtext p-component" />
+                    class="p-inputtext p-component" (blur)="gateConsignee()" />
                 <small
                     *ngIf="bookingForm.controls['consignee_mobile'].hasError('required') && bookingForm.controls['consignee_mobile'].touched"
                     class="text-red-500">
@@ -109,19 +109,19 @@
                 <label for="states" class="font-medium flex items-center">
                     <i class="pi pi-globe text-blue-500 mr-2"></i> States <span class="text-red-500">*</span>
                 </label>
-                <p-dropdown [options]="states" [(ngModel)]="selectedState" optionLabel="name" optionValue="id"
+                <p-select [options]="states" optionLabel="name" optionValue="id"
                     placeholder="Select State" (onChange)="onStateChange($event.value)" class="w-full">
-                </p-dropdown>
+                </p-select>
             </div>
 
             <div class="flex flex-col">
                 <label for="cities" class="font-medium flex items-center">
                     <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
                 </label> 
-                <p-dropdown [options]="cities" [(ngModel)]="selectedCity" formControlName="destination_city_id"
-                    optionLabel="name" optionValue="id" placeholder="Select City"
-                    (onChange)="onCityChange($event.value)" class="w-full">
-                </p-dropdown>
+                <p-select [options]="cities" formControlName="destination_city_id"
+                    optionLabel="name" placeholder="Select City"
+                    class="w-full">
+                </p-select>
                 <small
                     *ngIf="bookingForm.controls['destination_city_id'].hasError('required') && bookingForm.controls['destination_city_id'].touched"
                     class="text-red-500">
@@ -133,8 +133,8 @@
                 <label for="branches" class="font-medium flex items-center">
                     <i class="pi pi-building text-gray-500 mr-2"></i> Branch <span class="text-red-500">*</span>
                 </label>
-                <p-dropdown [options]="branches" formControlName="destination_branch_id" [(ngModel)]="selectedBranch"
-                    optionLabel="name" optionValue="id" placeholder="Select Branch" class="w-full">
+                <p-dropdown [options]="branches" formControlName="destination_branch_id"
+                 placeholder="Select Branch" class="w-full">
                 </p-dropdown>
                 <small
                     *ngIf="bookingForm.controls['destination_branch_id'].hasError('required') && bookingForm.controls['destination_branch_id'].touched"
@@ -145,7 +145,7 @@
         </div>
 
         <!-- Transport Details -->
-        <label class="font-medium flex items-center">
+        <!-- <label class="font-medium flex items-center">
             <i class="pi pi-truck text-green-600 mr-2"></i> Transport Mode <span class="text-red-500">*</span>
         </label>
         <p-dropdown [options]="transportModes" formControlName="transport_mode" [(ngModel)]="selectedTransportMode"
@@ -154,7 +154,7 @@
             *ngIf="bookingForm.controls['transport_mode'].hasError('required') && bookingForm.controls['transport_mode'].touched"
             class="text-red-500">
             Please select a transport mode
-        </small>
+        </small> -->
         <!-- Package Details -->
         <div class="grid grid-cols-3 gap-4" style="margin-top: 10px;">
             <div class="flex flex-col">

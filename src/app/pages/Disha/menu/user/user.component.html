@@ -111,7 +111,7 @@
         <h2 class="text-2xl font-bold mb-4 text-gray-800">{{ isEditing ? 'Update User' : 'Add New User' }}</h2>
 
         <form class=" p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl" [formGroup]="addUserForm">
-            <div class="flex flex-wrap gap-6">
+            <div class="grid grid-cols-2 gap-6">
                 <div class="flex flex-col grow basis-0 gap-1">
                     <div class="flex items-center">
                         <label class="text-gray-700 font-medium">First Name</label>
@@ -168,13 +168,8 @@
                 <div class="flex flex-col flex-1 mt-2 gap-1">
                     <div class="flex items-center">
                         <label class="text-gray-700 font-medium">Date of Birth</label>
-                        <span class="text-red-500 ml-1">*</span>
                     </div> <p-datepicker [showIcon]="true" [showButtonBar]="true"
                         formControlName="birth_date"></p-datepicker>
-                    <small class="text-red-500"
-                        *ngIf="addUserForm.get('birth_date')?.touched && addUserForm.get('birth_date')?.invalid">
-                        Date of birth is required
-                    </small>
                 </div>
 
                 <!-- Gender Dropdown -->
@@ -193,25 +188,19 @@
 
             <div class="flex flex-col mt-2 gap-1">
                 <div class="flex items-center">
-                  <label class="text-gray-700 font-medium">Password</label>
-                  <span class="text-red-500 ml-1">*</span>
+                    <label class="text-gray-700 font-medium">Password</label>
+                    <span class="text-red-500 ml-1">*</span>
                 </div>
                 <div class="relative">
-                  <!-- PrimeNG Password Component -->
-                  <p-password
-                    formControlName="password"
-                    [toggleMask]="true"
-                    [feedback]="false"
-                  >
-                  </p-password>
+                    <!-- PrimeNG Password Component -->
+                    <p-password formControlName="password" [toggleMask]="true" [feedback]="false">
+                    </p-password>
                 </div>
-                <small
-                  class="text-red-500"
-                  *ngIf="addUserForm.get('password')?.touched && addUserForm.get('password')?.invalid"
-                >
-                  Password must be at least 6 characters long
+                <small class="text-red-500"
+                    *ngIf="addUserForm.get('password')?.touched && addUserForm.get('password')?.invalid">
+                    Password must be at least 6 characters long
                 </small>
-              </div>
+            </div>
 
 
             <div class="flex items-center gap-4 mt-6">

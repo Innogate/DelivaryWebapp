@@ -8,15 +8,16 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
-import { firstValueFrom, tap } from 'rxjs';
+import { debounceTime, firstValueFrom, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../../../../services/alert.service';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.scss'],
-  imports: [DropdownModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule],
+  imports: [DropdownModule, SelectModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule],
   providers: [MessageService]
 })
 export class BookingComponent implements OnInit {
@@ -42,19 +43,21 @@ export class BookingComponent implements OnInit {
   ) {
     this.bookingForm = this.fb.group({
 
-      slip_no: ['', [Validators.required]],
+      consignee_id: [],
+      consignor_id: [],
       consignor_name: ['', [Validators.required]],
       consignor_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       consignee_name: ['', [Validators.required]],
       consignee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       destination_city_id: [null, Validators.required],
       destination_branch_id: [null, Validators.required],
-      transport_mode: [null, Validators.required],
+      transport_mode: ['A'],
       count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       weight: ['', [Validators.required,]],
       value: ['',],
       paid_type: "Prepaid",
       contents: [''],
+      address: ['0'],
       charges: ['', [Validators.required,]],
       shipper: ['',],
       other: ['',],
@@ -71,17 +74,18 @@ export class BookingComponent implements OnInit {
     this.loadStates();
     this.loadTransportModes();
     this.loadBookings();
-    this.bookingForm.valueChanges.subscribe(() => {
-      this.calculateTotal();
-    });
+    this.gateAllBranch();
+    this.bookingForm.valueChanges
+      .pipe(debounceTime(300)) // ✅ Prevents too frequent calls
+      .subscribe(() => this.calculateTotal());
   }
 
   async loadStates() {
     await firstValueFrom(this.stateService.getAllStates({
-      fields : ["states.id","states.name"],
-      max : 12,
-      current : 0,
-      relation : null
+      fields: ["states.id", "states.name"],
+      max: 50,
+      current: 0,
+      relation: null
     }).pipe(
       tap(
         (res) => {
@@ -93,13 +97,133 @@ export class BookingComponent implements OnInit {
     ));
   }
 
+  // gate Consignee
+  async gateConsignee() {
+    const payload = {
+      "mobile": this.bookingForm.get('consignee_mobile')?.value
+    }
+    await firstValueFrom(this.bookingService.GetConsigneebyMobileNumber(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.bookingForm.patchValue({
+              consignee_name: res.body.consignee_name,
+              consignee_id: res.body.id,
+            });
+          }
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+  // gate Consignor
+  async gateConsignor() {
+    const payload = {
+      "mobile": this.bookingForm.get('consignor_mobile')?.value
+    }
+    await firstValueFrom(this.bookingService.GetConsignorbyMobileNumber(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.bookingForm.patchValue({
+              consignor_name: res.body.consignor_name,
+              consignor_id: res.body.id,
+            });
+          }
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+  // Create Consignee
+  async createConsignee() {
+    const payload = {
+      "consignee_name": this.bookingForm.get('consignee_name')?.value,
+      "consignee_mobile": this.bookingForm.get('consignee_mobile')?.value
+    }
+    console.log(payload);
+    await firstValueFrom(this.bookingService.CreateConsignee(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.bookingForm.patchValue({
+              consignee_id: res.body.consignee_id,
+            });
+          }
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+
+  // Create Consignor
+  async createConsignor() {
+    const payload = {
+      "consignor_name": this.bookingForm.get('consignor_name')?.value,
+      "consignor_mobile": this.bookingForm.get('consignor_mobile')?.value
+    }
+    console.log(payload);
+    await firstValueFrom(this.bookingService.CreateConsignor(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.bookingForm.patchValue({
+              consignor_id: res.body.id,
+            });
+          }
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+
+  async saveBooking() {
+    if (!this.bookingForm.valid) {
+      this.alertService.error("Form is invalid. Please fill in all required fields.");
+      return;
+    }
+  
+    try {
+      if (!this.bookingForm.get('consignor_id')?.value) {
+        await this.createConsignor();
+      }
+      if (!this.bookingForm.get('consignee_id')?.value) {
+        await this.createConsignee();
+      }
+  
+      const res = await firstValueFrom(this.bookingService.addNewBooking(this.bookingForm.value));
+  
+      if (res.body) {
+        this.alertService.success(res.message);
+        this.bookingForm.reset();
+        await this.loadBookings();
+      }
+    } catch (error: any) {
+      const errorMessage = error?.error?.message || error?.message || "An error occurred while saving booking.";
+      this.alertService.error(errorMessage);
+      console.error("Booking Save Error:", error);
+    }
+  }
+
   async onStateChange($event: any) {
     if ($event) {
       await firstValueFrom(this.cityService.getCitiesByStateId({
-        "fields" : ["cities.id","cities.name"],
-        "max" : 12,
-        "current" : 0,
-        "relation" : null,
+        "fields": ["cities.id", "cities.name"],
+        "max": 100,
+        "current": 0,
+        "relation": null,
         "state_id": $event
       }).pipe(
         tap(
@@ -116,28 +240,35 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  async onCityChange($event: any) {
-    if ($event) {
-      await firstValueFrom(this.branchService.getBranchesByCityId($event).pipe(
-        tap(
-          (res) => {
-            if (res.body) {
-              this.branches = res.body;
-            }
-          }
-        )
-      ))
-    } else {
-      this.branches = [];
+  async gateAllBranch() {
+    const payload =
+    {
+      fields: ["branches.id", "branches.name"],
+      max: 12,
+      current: 0,
+      relation: null
     }
+
+    await firstValueFrom(this.branchService.getAllBranches(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.branches = res.body.map((branch: any) => ({
+              label: branch.name,   // Adjust according to actual API response field
+              value: branch.id      // Adjust according to actual API response field
+            }));
+          }
+        }
+      )
+    ))
   }
 
   loadTransportModes(): void {
     this.transportModes = [
-      { label: 'Bus', value: 'bus' },
-      { label: 'Train', value: 'train' },
-      { label: 'Flight', value: 'flight' },
-      { label: 'Cab', value: 'cab' }
+      { label: 'Bus', value: 'B' },
+      { label: 'Train', value: 'T' },
+      { label: 'Flight', value: 'F' },
+      { label: 'Cab', value: 'C' }
     ];
   }
 
@@ -168,24 +299,7 @@ export class BookingComponent implements OnInit {
   // }
 
 
-  async saveBooking() {
-    if (this.bookingForm.valid) {
-      await firstValueFrom(this.bookingService.addNewBooking(this.bookingForm.value).pipe(
-        tap(
-          (res) => {
-            if (res.body) {
-              this.alertService.success(res.message);
-              this.bookingForm.reset();
-              this.loadBookings();
-            }
-          },
-          (error) => {
-            this.alertService.error(error.error.message);
-          }
-        )
-      ))
-    }
-  }
+
 
   calculateTotal() {
     const charges = Number(this.bookingForm.get('charges')?.value) || 0;

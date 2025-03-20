@@ -28,4 +28,8 @@ export class BranchService {
   deleteBranch(payload: any): Observable<any> {
     return this.apiService.post('/master/branches/delete', payload);
   }
+
+  updateBranch(payload: any): Observable<any> {
+    return this.apiService.post('/master/branches/update', payload);
+  }
 }

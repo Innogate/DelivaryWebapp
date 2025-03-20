@@ -86,7 +86,8 @@
                 <!-- Action Buttons -->
                 <div class="flex justify-between mt-3">
                     <button
-                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all" (click)="deleteEmployee(employee)">
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all"
+                        (click)="deleteEmployee(employee)">
                         <i class="pi pi-ban mr-2"></i> Disable
                     </button>
                     <button
@@ -94,7 +95,8 @@
                         <i class="pi pi-key mr-2"></i> Grand
                     </button>
                     <button
-                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all" (click)="viewEmployee(employee)">
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all"
+                        (click)="viewEmployee(employee)">
                         <i class="pi pi-pencil mr-2"></i> Update
                     </button>
                 </div>
@@ -173,15 +175,15 @@
 
             <div class="flex flex-col mt-2 gap-1">
                 <label>Aadhar No</label>
-                <input pInputText id="age1" type="text" formControlName="adhara_no" />
+                <input pInputText id="age1" type="text" formControlName="aadhar_no" />
             </div>
 
 
-            <div class="flex flex-col mt-2 gap-1">
+            <!-- <div class="flex flex-col mt-2 gap-1">
                 <label>Gender</label>
                 <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
                     placeholder="Select Gender" formControlName="gender"></p-dropdown>
-            </div>
+            </div> -->
 
             <div class="flex items-center gap-4 mt-2">
                 <div class="flex flex-col mt-2 gap-1">
@@ -189,12 +191,12 @@
                     <p-datepicker [showIcon]="true" [showButtonBar]="true"
                         formControlName="joining_date"></p-datepicker>
                 </div>
-
+                <!-- 
                 <div class="flex flex-col mt-2 gap-1">
                     <label>Date of birth</label>
                     <p-datepicker [showIcon]="true" [showButtonBar]="true" formControlName="birthDate"
                         dateFormat="dd/mm/yy"></p-datepicker>
-                </div>
+                </div> -->
             </div>
             <div class="flex items-center gap-4 mt-6">
                 <button
@@ -208,10 +210,10 @@
                     Save
                 </button>
                 <button *ngIf="isEditing"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
-                (click)="onSave()">
-                update
-            </button>
+                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                    (click)="updateEmployee()">
+                    update
+                </button>
             </div>
         </div>
     </form>
