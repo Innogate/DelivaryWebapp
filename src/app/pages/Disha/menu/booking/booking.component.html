@@ -118,8 +118,8 @@
                 <label for="cities" class="font-medium flex items-center">
                     <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
                 </label> 
-                <p-select [options]="cities" formControlName="destination_city_id"
-                    optionLabel="name" placeholder="Select City"
+                <p-select [options]="cities" formControlName="destination_city_id" optionLabel="name" optionValue="id"
+                    placeholder="Select City"
                     class="w-full">
                 </p-select>
                 <small

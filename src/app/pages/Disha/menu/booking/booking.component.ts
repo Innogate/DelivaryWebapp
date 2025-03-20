@@ -22,7 +22,7 @@ import { SelectModule } from 'primeng/select';
 })
 export class BookingComponent implements OnInit {
   states: any[] = [];
-  cities: any[] = [];
+  cities: [] = [];
   branches: any[] = [];
   transportModes: any[] = [];
   bookings: any[] = [];
