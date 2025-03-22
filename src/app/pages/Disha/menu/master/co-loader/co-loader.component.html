@@ -86,13 +86,17 @@
 
     <!-- Bottom Sheet Modal -->
 
-    <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
+    <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-sky-100 shadow-xl rounded-t-3xl transition-transform duration-300 ease-in-out
     min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
         [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
-        <h2 class="text-2xl font-bold mb-2 text-gray-800">{{ isEditing ? 'Update Branch' : 'Add New Branch' }}</h2>
+        <div class="sticky top-0 bg-blue-300 z-10 shadow-md rounded-t-3xl">
+            <h2 class="text-2xl font-bold pt-4 pb-2 text-gray-800 text-center border-b border-gray-300">
+                {{ isEditing ? 'Update Co-loader' : 'Add New Co-loader' }}
+            </h2>
+        </div>
 
-        <form class="mb-6 p-4 bg-white shadow-lg rounded-xl transition-all hover:shadow-xl">
+        <form class="mb-6 p-4 bg-sky-100 rounded-xl transition-all hover:shadow-xl">
 
             <!-- Branch Name -->
             <div class="flex flex-col mt-4 gap-2">
@@ -142,8 +146,8 @@
                 <span
                     class="flex items-start border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
                     <i class="pi pi-truck text-green-500 mr-2 mt-1"></i>
-                    <textarea formControlName="pin_code" pInputTextarea placeholder="Enter Pin Code"
-                        class="w-full bg-transparent focus:outline-none"></textarea>
+                    <input formControlName="pin_code" pInputText placeholder="Enter Pin Code"
+                        class="w-full bg-transparent focus:outline-none" />
                 </span>
             </div>
 
@@ -159,26 +163,28 @@
                         class="w-full bg-transparent focus:outline-none" />
                 </span>
             </div>
+
+            <div class="flex items-center gap-4 mt-6">
+                <button
+                    class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                    (click)="toggleAddState()">
+                    Cancel
+                </button>
+                <button *ngIf="!isEditing"
+                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700">
+                    Save
+                </button>
+    
+                <button *ngIf="isEditing"
+                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700">
+                    Update
+                </button>
+            </div>
         </form>
 
         <!-- Submit Button -->
 
-        <div class="flex items-center gap-4 mt-6">
-            <button
-                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
-                (click)="toggleAddState()">
-                Cancel
-            </button>
-            <button *ngIf="!isEditing"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700">
-                Save
-            </button>
-
-            <button *ngIf="isEditing"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700">
-                Update
-            </button>
-        </div>
+ 
     </div>
 
 </div>

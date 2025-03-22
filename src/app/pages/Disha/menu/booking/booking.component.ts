@@ -13,26 +13,33 @@ import { CommonModule } from '@angular/common';
 import { AlertService } from '../../../../../services/alert.service';
 import { SelectModule } from 'primeng/select';
 import { EmployeesService } from '../../../../../services/employees.service';
+import { DividerModule } from 'primeng/divider';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { GlobalStorageService } from '../../../../../services/global-storage.service';
 
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.scss'],
-  imports: [DropdownModule, SelectModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule],
+  imports: [DropdownModule, SelectModule, AutoCompleteModule, RadioButtonModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule, DividerModule, CheckboxModule],
   providers: [MessageService]
 })
 export class BookingComponent implements OnInit {
-  states: any[] = [];
-  cities: [] = [];
+  cities: any[] = [];
   branches: any[] = [];
   transportModes: any[] = [];
   bookings: any[] = [];
-
-  selectedState: any;
-  selectedCity: any;
+  // allCities: any[] = [];
+  // selectedState: any;
+  // searchResults: any[] = [];
   selectedBranch: any;
   selectedTransportMode: any;
   bookingForm: FormGroup;
+  filteredCities: any[] = [];
+  selectedCity: any = null;
+  amount: number = 0;
   constructor(
     private cityService: CityService,
     private stateService: StateService,
@@ -41,7 +48,8 @@ export class BookingComponent implements OnInit {
     private messageService: MessageService,
     private fb: FormBuilder,
     private alertService: AlertService,
-    private employeeService: EmployeesService
+    private employeeService: EmployeesService,
+    private globalstore: GlobalStorageService
   ) {
     this.bookingForm = this.fb.group({
 
@@ -53,7 +61,7 @@ export class BookingComponent implements OnInit {
       consignee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       destination_city_id: [null, Validators.required],
       destination_branch_id: [null, Validators.required],
-      transport_mode: ['A'],
+      transport_mode: [''],
       count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       weight: ['', [Validators.required,]],
       value: ['',],
@@ -66,38 +74,69 @@ export class BookingComponent implements OnInit {
       cgst: ['', [Validators.required,]],
       sgst: ['', [Validators.required,]],
       igst: ['', [Validators.required,]],
-      total: ['', [Validators.required,]]
-
+      total: ['', [Validators.required,]],
+      account: [],
+      amount: []
     });
 
   }
 
-  ngOnInit(): void {
-    this.loadStates();
+  async ngOnInit(): Promise<void> {
     this.loadTransportModes();
-    // this.loadBookings();
     this.gateAllBranch();
     this.gateEmployeeInfo();
     this.bookingForm.valueChanges
       .pipe(debounceTime(300))
       .subscribe(() => this.calculateTotal());
+    this.gateAllcity();
   }
 
-  async loadStates() {
-    await firstValueFrom(this.stateService.getAllStates({
-      fields: ["states.id", "states.name"],
-      max: 50,
-      current: 0,
-      relation: null
-    }).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.states = res.body;
-          }
-        }
-      )
-    ));
+  async gateAllcity() {
+    const storedCities = this.globalstore.get<{ id: number; name: string }[]>('cities');
+
+    if (storedCities) {
+      this.cities = storedCities;
+      this.filteredCities = [];
+      return;
+    }
+
+    try {
+      await firstValueFrom(
+        this.cityService.getAllCities({
+          fields: ["cities.id", "cities.name"],
+          max: 9000,
+          current: 0,
+          relation: null
+        }).pipe(
+          tap((res) => {
+            this.cities = Array.isArray(res.body) ? res.body : [];
+            this.globalstore.set('cities', this.cities, true);
+          })
+        )
+      );
+    } catch (error: any) {
+      this.alertService.error(error?.error?.message || 'Failed to fetch cities');
+      this.cities = [];
+    }
+    this.filteredCities = [];
+  }
+
+
+
+
+  searchCity(event: any) {
+    const query = event.query.toLowerCase();
+    this.filteredCities = this.cities.filter(city =>
+      city.name.toLowerCase().includes(query)
+    );
+  }
+
+  onCitySelect(event: any) {
+    console.log('Selected City:', event);  // Debugging
+    if (event) {
+      console.log('Selected City ID:', event.value.id);
+      console.log('Selected City Name:', event.value.name);
+    }
   }
 
   // gate Consignee
@@ -197,7 +236,7 @@ export class BookingComponent implements OnInit {
       this.alertService.error("Form is invalid. Please fill in all required fields.");
       return;
     }
-  
+
     try {
       if (!this.bookingForm.get('consignor_id')?.value) {
         await this.createConsignor();
@@ -205,41 +244,17 @@ export class BookingComponent implements OnInit {
       if (!this.bookingForm.get('consignee_id')?.value) {
         await this.createConsignee();
       }
-  
+
       const res = await firstValueFrom(this.bookingService.addNewBooking(this.bookingForm.value));
-  
+
       if (res.body) {
         this.alertService.success(res.message);
         this.bookingForm.reset();
-        await this.loadBookings();
       }
     } catch (error: any) {
       const errorMessage = error?.error?.message || error?.message || "An error occurred while saving booking.";
       this.alertService.error(errorMessage);
       console.error("Booking Save Error:", error);
-    }
-  }
-
-  async onStateChange($event: any) {
-    if ($event) {
-      await firstValueFrom(this.cityService.getCitiesByStateId({
-        "fields": ["cities.id", "cities.name"],
-        "max": 100,
-        "current": 0,
-        "relation": null,
-        "state_id": $event
-      }).pipe(
-        tap(
-          (res) => {
-            if (res.body) {
-              this.cities = res.body;
-            }
-          }
-        )
-      ))
-    } else {
-      this.cities = [];
-      this.branches = [];
     }
   }
 
@@ -257,8 +272,8 @@ export class BookingComponent implements OnInit {
         (res) => {
           if (res.body) {
             this.branches = res.body.map((branch: any) => ({
-              label: branch.name,  
-              value: branch.id      
+              label: branch.name,
+              value: branch.id
             }));
           }
         }
@@ -267,8 +282,7 @@ export class BookingComponent implements OnInit {
   }
 
 
-  async gateEmployeeInfo(){
-   
+  async gateEmployeeInfo() {
     await firstValueFrom(this.employeeService.employeeInfo().pipe(
       tap(
         (res) => {
@@ -281,12 +295,12 @@ export class BookingComponent implements OnInit {
   }
 
 
-  async getBranchInfo(branchId: any){
-    const payload = 
+  async getBranchInfo(branchId: any) {
+    const payload =
     {
-        fields: ["branches.*"],
-        relation: null,
-        branch_id:branchId
+      fields: ["branches.*"],
+      relation: null,
+      branch_id: branchId
     }
     await firstValueFrom(this.branchService.getBranchById(payload).pipe(
       tap(
@@ -314,37 +328,12 @@ export class BookingComponent implements OnInit {
       { label: 'Cab', value: 'C' }
     ];
   }
-
-  loadBookings(): void {
-    this.bookingService.getBookingList(
-      {
-        max: 10,
-        current: 0
-      }
-    ).subscribe(response => {
-      this.bookings = response.data || [];
-    });
-  }
-
   book(): void {
     console.log("Not implemented");
   }
 
-  // deleteBooking(bookingId: number): void {
-  //   this.bookingService.deleteBooking(bookingId).subscribe(response => {
-  //     if (response.success) {
-  //       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Booking deleted successfully' });
-  //       this.loadBookings();
-  //     } else {
-  //       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete booking' });
-  //     }
-  //   });
-  // }
-
-
-
-
   calculateTotal() {
+    const weight = Number(this.bookingForm.get('weight')?.value) || 0;
     const charges = Number(this.bookingForm.get('charges')?.value) || 0;
     const shipper = Number(this.bookingForm.get('shipper')?.value) || 0;
     const other = Number(this.bookingForm.get('other')?.value) || 0;
@@ -352,14 +341,22 @@ export class BookingComponent implements OnInit {
     const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
     const igst = Number(this.bookingForm.get('igst')?.value) || 0;
 
-    const subtotal = charges + shipper + other;
-    const cgstAmount = (cgst / 100) * subtotal;
-    const sgstAmount = (sgst / 100) * subtotal;
-    const igstAmount = (igst / 100) * subtotal;
+    // Ensure proper decimal multiplication
+    const amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
+    this.bookingForm.patchValue({ amount }, { emitEvent: false });
 
-    const total = subtotal + cgstAmount + sgstAmount + igstAmount;
+    // Subtotal includes Amount + Shipper + Other charges
+    const subtotal = +(amount + shipper + other).toFixed(2);
 
-    this.bookingForm.patchValue({ total: total.toFixed(2) });
-  }
+    // Calculate GST amounts
+    const cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
+    const sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
+    const igstAmount = +(subtotal * (igst / 100)).toFixed(2);
+
+    // Final total
+    const total = +(subtotal + cgstAmount + sgstAmount + igstAmount).toFixed(2);
+
+    this.bookingForm.patchValue({ total }, { emitEvent: false });
+}
 
 }

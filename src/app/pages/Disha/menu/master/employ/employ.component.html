@@ -1,3 +1,8 @@
+<div class="sticky top-0 bg-blue-300 z-10 shadow-md">
+    <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
+        Employee Master</h2>
+</div>
+<!-- 
 <div class="flex justify-center space-x-4 p-4">
     <button (click)="setFilter('all')"
         [ngClass]="filterType === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'"
@@ -14,7 +19,7 @@
         class="px-4 py-2 rounded-lg">
         Inactive Users
     </button>
-</div>
+</div> -->
 
 <div class="flex flex-col bg-slate-100 px-4 min-h-screen relative scrollable-container">
 
@@ -124,96 +129,111 @@
 
     <!-- Bottom Sheet (Slider) -->
     <form [formGroup]="employeeForm">
-        <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-white shadow-xl p-6 rounded-t-3xl transition-transform duration-300 ease-in-out
+        <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-sky-100 shadow-xl rounded-t-3xl transition-transform duration-300 ease-in-out
       min-h-[60vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
             [class.translate-y-0]="showAddState">
 
-            <h2 class="text-xl font-bold mb-4">Add New Employee</h2>
-            <div class="flex flex-col mt-4">
-                <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Select Employee Name</label>
-                    <span class="text-red-500 ml-1">*</span>
-                </div>
-                <div class="flex flex-wrap gap-6">
-                    <p-dropdown class="flex-1" [options]="employeeName" placeholder="Select Enploy Name"
-                        formControlName="user_id" (onChange)="onEmployeeChange($event.value)"></p-dropdown>
-                </div>
+            <div class="sticky top-0 bg-blue-300 z-10 shadow-md rounded-t-3xl">
+                <h2 class="text-2xl font-bold pt-4 pb-2 text-gray-800 text-center border-b border-gray-300">
+                    {{ isEditing ? 'Update Employee' : 'Add New Employee' }}
+                </h2>
             </div>
-
-            <div class="flex flex-col mt-2">
-                <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Address</label>
-                    <span class="text-red-500 ml-1">*</span>
+            <div class="px-3">
+                <div class="flex flex-col mt-2">
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">Select Employee Name</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <input pInputText type="text"  placeholder="Select Enploy Name" formControlName="EmployeeName" />
+                    </div>
                 </div>
-                <div class="flex flex-col gap-1">
-                    <input pInputText type="text" formControlName="address" />
+
+                <div class="flex flex-col mt-2">
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">Address</label>
+                    
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <input pInputText type="text" formControlName="address" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="flex flex-col mt-2">
-                <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Phone Number</label>
-                    <span class="text-red-500 ml-1">*</span>
+                <div class="flex flex-row mt-2 gap-4">
+                    <!-- Phone Number Field -->
+                    <div class="flex flex-col w-1/2">
+                        <div class="flex items-center">
+                            <label class="text-gray-700 font-medium">Phone Number</label>
+                            <span class="text-red-500 ml-1">*</span>
+                        </div>
+                        <input pInputText id="phone" type="number" formControlName="phone" class="p-2 border border-gray-300 rounded-md" />
+                    </div>
+                
+                    <!-- Designation Field -->
+                    <div class="flex flex-col w-1/2">
+                        <div class="flex items-center">
+                            <label class="text-gray-700 font-medium">Designation</label>
+                        </div>
+                        <input pInputText id="designation" type="text" formControlName="designation" class="p-2 border border-gray-300 rounded-md" />
+                    </div>
                 </div>
-                <div class="flex flex-col">
-                    <input pInputText id="email1" type="text" formControlName="phone" />
+                
+
+
+                <!-- <div class="flex flex-col mt-2">
+                    <div class="flex items-center">
+                        <label class="text-gray-700 font-medium">Select Branch</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <p-dropdown class="flex-1" [options]="branchList" placeholder="Select Branch"
+                            formControlName="branch_id"></p-dropdown>
+                    </div>
                 </div>
-            </div>
+ -->
 
-
-            <div class="flex flex-col mt-2">
-                <div class="flex items-center">
-                    <label class="text-gray-700 font-medium">Select Branch</label>
-                    <span class="text-red-500 ml-1">*</span>
+                <div class="flex flex-col mt-2 gap-1">
+                    <label>Aadhar No</label>
+                    <input pInputText id="age1" type="text" formControlName="aadhar_no" />
                 </div>
-                <div class="flex flex-col">
-                    <p-dropdown class="flex-1" [options]="branchList" placeholder="Select Branch"
-                        formControlName="branch_id"></p-dropdown>
-                </div>
-            </div>
 
 
-            <div class="flex flex-col mt-2 gap-1">
-                <label>Aadhar No</label>
-                <input pInputText id="age1" type="text" formControlName="aadhar_no" />
-            </div>
-
-
-            <!-- <div class="flex flex-col mt-2 gap-1">
+                <!-- <div class="flex flex-col mt-2 gap-1">
                 <label>Gender</label>
                 <p-dropdown class="flex-1" [options]="dropdownOptions" [(ngModel)]="selectedValue"
                     placeholder="Select Gender" formControlName="gender"></p-dropdown>
             </div> -->
 
-            <div class="flex items-center gap-4 mt-2">
-                <div class="flex flex-col mt-2 gap-1">
-                    <label>Join date</label>
-                    <p-datepicker [showIcon]="true" [showButtonBar]="true"
-                        formControlName="joining_date"></p-datepicker>
-                </div>
-                <!-- 
+                <div class="flex items-center gap-4 mt-2">
+                    <div class="flex flex-col mt-2 gap-1">
+                        <label>Join date</label>
+                        <p-datepicker [showIcon]="true" [showButtonBar]="true"
+                            formControlName="joining_date"></p-datepicker>
+                    </div>
+                    <!-- 
                 <div class="flex flex-col mt-2 gap-1">
                     <label>Date of birth</label>
                     <p-datepicker [showIcon]="true" [showButtonBar]="true" formControlName="birthDate"
                         dateFormat="dd/mm/yy"></p-datepicker>
                 </div> -->
-            </div>
-            <div class="flex items-center gap-4 mt-6">
-                <button
-                    class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
-                    (click)="toggleAddState()">
-                    Cancel
-                </button>
-                <button *ngIf="!isEditing"
-                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
-                    (click)="onSave()">
-                    Save
-                </button>
-                <button *ngIf="isEditing"
-                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
-                    (click)="updateEmployee()">
-                    update
-                </button>
+                </div>
+                <div class="flex items-center gap-4 mt-6">
+                    <button
+                        class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                        (click)="toggleAddState()">
+                        Cancel
+                    </button>
+                    <button *ngIf="!isEditing"
+                        class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                        (click)="onSave()">
+                        Save
+                    </button>
+                    <button *ngIf="isEditing"
+                        class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                        (click)="updateEmployee()">
+                        update
+                    </button>
+                </div>
             </div>
         </div>
     </form>
