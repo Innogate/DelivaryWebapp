@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BranchService } from '../../../../../services/branch.service';
-import { AlertService } from '../../../../../services/alert.service';
 import { firstValueFrom, tap } from 'rxjs';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { TokenService } from '../../../../../services/token.service';
+import { BranchService } from '../../../../../../services/branch.service';
+import { AlertService } from '../../../../../../services/alert.service';
+import { TokenService } from '../../../../../../services/token.service';
 
 @Component({
   selector: 'app-booking-slip',
@@ -35,7 +35,6 @@ export class BookingSlipComponent {
   ngOnInit() {
     this.gateAllToken();
   }
-
 
 
   async gateAllBranch() {

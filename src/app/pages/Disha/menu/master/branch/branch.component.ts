@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { BranchService } from '../../../../../services/branch.service';
-import { CompanyService } from '../../../../../services/company.service';
-import { StateService } from '../../../../../services/state.service';
-import { CityService } from '../../../../../services/city.service';
+import { BranchService } from '../../../../../../services/branch.service';
+import { CompanyService } from '../../../../../../services/company.service';
+import { StateService } from '../../../../../../services/state.service';
+import { CityService } from '../../../../../../services/city.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,8 +13,8 @@ import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CardModule } from 'primeng/card';
 import { catchError, firstValueFrom, tap } from 'rxjs';
-import { AlertService } from '../../../../../services/alert.service';
-import { payload } from '../../../../../../interfaces/payload.interface';
+import { AlertService } from '../../../../../../services/alert.service';
+import { payload } from '../../../../../../../interfaces/payload.interface';
 import { Password } from 'primeng/password';
 import { Router } from '@angular/router';
 @Component({
@@ -63,16 +63,17 @@ export class BranchComponent {
       city_id: ['', [Validators.required, Validators.min(1)]],
       state_id: ['', [Validators.required, Validators.min(1)]],
       pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
-      contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      contact_no: ['', [Validators.required]],
       email: ['', [Validators.email]],
       gst_no: ['',],
       cin_no: ['',],
       udyam_no: ['',],
       logo: [''],
-      cgst: ['', [Validators.required,]],
-      sgst: ['', [Validators.required]],
-      igst: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      cgst: ['',],
+      sgst: [''],
+      igst: [''],
+      password: [''],
+      sortName: [''],
     });
     this.fetchBranches();
     this.loadStates();
@@ -244,21 +245,17 @@ export class BranchComponent {
     }
   }
 
+  setAliseName(){
+    this.branchForm.patchValue({
+      alias_name: this.branchForm.get('name')?.value
+
+    })
+  }
+
   toggleAddState() {
     this.showAddState = !this.showAddState;
     this.isEditing = false;
     this.branchForm.reset();
-  }
-
-  onTouchStart(event: TouchEvent) {
-    this.touchStartY = event.touches[0].clientY;
-  }
-
-  onTouchEnd(event: TouchEvent) {
-    const touchEndY = event.changedTouches[0].clientY;
-    if (touchEndY - this.touchStartY > 50) {
-      this.showAddState = false;
-    }
   }
 
   onFileChange(event: any) {

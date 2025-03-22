@@ -7,8 +7,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { firstValueFrom, switchMap, tap, throwError } from 'rxjs';
-import { AlertService } from '../../../../../services/alert.service';
-import { UserService } from '../../../../../services/user.service';
+import { AlertService } from '../../../../../../services/alert.service';
+import { UserService } from '../../../../../../services/user.service';
 import { PasswordModule } from 'primeng/password'
 import { Router } from '@angular/router';
 @Component({
@@ -40,11 +40,11 @@ export class UserComponent {
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
       address: [null],
-      mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      mobile: ['', [Validators.required]],
       email: ['example@gmail.com', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       birth_date: [null],
-      gender: [null, Validators.required]
+      gender: [null,]
     });
   }
 

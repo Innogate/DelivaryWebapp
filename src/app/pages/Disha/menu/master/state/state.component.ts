@@ -4,10 +4,9 @@ import { ButtonModule } from 'primeng/button'; // ✅ Import ButtonModule
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
-import { StateService } from '../../../../../services/state.service';
-import { AlertService } from '../../../../../services/alert.service';
-import { payload } from '../../../../../../interfaces/payload.interface';
 import { Theme } from '@primeng/themes';
+import { StateService } from '../../../../../../services/state.service';
+import { AlertService } from '../../../../../../services/alert.service';
 @Component({
   selector: 'app-state',
   imports: [DialogModule, FormsModule, CommonModule, ReactiveFormsModule, CommonModule],
@@ -55,7 +54,7 @@ export class StateComponent {
   }
 
   GetAllState() {
-    const payload: payload = {
+    const payload: any = {
       fields: ["states.id", "states.name"],
       max: 50,
       current: 0,

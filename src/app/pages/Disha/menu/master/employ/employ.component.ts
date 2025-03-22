@@ -6,13 +6,12 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { EmployeesService } from '../../../../../services/employees.service';
-import { AlertService } from '../../../../../services/alert.service';
 import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
-import { UserService } from '../../../../../services/user.service';
-import { payload } from '../../../../../../interfaces/payload.interface';
-import { BranchService } from '../../../../../services/branch.service';
 import { ThLargeIcon } from 'primeng/icons';
+import { EmployeesService } from '../../../../../../services/employees.service';
+import { UserService } from '../../../../../../services/user.service';
+import { BranchService } from '../../../../../../services/branch.service';
+import { AlertService } from '../../../../../../services/alert.service';
 
 @Component({
   selector: 'app-employ',
@@ -36,14 +35,14 @@ export class EmployComponent {
   constructor(private EmployeeService: EmployeesService, private branchService: BranchService, private datePipe: DatePipe,
     private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
     this.employeeForm = this.fb.group({
-      user_id: ['', Validators.required],
-      address: ['', Validators.required],
+      EmployeeName: ['', Validators.required],
+      address: [''],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       aadhar_no: ['', [Validators.pattern('^[0-9]{12}$')]],
       joining_date: [null],
       branch_id: [''],
-      type: ['2']
-
+      type: ['2'],
+      designation: ['']
     });
   }
   ngOnInit() {
@@ -62,7 +61,7 @@ export class EmployComponent {
 
   // Get all employ
   async gateAllEmployee() {
-    const payload: payload = {
+    const payload: any = {
       fields: ["users.*", "employees.*"],
       max: 100,
       current: 0,
@@ -116,7 +115,7 @@ export class EmployComponent {
   }
 
   async fetchBranches() {
-    const payload: payload = {
+    const payload: any = {
       fields: ["branches.id", "branches.name"],
       max: 100,
       current: 0,
