@@ -106,7 +106,7 @@ export class BookingSlipComponent {
       if (await confirmation === false) {
         return;
       } else {
-        await firstValueFrom(this.tokenService.deleteToken(data.id).pipe(
+        await firstValueFrom(this.tokenService.deleteToken(data.credit_node_id).pipe(
           tap((response) => {
             this.alertService.success(response.message);
             this.gateAllToken();
