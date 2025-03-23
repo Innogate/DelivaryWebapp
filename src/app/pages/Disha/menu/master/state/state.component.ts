@@ -55,10 +55,9 @@ export class StateComponent {
 
   GetAllState() {
     const payload: any = {
-      fields: ["states.id", "states.name"],
+      fields: ["state_id", "state_name"],
       max: 50,
       current: 0,
-      relation: null
     }
     this.service.getAllStates(payload).pipe(
       tap((res) => {
