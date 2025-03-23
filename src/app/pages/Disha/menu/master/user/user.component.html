@@ -12,7 +12,7 @@
             <div class="flex justify-between items-center mb-2">
                 <p class="text-gray-700 font-semibold text-lg flex items-center">
                     <i class="pi pi-id-card mr-2 text-blue-500"></i>
-                    User ID: <span class="text-blue-600 font-bold">{{ user.id }}</span>
+                    User ID: <span class="text-blue-600 font-bold">{{ user.user_id }}</span>
                 </p>
 
                 <div class="flex items-center text-gray-500 text-sm">
@@ -122,10 +122,10 @@
                         <label class="text-gray-700 font-medium"> Name</label>
                         <span class="text-red-500 ml-1">*</span>
                     </div>
-                    <input pInputText type="text" formControlName="first_name" />
-                    <small class="text-red-500"
-                        *ngIf="addUserForm.get('first_name')?.touched && addUserForm.get('first_name')?.invalid">First
-                        Name is required</small>
+                    <input pInputText type="text" formControlName="full_name" (input)="splitName()" />
+                    <small class="text-red-500" *ngIf="addUserForm.get('full_name')?.touched && addUserForm.get('full_name')?.invalid">
+                        Name is required
+                    </small>
                 </div>
                 <!-- <div class="flex flex-col grow basis-0 gap-1">
                     <div class="flex items-center">

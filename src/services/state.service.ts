@@ -9,7 +9,7 @@ import { payload } from '../../interfaces/payload.interface';
 export class StateService {
   constructor(private apiService: ApiService) {}
 
-  getAllStates(payload: payload): Observable<any> {
+  getAllStates(payload: any): Observable<any> {
     return this.apiService.post('/master/states',  payload);
   }
 

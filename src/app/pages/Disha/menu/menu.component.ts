@@ -32,21 +32,11 @@ export class MenuComponent {
   }
 
   async getAccess() {
-    // Retrieve stored data from globalstore
-    const storedAccess = this.globalstore.get('allowedPageIds');
-
-    // Check if the stored data exists and is a valid array
-    if (Array.isArray(storedAccess) && storedAccess.length > 0) {
-      this.allowedPageIds = storedAccess;
-      console.log("Loaded from globalstore:", this.allowedPageIds);
-      return;
-    }
-
     // If data is not present, call the API
     try {
       const res: any = await firstValueFrom(this.pageService.getMyAccess());
       this.allowedPageIds = res.body || []; // Ensure it's an array
-      this.globalstore.set('allowedPageIds', this.allowedPageIds, true); // Store data
+      this.globalstore.set('allowedPageIds', this.allowedPageIds); // Store data
       console.log("Fetched from API and stored:", this.allowedPageIds);
     } catch (error: any) {
       this.alertService.error(error.error.message);
@@ -54,8 +44,23 @@ export class MenuComponent {
   }
 
   hasPageAccess(pageId: number): boolean {
-    return this.allowedPageIds.some(page => page.page_id === pageId);
+    const page = this.allowedPageIds.find(page => page.page_id === pageId);
+  
+    if (!page || !page.permission_code || page.permission_code.length !== 5) {
+      return false; // Invalid or missing permission_code
+    }
+  
+    const [read, write, update, del, admin] = page.permission_code.split('').map(Number);
+  
+    // If read is 0, the user cannot see the UI for this page
+    if (read === 0) {
+      return false;
+    }
+  
+    // If all permissions are 0 (00000), access is completely denied
+    return write === 1 || update === 1 || del === 1 || admin === 1;
   }
+  
   selectCard(card: string) {
     this.selectedCard = card;
     if (card === "booking") {

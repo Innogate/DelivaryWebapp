@@ -35,9 +35,9 @@ export class EmployComponent {
   constructor(private EmployeeService: EmployeesService, private branchService: BranchService, private datePipe: DatePipe,
     private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
     this.employeeForm = this.fb.group({
-      EmployeeName: ['', Validators.required],
+      employee_name: ['', Validators.required],
       address: [''],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      employee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       aadhar_no: ['', [Validators.pattern('^[0-9]{12}$')]],
       joining_date: [null],
       branch_id: [''],
@@ -48,7 +48,7 @@ export class EmployComponent {
   ngOnInit() {
     this.gateAllEmployee();
     this.gateAllUser();
-    this.fetchBranches();
+    // this.fetchBranches();
   }
   toggleAddState() {
     this.showAddState = !this.showAddState;
@@ -62,10 +62,9 @@ export class EmployComponent {
   // Get all employ
   async gateAllEmployee() {
     const payload: any = {
-      fields: ["users.*", "employees.*"],
-      max: 100,
-      current: 0,
-      relation: "users.id=employees.user_id"
+      fields: [],
+      max: 10,
+      current: 0
     }
     await firstValueFrom(this.EmployeeService.getAllEmployees(payload).pipe(
       tap(
@@ -91,8 +90,8 @@ export class EmployComponent {
             this.userList = res.body;
           }
           this.employeeName = this.userList?.map(user => ({
-            label: `${user.first_name} ${user.last_name.trim()}`, // Full name display
-            value: user.id // ID as value
+            label: `${user.first_name} ${user.last_name.trim()}`, 
+            value: user.id 
           }));
         },
         (error) => {
@@ -251,9 +250,6 @@ export class EmployComponent {
   }
 
   private touchStartY: number = 0;
-
-
-
   dropdownOptions = [
     { label: 'Male', value: 'M' },
     { label: 'Female', value: 'F' }

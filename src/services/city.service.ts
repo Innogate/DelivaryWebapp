@@ -14,11 +14,11 @@ export class CityService {
     return this.apiService.post('/master/cities', payload);
   }
 
-  getCityById(payload: payload): Observable<any> {
+  getCityById(payload: any): Observable<any> {
     return this.apiService.post('/master/cities/byId', payload);
   }
 
-  getCitiesByStateId(payload: payload): Observable<any> {
+  getCitiesByStateId(payload: any): Observable<any> {
     return this.apiService.post('/master/cities/byStateId', payload);
   }
 
