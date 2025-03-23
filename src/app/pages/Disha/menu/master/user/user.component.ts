@@ -141,12 +141,12 @@ export class UserComponent {
       this.showAddState = true;
       this.isEditing = true;
       console.log(data);
-      this.userId = data.id;
-  
+      this.userId = data.user_id;
+
       const fullName = `${data.first_name} ${data.last_name}`.trim();
-  
+
       this.addUserForm.patchValue({
-        full_name: fullName, 
+        full_name: fullName,
         mobile: data.mobile,
         email: data.email,
         birth_date: new Date(data.birth_date),
@@ -159,11 +159,11 @@ export class UserComponent {
   async updateUser() {
     if (this.addUserForm.valid) {
       const fullName = this.addUserForm.value.full_name.trim();
-      const nameParts = fullName.split(/\s+/); 
+      const nameParts = fullName.split(/\s+/);
       const payload = {
         updates: {
-          "first_name": nameParts[0] || '',  
-          "last_name": nameParts.slice(1).join(' ') || '', 
+          "first_name": nameParts[0] || '',
+          "last_name": nameParts.slice(1).join(' ') || '',
           "email": this.addUserForm.value.email,
           "birth_date": this.addUserForm.value.birth_date.toISOString(),
           "gender": this.addUserForm.value.gender,
@@ -171,9 +171,7 @@ export class UserComponent {
           "mobile": this.addUserForm.value.mobile,
           "address": this.addUserForm.value.address
         },
-        conditions: {
-          "user_id": this.userId,
-        }
+        conditions: "user_id="+this.userId,
       };
 
       await firstValueFrom(this.userService.updateUser(payload).pipe(
