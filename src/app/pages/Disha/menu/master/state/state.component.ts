@@ -97,8 +97,8 @@ export class StateComponent {
     if (state) {
       this.isEditing = true;
       this.showAddState = true;
-      this.stateForm.patchValue({ stateName: state.name });
-      this.stateId = state.id;
+      this.stateForm.patchValue({ stateName: state.state_name });
+      this.stateId = state.state_id;
     } else {
       this.isEditing = false;
       this.stateForm.reset();
