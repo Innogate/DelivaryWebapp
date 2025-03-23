@@ -29,9 +29,16 @@ export class CityComponent {
   stateId: any;
   cityId: any;
 
+  max: number = 10;
+  current: number = 0;
 
-  constructor(private service: StateService, private cityService: CityService, private stateService: StateService,
-    private fb: FormBuilder, private alertService: AlertService,
+
+  constructor(
+    private service: StateService,
+    private cityService: CityService,
+    private stateService: StateService,
+    private fb: FormBuilder,
+    private alertService: AlertService
   ) {
     this.Form = this.fb.group({
       stateId: ['', [Validators.required]],
@@ -45,19 +52,16 @@ export class CityComponent {
 
   async GetAllState() {
     await firstValueFrom(this.stateService.getAllStates({
-      fields: ["states.id", "states.name"],
-      max: 50,
-      current: 0,
-      relation: null
+      fields: [],
+      max: this.max,
+      current: this.current
     }).pipe(
       tap(
         (res) => {
           if (res.body) {
             if (res.body) {
-              this.dropdownOptions = res.body.map((states: any) => ({
-                value: states.id,
-                label: states.name
-              }));
+              this.dropdownOptions = res.body;
+              this.current = this.dropdownOptions.length;
             }
           }
         },
@@ -71,10 +75,9 @@ export class CityComponent {
   async getAllCity(data: any) {
     if (data?.value) {
       await firstValueFrom(this.cityService.getCitiesByStateId({
-        "fields": ["cities.id", "cities.name", "cities.state_id"],
+        "fields": [],
         "max": 300,
         "current": 0,
-        "relation": null,
         "state_id": data.value
       }).pipe(
         tap(
@@ -171,7 +174,7 @@ export class CityComponent {
       ).catch((error) => console.error('Error updating state:', error));
     }
   }
-  
+
 
 
 
