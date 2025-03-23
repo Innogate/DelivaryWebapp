@@ -37,8 +37,9 @@ export class UserComponent {
     private router: Router
 ) {
     this.addUserForm = this.fb.group({
-      first_name: ['', Validators.required],
-      last_name: ['', Validators.required],
+      full_name: ['', Validators.required],  // Single input field
+      first_name: [''],
+      last_name: [''],
       address: [null],
       mobile: ['', [Validators.required]],
       email: ['example@gmail.com', [Validators.email]],
@@ -52,6 +53,16 @@ export class UserComponent {
     this.gateAllUser();
   }
 
+  splitName() {
+    const fullName = this.addUserForm.get('full_name')?.value || '';
+    const nameParts = fullName.trim().split(/\s+/); // Split by spaces
+
+    this.addUserForm.patchValue({
+      first_name: nameParts[0] || '',
+      last_name: nameParts.slice(1).join(' ') || '' // Join remaining parts as last name
+    });
+  }
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
@@ -59,10 +70,9 @@ export class UserComponent {
   // gate all user
   async gateAllUser() {
     const payload = {
-      fields: ["users.*", "user_info.*"],
+      fields: [],
       max: 100,
-      current: 0,
-      relation: "users.id=user_info.id"
+      current: 0
     }
     await firstValueFrom(this.userService.getAllUsers(payload).pipe(
       tap(
@@ -110,7 +120,7 @@ export class UserComponent {
       if (await confirmation === false) {
         return;
       } else {
-        await firstValueFrom(this.userService.deleteUser(data.id).pipe(
+        await firstValueFrom(this.userService.deleteUser(data.user_id).pipe(
           tap((response) => {
             this.alertService.success(response.message);
             this.gateAllUser();
@@ -123,6 +133,8 @@ export class UserComponent {
       }
     }
   }
+
+
   // View User
   viewUser(data: any) {
     if (data) {
@@ -130,9 +142,11 @@ export class UserComponent {
       this.isEditing = true;
       console.log(data);
       this.userId = data.id;
+  
+      const fullName = `${data.first_name} ${data.last_name}`.trim();
+  
       this.addUserForm.patchValue({
-        first_name: data.first_name,
-        last_name: data.last_name,
+        full_name: fullName, 
         mobile: data.mobile,
         email: data.email,
         birth_date: new Date(data.birth_date),
@@ -144,49 +158,35 @@ export class UserComponent {
 
   async updateUser() {
     if (this.addUserForm.valid) {
+      const fullName = this.addUserForm.value.full_name.trim();
+      const nameParts = fullName.split(/\s+/); 
       const payload = {
         updates: {
-          "user_info.first_name": this.addUserForm.value.first_name,
-          "user_info.last_name": this.addUserForm.value.last_name,
-          "user_info.email": this.addUserForm.value.email,
-          "user_info.birth_date": this.addUserForm.value.birth_date.toISOString(),
-          "user_info.gender": this.addUserForm.value.gender,
+          "first_name": nameParts[0] || '',  
+          "last_name": nameParts.slice(1).join(' ') || '', 
+          "email": this.addUserForm.value.email,
+          "birth_date": this.addUserForm.value.birth_date.toISOString(),
+          "gender": this.addUserForm.value.gender,
+          "password": this.addUserForm.value.password,
+          "mobile": this.addUserForm.value.mobile,
+          "address": this.addUserForm.value.address
         },
         conditions: {
-          "user_info.id": this.userId,
+          "user_id": this.userId,
         }
       };
 
-      const payload2 = {
-        updates: {
-          "users.password": this.addUserForm.value.password,
-          "users.mobile": this.addUserForm.value.mobile,
-        },
-        conditions: {
-          "users.id": this.userId
-        }
-      }
-
       await firstValueFrom(this.userService.updateUser(payload).pipe(
-        tap(async (response) => {
-          if (response.status == 200) {
-            await firstValueFrom(this.userService.updateUser(payload2).pipe(
-              tap((res) => {
-                if (res.status == 200) {
-                  this.alertService.success(res.message);
-                  this.gateAllUser();
-                  this.showAddState = false;
-                  this.addUserForm.reset();
-                }
-              },
-                (error) => {
-                  this.alertService.error(error.error.message);
-                })
-            ))
+        tap((response) => {
+          this.alertService.success(response.message);
+          this.gateAllUser();
+          this.showAddState = false;
+          this.addUserForm.reset();
+        },
+          (error) => {
+            this.alertService.error(error.error.message);
           }
-        }, (error) => {
-          this.alertService.error(error.error.message);
-        })
+        )
       ))
     }
   }
@@ -227,6 +227,6 @@ export class UserComponent {
   }
 
   grandUser(user: any) {
-    this.router.navigate(["/pages/access/" + user.id]);
+    this.router.navigate(["/pages/access/" + user.user_id]);
   }
 }

@@ -57,14 +57,16 @@ export class BranchComponent {
       id: [],
       user_id: [],
       company_id: [this.company_id],
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      branch_name: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.minLength(3)]],
+      branch_short_name: [''],
       alias_name: ['', [Validators.minLength(3)]],
       city_id: ['', [Validators.required, Validators.min(1)]],
       state_id: ['', [Validators.required, Validators.min(1)]],
       pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
       contact_no: ['', [Validators.required]],
       email: ['', [Validators.email]],
+      representative_user_id: ['2'],
       gst_no: ['',],
       cin_no: ['',],
       udyam_no: ['',],
@@ -73,10 +75,10 @@ export class BranchComponent {
       sgst: [''],
       igst: [''],
       password: [''],
-      sortName: [''],
     });
     this.fetchBranches();
     this.loadStates();
+    this.gateAllCity();
   }
 
   async fetchBranches() {
@@ -102,10 +104,9 @@ export class BranchComponent {
   async loadStates() {
     await firstValueFrom(
       this.stateService.getAllStates({
-        fields: ["states.id", "states.name"],
+        fields: [],
         max: 50,
         current: 0,
-        relation: null
       }).pipe(
         tap(
           (res) => {
@@ -118,13 +119,12 @@ export class BranchComponent {
     )
   }
 
-  async onStateChange(stateId: any) {
-    await firstValueFrom(this.cityService.getCitiesByStateId({
-      "fields": ["cities.id", "cities.name"],
-      "max": 100,
-      "current": 0,
-      "relation": null,
-      "state_id": stateId
+  async gateAllCity() {
+    await firstValueFrom(this.cityService.getAllCities({
+      "fields" : ["cities.city_id","cities.city_name"],
+      "max" : 12,
+      "current" : 0,
+      "relation" : null
     }).pipe(
       tap(
         (res) => {
@@ -136,17 +136,6 @@ export class BranchComponent {
     ))
   }
 
-  async onCityChange(cityId: any) {
-    await firstValueFrom(this.companyService.getCompaniesByCity(cityId).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.companies = res.body;
-          }
-        }
-      )
-    ))
-  }
 
   async deleteBranch(branch: any) {
     if (branch) {
@@ -171,7 +160,6 @@ export class BranchComponent {
   viewBranch(branch: any) {
     console.log(branch);
     this.isEditing = true;
-    this.onStateChange(branch.state_id);
     if (branch) {
       this.showAddState = true;
       this.branchForm.patchValue({
@@ -247,7 +235,7 @@ export class BranchComponent {
 
   setAliseName(){
     this.branchForm.patchValue({
-      alias_name: this.branchForm.get('name')?.value
+      alias_name: this.branchForm.get('branch_name')?.value
 
     })
   }
@@ -277,7 +265,6 @@ export class BranchComponent {
     if (this.branchForm.valid) {
       try {
         let data = this.branchForm.value;
-        data.company_id = 1;
         const response = await firstValueFrom(
           this.branchService.addNewBranch(data).pipe(
             tap((res) => {

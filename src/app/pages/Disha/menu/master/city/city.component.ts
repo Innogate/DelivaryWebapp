@@ -177,9 +177,10 @@ export class CityComponent {
 
 
 
+
   toggleAddState() {
     this.showAddState = !this.showAddState;
-    this.isEditing=false;
+    this.isEditing = false;
     this.Form.reset();
   }
 
