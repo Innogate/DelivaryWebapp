@@ -116,7 +116,7 @@ export class StateComponent {
           "states.id": this.stateId
         }
       };
-  
+
       firstValueFrom(
         this.service.updateState(payload).pipe(
           tap((res) => {
@@ -129,15 +129,15 @@ export class StateComponent {
       ).catch((error) => console.error('Error updating state:', error));
     }
   }
-  
 
-  async deleteState(state: any) {
-    if (state) {
+
+  async deleteState(state_id: any, status: boolean) {
+    if (state_id) {
       const confirmation = this.alertservice.confirm("You want to delete this state ? ");
       if (await confirmation === false) {
         return;
       } else {
-        await firstValueFrom(this.service.deleteState(state.id).pipe(
+        await firstValueFrom(this.service.deleteState(state_id).pipe(
           tap((response) => {
             this.alertservice.success(response.message);
             this.GetAllState();
