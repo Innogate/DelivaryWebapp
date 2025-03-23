@@ -28,7 +28,7 @@
                 <div class="flex flex-col">
                     <p class="text-black font-semibold text-lg flex items-center gap-2">
                         <i class="pi pi-flag text-blue-500"></i>
-                        <span class="text-blue-600">{{ city_name }}</span>
+                        <span class="text-blue-600">{{ city.city_name }}</span>
                     </p>
                     <!-- <div class="text-gray-500 text-sm flex items-center gap-2">
                         <i class="pi pi-calendar"></i>
@@ -46,9 +46,9 @@
                 </button>
 
                 <button pButton
-                    class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all"
+                    class="{{city.status ? 'bg-red-500' : 'bg-green-500'}} text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 shadow-md hover:bg-red-600 transition-all"
                     (click)="deleteCity(city)">
-                    <i class="pi pi-trash"></i> Delete
+                    <i class="pi {{city.status ? 'pi-ban' : 'pi-check'}}">{{ city.status ? ' Disable' : ' Enable' }}</i>
                 </button>
             </div>
         </div>
@@ -74,13 +74,13 @@
 
         <form class="mb-4" [formGroup]="Form">
             <div class="flex flex-wrap w-full mt-4">
-                <p-dropdown formControlName="stateId"
+                <p-dropdown formControlName="state_id"
                     class="flex-1 rounded-lg shadow-md border border-gray-300 bg-white hover:shadow-lg transition-all"
-                    [options]="dropdownOptions" placeholder="Select a State"></p-dropdown>
+                    [options]="dropdownOptions" placeholder="Select a State" optionLabel="state_name" optionValue="state_id"></p-dropdown>
             </div>
             <div class="flex flex-col mt-4 gap-2">
                 <label class="text-gray-700 font-medium">Enter City</label>
-                <input formControlName="cityName"
+                <input formControlName="city_name"
                     class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 transition-all"
                     pInputText type="text" />
             </div>

@@ -21,7 +21,7 @@ export class CityComponent {
 
   showAddState: boolean = false;
   dropdownOptions = [];
-  cityList?: any[];
+  cityList: any[] = [];
   private touchStartY: number = 0;
   selectedValue: any;
   Form: FormGroup;
@@ -41,8 +41,8 @@ export class CityComponent {
     private alertService: AlertService
   ) {
     this.Form = this.fb.group({
-      stateId: ['', [Validators.required]],
-      cityName: ['', [Validators.required, Validators.minLength(3)]],
+        state_id: ['', [Validators.required]],
+      city_name: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
   ngOnInit() {
@@ -140,13 +140,12 @@ export class CityComponent {
 
   async viewCity(city: any) {
     if (city) {
-      console.log(city, city.id);
-      this.cityId = city.id;
+      this.cityId = city.city_id;
       this.isEditing = true;
       this.showAddState = true;
       this.Form.patchValue({
-        stateId: city.state_id,
-        cityName: city.name
+        state_id: city.state_id,
+        city_name: city.city_name
       });
     }
   }
