@@ -31,7 +31,7 @@ export class AccessComponent implements OnInit {
     isEditing: boolean = false;
     userId: any;
     accessForm: any = {
-        name: '',
+        user_id: '',
         permission_code: ['0', '0', '0', '0', '0'],  // Default permission codes (Read, Write, Update, Delete, Admin)
     };
 
@@ -72,7 +72,7 @@ export class AccessComponent implements OnInit {
     createAccessList() {
         this.accessList = this.pages.map(page => {
             // Find the matching permission for this page
-            const permission = this.permissions.find(p => p.page_id === page.id);
+            const permission = this.permissions.find(p => p.page_id === page.page_id);
 
             // If permission is found, process it; otherwise, use default permission codes
             const permissionCodeArray = permission ?
@@ -81,7 +81,7 @@ export class AccessComponent implements OnInit {
 
             return {
                 ...page, // Spread the page data
-                page_id: page.id, // Explicitly add page_id
+                page_id: page.page_id,
                 user_id: permission ? permission.user_id : this.userId, // Add user_id from permission if available
                 permission_code: permissionCodeArray, // Converted permission codes (boolean)
                 permission_status: permission ? permission.status : null, // Status from permission
