@@ -162,7 +162,7 @@
                 <div class="w-1/2">
                     <label class="text-gray-700 font-medium">City<span class="text-red-500 ml-1">*</span></label>
                     <p-dropdown [filter]="true" formControlName="city_id" class="w-full custom-dropdown" [options]="cities"
-                        optionLabel="name" optionValue="id" placeholder="Select City"
+                        optionLabel="city_name" optionValue="city_id" placeholder="Select City"
                          [showClear]="true"
                         [emptyMessage]="'Cities not recorded for this state'">
                     </p-dropdown>
@@ -252,7 +252,7 @@
             <div class="grid grid-cols-3 gap-4 mt-2">
                 <div class="flex flex-col">
                     <label for="cgst" class="font-medium flex items-center">
-                        <i class="pi pi-percentage text-red-600 mr-2"></i> CGST 
+                        <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
                     </label>
                     <input pInputText id="cgst" formControlName="cgst" type="text" class="p-inputtext p-component" />
                     <small
@@ -267,7 +267,7 @@
                 </div>
                 <div class="flex flex-col">
                     <label for="sgst" class="font-medium flex items-center">
-                        <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST 
+                        <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST
                     </label>
                     <input pInputText id="sgst" formControlName="sgst" type="text" class="p-inputtext p-component" />
                     <small
@@ -282,7 +282,7 @@
                 </div>
                 <div class="flex flex-col">
                     <label for="igst" class="font-medium flex items-center">
-                        <i class="pi pi-percentage text-green-600 mr-2"></i> IGST 
+                        <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
                     </label>
                     <input pInputText id="igst" formControlName="igst" type="text" class="p-inputtext p-component" />
                     <small

@@ -54,28 +54,26 @@ export class BranchComponent {
     private router: Router
   ) {
     this.branchForm = this.fb.group({
-      id: [],
-      user_id: [],
-      company_id: [this.company_id],
-      branch_name: ['', [Validators.required, Validators.minLength(3)]],
-      address: ['', [Validators.minLength(3)]],
-      branch_short_name: [''],
-      alias_name: ['', [Validators.minLength(3)]],
-      city_id: ['', [Validators.required, Validators.min(1)]],
-      state_id: ['', [Validators.required, Validators.min(1)]],
-      pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
-      contact_no: ['', [Validators.required]],
-      email: ['', [Validators.email]],
-      representative_user_id: ['2'],
-      gst_no: ['',],
-      cin_no: ['',],
-      udyam_no: ['',],
-      logo: [''],
-      cgst: ['',],
-      sgst: [''],
-      igst: [''],
-      password: [''],
-    });
+        branch_name: ['', [Validators.required, Validators.minLength(3)]],
+        branch_short_name: [''],
+        alias_name: ['', [Validators.minLength(3)]],
+        representative_user_id: [2],  // ! add it
+        address: ['', [Validators.minLength(3)]],
+        city_id: [null, [Validators.required, Validators.min(1)]],
+        state_id: [null, [Validators.required, Validators.min(1)]],
+        pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
+        contact_no: ['', [Validators.required]],
+        email: ['', [Validators.email]],
+        gst_no: [''],
+        cin_no: [''],
+        udyam_no: [''],
+        cgst: [null],
+        sgst: [null],
+        igst: [null],
+        logo: [null],
+        manifest_sires: [''] // ! add it
+      });
+
     this.fetchBranches();
     this.loadStates();
     this.gateAllCity();
@@ -84,10 +82,9 @@ export class BranchComponent {
   async fetchBranches() {
     try {
       const payload = {
-        fields: ["branches.*"],
+        fields: [],
         max: 100,
-        current: 0,
-        relation: "branches.user_id"
+        current: 0
       };
       const res = await firstValueFrom(this.branchService.getAllBranches(payload));
       if (res.body) {
@@ -121,10 +118,9 @@ export class BranchComponent {
 
   async gateAllCity() {
     await firstValueFrom(this.cityService.getAllCities({
-      "fields" : ["cities.city_id","cities.city_name"],
+      "fields" : [],
       "max" : 12,
-      "current" : 0,
-      "relation" : null
+      "current" : 0
     }).pipe(
       tap(
         (res) => {
@@ -143,7 +139,7 @@ export class BranchComponent {
       if (await confirmation === false) {
         return;
       } else {
-        await firstValueFrom(this.branchService.deleteBranch(branch.id).pipe(
+        await firstValueFrom(this.branchService.deleteBranch(branch.branch_id).pipe(
           tap((response) => {
             this.alertService.success(response.message);
             this.fetchBranches();
@@ -162,25 +158,7 @@ export class BranchComponent {
     this.isEditing = true;
     if (branch) {
       this.showAddState = true;
-      this.branchForm.patchValue({
-        id: branch.id,
-        user_id: branch.user_id,
-        company_id: branch.company_id,
-        name: branch.name,
-        address: branch.address,
-        alias_name: branch.alias_name,
-        city_id: branch.city_id,
-        state_id: branch.state_id,
-        pin_code: branch.pin_code,
-        contact_no: branch.contact_no,
-        email: branch.email,
-        gst_no: branch.gst_no,
-        cin_no: branch.cin_no,
-        udyam_no: branch.udyam_no,
-        cgst: branch.cgst,
-        sgst: branch.sgst,
-        igst: branch.igst,
-      });
+      this.branchForm.patchValue(branch);
     }
   }
 
@@ -205,9 +183,7 @@ export class BranchComponent {
           "branches.igst": this.branchForm.value.igst,
           "branches.logo": this.branchForm.value.logo,
         },
-        "conditions": {
-          "branches.id": this.branchForm.value.id,
-        }
+        "conditions": "branches.id="+this.branchForm.value.branch_id,
       }
 
       const payload2 = {
@@ -262,6 +238,9 @@ export class BranchComponent {
 
 
   async addNewBranch() {
+    this.branchForm.patchValue({
+        "representative_user_id": 1
+    })
     if (this.branchForm.valid) {
       try {
         let data = this.branchForm.value;
