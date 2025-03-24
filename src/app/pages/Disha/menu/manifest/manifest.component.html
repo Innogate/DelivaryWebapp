@@ -2,10 +2,111 @@
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         Manifest Genaration</h2>
 </div>
-<div class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full">
+<div class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full ">
     <!-- Slip and Consignor Details -->
 
-    <form>
+    <form [formGroup]="form">
+        <div class="card">
+            <div class="flex flex-wrap gap-4 mt-2">
+                <!-- Branch Selection -->
+                <div class="flex-1">
+                    <label for="branches" class="font-medium flex items-center">
+                        <i class="pi pi-building text-gray-500 mr-2"></i> Branch <span class="text-red-500">*</span>
+                    </label>
+                    <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
+                        placeholder="Select Branch" class="w-full">
+                    </p-dropdown>
+                    <!-- <small
+                    *ngIf="bookingForm.controls['destination_branch_id'].hasError('required') && bookingForm.controls['destination_branch_id'].touched"
+                    class="text-red-500">
+                    Please select a Branch
+                </small> -->
+                </div>
+
+                <!-- City Selection -->
+                <div class="flex-1">
+                    <label for="cities" class="font-medium flex items-center">
+                        <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
+                    </label>
+                    
+                    <p-autoComplete [(ngModel)]="selectedCity"
+                        formControlName="destination_city_id"
+                        [suggestions]="filteredCities"
+                        (completeMethod)="searchCity($event)"
+                        optionLabel="city_name"
+                        placeholder="Search and Select a City"
+                        (onSelect)="onCitySelect($event)"
+                        class="w-full">
+                    </p-autoComplete>
+                    
+                    <!-- <small
+                    *ngIf="bookingForm.controls['destination_city_id'].hasError('required') && bookingForm.controls['destination_city_id'].touched"
+                    class="text-red-500">
+                    Please select a city
+                </small> -->
+                </div>
+            </div>
+            <div class="flex gap-4 mt-2 w-full">
+
+                <!-- Co-loader -->
+                <div class="w-1/2">
+                    <label class="font-medium flex items-center">
+                        <i class="pi pi-truck text-green-600 mr-2"></i> Co-loader <span class="text-red-500">*</span>
+                    </label>
+                    <p-dropdown [options]="coLoaderOptions" formControlName="co_loader" placeholder="Select Co-loader"
+                        class="w-full">
+                    </p-dropdown>
+                </div>
+
+
+                <!-- Transport Mode -->
+                <div class="w-1/2">
+                    <label class="font-medium flex items-center">
+                        <i class="pi pi-truck text-green-600 mr-2"></i> Transport Mode <span
+                            class="text-red-500">*</span>
+                    </label>
+                    <p-dropdown [options]="transportModes" formControlName="transport_mode"
+                        [(ngModel)]="selectedTransportMode" placeholder="Select Transport Mode" class="w-full">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
     </form>
+
+
+    <div class="card p-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold">Booking List</h3>
+    
+            <!-- Search Input -->
+            <div class="relative">
+                <i class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                <input type="text" [(ngModel)]="searchTerm" placeholder="Search Booking..."
+                    class="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none"
+                    (input)="filterBookings()" />
+            </div>
+        </div>
+    
+        <!-- Select All Checkbox -->
+        <div class="flex items-center mb-4">
+            <p-checkbox [(ngModel)]="selectAll" (onChange)="toggleSelectAll()"></p-checkbox>
+            <label class="ml-2 font-medium">Select All</label>
+        </div>
+    
+        <!-- Booking List in a Grid Layout -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div *ngFor="let booking of filteredBookings" class="p-3 border rounded-lg flex items-center shadow">
+                <p-checkbox [(ngModel)]="booking.selected" binary="true" (onChange)="updateSelected()"></p-checkbox>
+                <label class="ml-2">{{ booking.number }}</label>
+            </div>
+        </div>
+    
+        <!-- Save Button -->
+        <button pButton label="Save" class="mt-4 w-full" (click)="saveSelectedBookings()"></button>
+    </div>
+    
+    
+    
+
 
 </div>

@@ -35,13 +35,12 @@ export class EmployComponent {
   constructor(private EmployeeService: EmployeesService, private branchService: BranchService, private datePipe: DatePipe,
     private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
     this.employeeForm = this.fb.group({
+      employee_id: [null],
       employee_name: ['', Validators.required],
       address: [''],
       employee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       aadhar_no: ['', [Validators.pattern('^[0-9]{12}$')]],
       joining_date: [null],
-      branch_id: [''],
-      type: ['2'],
       designation: ['']
     });
   }
@@ -136,9 +135,6 @@ export class EmployComponent {
 
 
   async onSave() {
-    console.log("Click on save");
-
-    // Convert the joining_date to 'dd-MM-yyyy' format before sending the data
     let formData = { ...this.employeeForm.value };
     if (formData.joining_date) {
       formData.joining_date = this.datePipe.transform(formData.joining_date, 'dd-MM-yyyy');
@@ -157,7 +153,7 @@ export class EmployComponent {
           }),
           catchError(error => {
             this.alertService.error(error?.error?.message || "Failed to add employee");
-            return EMPTY; // Prevents breaking the observable chain
+            return EMPTY;
           })
         )
       );
@@ -190,29 +186,32 @@ export class EmployComponent {
   viewEmployee(employee: any) {
     this.isEditing = true;
     this.showAddState = true;
-    console.log(employee);
+    
     this.employeeForm.patchValue({
-      user_id: employee.user_id,
+      employee_name: employee.employee_name,
       address: employee.address,
-      phone: employee.mobile,
+      employee_mobile: employee.employee_mobile,
       aadhar_no: employee.aadhar_no,
       joining_date: new Date(employee.joining_date),
-      branch_id: employee.branch_id,
-      type: employee.type
+      designation: employee.designation,
+      employee_id: employee.employee_id
     });
+    
   }
 
 
   async updateEmployee() {
     const payload = {
       updates: {
-        "employees.address": this.employeeForm.controls['address'].value,
-        "employees.aadhar_no": this.employeeForm.controls['aadhar_no'].value,
-        "employees.joining_date": this.datePipe.transform(this.employeeForm.controls['joining_date'].value, 'dd-MM-yyyy'),
-        "employees.branch_id": this.employeeForm.controls['branch_id'].value,
+        "employee_name": this.employeeForm.controls['employee_name'].value,
+        "address": this.employeeForm.controls['address'].value,
+        "employee_mobile": this.employeeForm.controls['employee_mobile'].value,
+        "aadhar_no": this.employeeForm.controls['aadhar_no'].value,
+        "joining_date": this.datePipe.transform(this.employeeForm.controls['joining_date'].value, 'dd-MM-yyyy'),
+        "designation": this.employeeForm.controls['designation'].value,
       },
       conditions: {
-        "employees.user_id": this.employeeForm.controls['user_id'].value
+        "user_id": this.employeeForm.controls['employee_id'].value
       }
     }
     if (this.employeeForm.valid) {
