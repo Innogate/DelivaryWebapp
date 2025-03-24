@@ -163,7 +163,7 @@
             <div class="flex flex-row gap-4 w-full mt-2">
                 <!-- State Dropdown -->
                 <div class="w-1/2">
-                    <label class="text-gray-700 font-medium">State<span class="text-red-500 ml-1">*</span></label>
+                    <label class="text-gray-700 font-medium mb-2">State<span class="text-red-500 ml-1">*</span></label>
                     <p-dropdown [filter]="true" formControlName="state_id" class="w-full custom-dropdown" [options]="states"
                         optionLabel="state_name" optionValue="state_id" [showClear]="true"
                         [emptyMessage]="'States not found'" placeholder="Select State">
@@ -172,12 +172,19 @@
 
                 <!-- City Dropdown -->
                 <div class="w-1/2">
-                    <label class="text-gray-700 font-medium">City<span class="text-red-500 ml-1">*</span></label>
-                    <p-dropdown [filter]="true" formControlName="city_id" class="w-full custom-dropdown" [options]="cities"
-                        optionLabel="city_name" optionValue="city_id" placeholder="Select City"
-                         [showClear]="true"
-                        [emptyMessage]="'Cities not recorded for this state'">
-                    </p-dropdown>
+                    <label for="cities" class="font-medium flex items-center">
+                        <i class="pi pi-map-marker text-red-500 mb-0"></i> City <span class="text-red-500">*</span>
+                    </label>
+                    <p-autoComplete
+                        formControlName="city_id"
+                        [suggestions]="filteredCities"
+                        (completeMethod)="searchCity($event)"
+                        optionLabel="city_name"
+                        placeholder="Search and Select a City"
+                        (onSelect)="onCitySelect($event)"
+                        [emptyMessage]="'Cities not recorded for this state'"
+                        class="w-full">
+                    </p-autoComplete>
                 </div>
             </div>
 
@@ -201,12 +208,12 @@
 
                 <div class="w-1/2">
                     <div class="flex items-center">
-                        <label class="text-gray-700 font-medium">Password</label>
+                        <label class="text-gray-700 font-medium">sart manifest No. </label>
                     </div>
                     <span
                         class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
                         <i class="pi pi-lock text-red-500 mr-2"></i>
-                        <input formControlName="password" type="text" pInputText placeholder="Enter password"
+                        <input formControlName="manifest_sires" type="text" pInputText placeholder="Enter manifest No"
                             class="w-full bg-transparent focus:outline-none" />
                     </span>
                 </div>

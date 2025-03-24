@@ -18,6 +18,8 @@ import { payload } from '../../../../../../../interfaces/payload.interface';
 import { Password } from 'primeng/password';
 import { Router } from '@angular/router';
 import { UserService } from '../../../../../../services/user.service';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -31,7 +33,8 @@ import { UserService } from '../../../../../../services/user.service';
     DropdownModule,
     ButtonModule,
     FileUploadModule,
-    CardModule
+    CardModule,
+    AutoCompleteModule
   ]
 })
 export class BranchComponent {
@@ -46,6 +49,9 @@ export class BranchComponent {
   private touchStartY: number = 0;
   isEditing: boolean = false;
   company_id: number = 1;
+  filteredCities: any[] = [];
+  selectedCity: any = null;
+
   constructor(
     private fb: FormBuilder,
     private branchService: BranchService,
@@ -54,7 +60,8 @@ export class BranchComponent {
     private cityService: CityService,
     private alertService: AlertService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private globalstore: GlobalStorageService
   ) {
     this.branchForm = this.fb.group({
       branch_name: ['', [Validators.required, Validators.minLength(3)]],
@@ -79,7 +86,7 @@ export class BranchComponent {
 
     this.fetchBranches();
     this.loadStates();
-    this.gateAllCity();
+    this.gateAllcity();
     this.gateAllUser();
   }
 
@@ -142,21 +149,53 @@ export class BranchComponent {
     )
   }
 
-  async gateAllCity() {
-    await firstValueFrom(this.cityService.getAllCities({
-      "fields": [],
-      "max": 12,
-      "current": 0
-    }).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.cities = res.body;
+  async gateAllcity() {
+    const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
+    if (storedCities) {
+      this.cities = storedCities;
+      this.filteredCities = [];
+      return;
+    }
+
+    try {
+      await firstValueFrom(this.cityService.getAllCities({
+        "fields": ["city_id", "city_name"],
+        "max": 5000,
+        "current": 0,
+      }).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.cities = res.body;
+              this.globalstore.set('cities', this.cities, true);
+            }
           }
-        }
-      )
-    ))
+        )
+      ))
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
   }
+
+
+  searchCity(event: any) {
+    const query = event?.query?.toLowerCase() || ''; 
+    console.log(query)
+
+
+    this.filteredCities = this.cities.filter(city =>
+      city.city_name?.toLowerCase().includes(query) 
+    );
+    console.log(this.filteredCities)
+  }
+
+
+  onCitySelect(event: any) {
+    console.log('Selected City:', event);
+  }
+
+
+
 
 
   async deleteBranch(branch: any) {
@@ -264,12 +303,12 @@ export class BranchComponent {
 
 
   async addNewBranch() {
-    // this.branchForm.patchValue({
-    //   "representative_user_id": 1
-    // })
     if (this.branchForm.valid) {
       try {
-        let data = this.branchForm.value;
+        let data = { ...this.branchForm.value};
+      if (data.city_id && typeof data.city_id === 'object') {
+        data.city_id = data.city_id.city_id;
+    }
         const response = await firstValueFrom(
           this.branchService.addNewBranch(data).pipe(
             tap((res) => {

@@ -34,6 +34,7 @@
                         [suggestions]="filteredCities"
                         (completeMethod)="searchCity($event)"
                         optionLabel="city_name"
+                        optionValue="city_id"
                         placeholder="Search and Select a City"
                         (onSelect)="onCitySelect($event)"
                         class="w-full">
@@ -107,6 +108,9 @@
     
     
     
-
+    <button (click)="generatePDF()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+        Download PDF
+      </button>
+      
 
 </div>
