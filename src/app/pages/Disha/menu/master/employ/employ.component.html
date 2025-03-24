@@ -1,4 +1,4 @@
-<div class="sticky top-0 bg-blue-300 z-10 shadow-md">
+<div class="sticky top-0 bg-blue-300 z-10 shadow-md" *ngIf="!showAddState">
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         Employee Master</h2>
 </div>
@@ -32,7 +32,7 @@
             <div class="flex justify-between items-center mb-2">
                 <p class="text-gray-700 font-semibold text-lg flex items-center">
                     <i class="pi pi-id-card mr-2 text-blue-500"></i>
-                    User ID: <span class="text-blue-600 font-bold">{{ employee.id }}</span>
+                    Employee ID: <span class="text-blue-600 font-bold">{{ employee.employee_id }}</span>
                 </p>
 
                 <div class="flex items-center text-gray-500 text-sm">
@@ -45,7 +45,7 @@
             <div class="flex justify-between items-center mb-2">
                 <p class="text-gray-700 font-medium flex items-center">
                     <i class="pi pi-user mr-2 text-green-500"></i>
-                    <strong> </strong> {{ employee.first_name }} {{ employee.last_name }}
+                    <strong> </strong> {{ employee.employee_name }}
                 </p>
                 <div [ngClass]="{
                 'bg-green-200 text-green-700': employee.status,
@@ -61,7 +61,7 @@
             <div class="bg-gray-50 p-3 rounded-lg mt-2 border border-gray-200" *ngIf="employee.showMore">
                 <p class="text-gray-700 flex items-center">
                     <i class="pi pi-envelope mr-2 text-blue-500"></i>
-                    <strong>Email:</strong> {{ employee.email }}
+                    <strong>Phone:</strong> {{ employee.employee_mobile }}
                 </p>
                 <p class="text-gray-700 flex items-center">
                     <i class="pi  pi-id-card  mr-2 text-green-500"></i>
@@ -94,10 +94,6 @@
                         class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all"
                         (click)="deleteEmployee(employee)">
                         <i class="pi pi-ban mr-2"></i> Disable
-                    </button>
-                    <button
-                        class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all">
-                        <i class="pi pi-key mr-2"></i> Grand
                     </button>
                     <button
                         class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all"
@@ -145,14 +141,15 @@
                         <span class="text-red-500 ml-1">*</span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <input pInputText type="text"  placeholder="Select Enploy Name" formControlName="employee_name" />
+                        <input pInputText type="text" placeholder="Select Enploy Name"
+                            formControlName="employee_name" />
                     </div>
                 </div>
 
                 <div class="flex flex-col mt-2">
                     <div class="flex items-center">
                         <label class="text-gray-700 font-medium">Address</label>
-                    
+
                     </div>
                     <div class="flex flex-col gap-1">
                         <input pInputText type="text" formControlName="address" />
@@ -166,18 +163,20 @@
                             <label class="text-gray-700 font-medium">Phone Number</label>
                             <span class="text-red-500 ml-1">*</span>
                         </div>
-                        <input pInputText id="phone" type="number" formControlName="employee_mobile" class="p-2 border border-gray-300 rounded-md" />
+                        <input pInputText id="phone" type="number" formControlName="employee_mobile"
+                            class="p-2 border border-gray-300 rounded-md" />
                     </div>
-                
+
                     <!-- Designation Field -->
                     <div class="flex flex-col w-1/2">
                         <div class="flex items-center">
                             <label class="text-gray-700 font-medium">Designation</label>
                         </div>
-                        <input pInputText id="designation" type="text" formControlName="designation" class="p-2 border border-gray-300 rounded-md" />
+                        <input pInputText id="designation" type="text" formControlName="designation"
+                            class="p-2 border border-gray-300 rounded-md" />
                     </div>
                 </div>
-                
+
 
 
                 <!-- <div class="flex flex-col mt-2">

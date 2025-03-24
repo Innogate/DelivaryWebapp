@@ -31,8 +31,7 @@ export class BookingStatusComponent implements OnInit {
   async getAllBooking() {
     try {
       await firstValueFrom(this.bookService.getBookingList({
-        max: this.max,
-        current: this.current,
+      
       }).pipe(
         tap(
           (res) => {

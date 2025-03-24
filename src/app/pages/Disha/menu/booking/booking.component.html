@@ -107,7 +107,7 @@
                 <label for="branches" class="font-medium flex items-center">
                     <i class="pi pi-building text-gray-500 mr-2"></i> Branch <span class="text-red-500">*</span>
                 </label>
-                <p-dropdown [filter]="true" [options]="branches" formControlName="destination_branch_id"
+                <p-dropdown [filter]="true" [options]="branches" formControlName="destination_branch_id"  optionLabel="branch_name" optionValue="branch_id"
                     placeholder="Select Branch" class="w-full">
                 </p-dropdown>
                 <small

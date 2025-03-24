@@ -17,6 +17,9 @@ import { AlertService } from '../../../../../../services/alert.service';
 import { payload } from '../../../../../../../interfaces/payload.interface';
 import { Password } from 'primeng/password';
 import { Router } from '@angular/router';
+import { UserService } from '../../../../../../services/user.service';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
@@ -30,7 +33,8 @@ import { Router } from '@angular/router';
     DropdownModule,
     ButtonModule,
     FileUploadModule,
-    CardModule
+    CardModule,
+    AutoCompleteModule
   ]
 })
 export class BranchComponent {
@@ -38,12 +42,16 @@ export class BranchComponent {
   companies: any[] = [];
   states: any[] = [];
   cities: any[] = [];
+  user: any[] = [];
   branchList: any[] = [];
   showAddState: boolean = false;
   selectedFileName: string = '';
   private touchStartY: number = 0;
   isEditing: boolean = false;
   company_id: number = 1;
+  filteredCities: any[] = [];
+  selectedCity: any = null;
+
   constructor(
     private fb: FormBuilder,
     private branchService: BranchService,
@@ -51,32 +59,35 @@ export class BranchComponent {
     private stateService: StateService,
     private cityService: CityService,
     private alertService: AlertService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
+    private globalstore: GlobalStorageService
   ) {
     this.branchForm = this.fb.group({
-        branch_name: ['', [Validators.required, Validators.minLength(3)]],
-        branch_short_name: [''],
-        alias_name: ['', [Validators.minLength(3)]],
-        representative_user_id: [2],  // ! add it
-        address: ['', [Validators.minLength(3)]],
-        city_id: [null, [Validators.required, Validators.min(1)]],
-        state_id: [null, [Validators.required, Validators.min(1)]],
-        pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
-        contact_no: ['', [Validators.required]],
-        email: ['', [Validators.email]],
-        gst_no: [''],
-        cin_no: [''],
-        udyam_no: [''],
-        cgst: [null],
-        sgst: [null],
-        igst: [null],
-        logo: [null],
-        manifest_sires: [''] // ! add it
-      });
+      branch_name: ['', [Validators.required, Validators.minLength(3)]],
+      branch_short_name: [''],
+      alias_name: ['', [Validators.minLength(3)]],
+      representative_user_id: ['', Validators.required],  // ! add it
+      address: ['', [Validators.minLength(3)]],
+      city_id: [null, [Validators.required, Validators.min(1)]],
+      state_id: [null, [Validators.required, Validators.min(1)]],
+      pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
+      contact_no: ['', [Validators.required]],
+      email: ['', [Validators.email]],
+      gst_no: [''],
+      cin_no: [''],
+      udyam_no: [''],
+      cgst: [null],
+      sgst: [null],
+      igst: [null],
+      logo: [null],
+      manifest_sires: [''] // ! add it
+    });
 
     this.fetchBranches();
     this.loadStates();
-    this.gateAllCity();
+    this.gateAllcity();
+    this.gateAllUser();
   }
 
   async fetchBranches() {
@@ -93,6 +104,28 @@ export class BranchComponent {
     } catch (error: any) {
       this.alertService.error(error.error?.message || 'Failed to fetch branches.');
     }
+  }
+
+
+  async gateAllUser() {
+    const payload = {
+      "fields": [],
+      "max": 10,
+      "current": 0
+    }
+
+    await firstValueFrom(this.userService.getAllUsers(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.user = res.body;
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
   }
 
 
@@ -116,21 +149,53 @@ export class BranchComponent {
     )
   }
 
-  async gateAllCity() {
-    await firstValueFrom(this.cityService.getAllCities({
-      "fields" : [],
-      "max" : 12,
-      "current" : 0
-    }).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.cities = res.body;
+  async gateAllcity() {
+    const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
+    if (storedCities) {
+      this.cities = storedCities;
+      this.filteredCities = [];
+      return;
+    }
+
+    try {
+      await firstValueFrom(this.cityService.getAllCities({
+        "fields": ["city_id", "city_name"],
+        "max": 5000,
+        "current": 0,
+      }).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.cities = res.body;
+              this.globalstore.set('cities', this.cities, true);
+            }
           }
-        }
-      )
-    ))
+        )
+      ))
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
   }
+
+
+  searchCity(event: any) {
+    const query = event?.query?.toLowerCase() || ''; 
+    console.log(query)
+
+
+    this.filteredCities = this.cities.filter(city =>
+      city.city_name?.toLowerCase().includes(query) 
+    );
+    console.log(this.filteredCities)
+  }
+
+
+  onCitySelect(event: any) {
+    console.log('Selected City:', event);
+  }
+
+
+
 
 
   async deleteBranch(branch: any) {
@@ -183,7 +248,7 @@ export class BranchComponent {
           "branches.igst": this.branchForm.value.igst,
           "branches.logo": this.branchForm.value.logo,
         },
-        "conditions": "branches.id="+this.branchForm.value.branch_id,
+        "conditions": "branches.id=" + this.branchForm.value.branch_id,
       }
 
       const payload2 = {
@@ -209,7 +274,7 @@ export class BranchComponent {
     }
   }
 
-  setAliseName(){
+  setAliseName() {
     this.branchForm.patchValue({
       alias_name: this.branchForm.get('branch_name')?.value
 
@@ -238,12 +303,12 @@ export class BranchComponent {
 
 
   async addNewBranch() {
-    this.branchForm.patchValue({
-        "representative_user_id": 1
-    })
     if (this.branchForm.valid) {
       try {
-        let data = this.branchForm.value;
+        let data = { ...this.branchForm.value};
+      if (data.city_id && typeof data.city_id === 'object') {
+        data.city_id = data.city_id.city_id;
+    }
         const response = await firstValueFrom(
           this.branchService.addNewBranch(data).pipe(
             tap((res) => {

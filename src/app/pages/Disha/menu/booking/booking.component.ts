@@ -92,7 +92,7 @@ export class BookingComponent implements OnInit {
   }
 
   async gateAllcity() {
-    const storedCities = this.globalstore.get<{ id: number; name: string }[]>('cities');
+    const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
 
     if (storedCities) {
       this.cities = storedCities;
@@ -103,10 +103,9 @@ export class BookingComponent implements OnInit {
     try {
       await firstValueFrom(
         this.cityService.getAllCities({
-          fields: ["cities.id", "cities.name"],
-          max: 9000,
-          current: 0,
-          relation: null
+          "fields": [],
+          "max": 2000,
+          "current": 0
         }).pipe(
           tap((res) => {
             this.cities = Array.isArray(res.body) ? res.body : [];
@@ -261,20 +260,16 @@ export class BookingComponent implements OnInit {
   async gateAllBranch() {
     const payload =
     {
-      fields: ["branches.id", "branches.name"],
-      max: 12,
-      current: 0,
-      relation: null
+      "fields": [],
+      "max": 12,
+      "current": 0,
     }
 
     await firstValueFrom(this.branchService.getAllBranches(payload).pipe(
       tap(
         (res) => {
           if (res.body) {
-            this.branches = res.body.map((branch: any) => ({
-              label: branch.name,
-              value: branch.id
-            }));
+            this.branches = res.body;
           }
         }
       )
@@ -357,6 +352,6 @@ export class BookingComponent implements OnInit {
     const total = +(subtotal + cgstAmount + sgstAmount + igstAmount).toFixed(2);
 
     this.bookingForm.patchValue({ total }, { emitEvent: false });
-}
+  }
 
 }
