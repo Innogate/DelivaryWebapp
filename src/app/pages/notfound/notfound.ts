@@ -145,6 +145,8 @@ export class Notfound {
     ) { }
     logout()    {
         this.loginService.logout();
+        localStorage.clear(); 
+        sessionStorage.clear(); 
         this.router.navigate(['/pages/login']);
     }
 }

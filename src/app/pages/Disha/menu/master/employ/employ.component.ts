@@ -207,7 +207,7 @@ export class EmployComponent {
         "address": this.employeeForm.controls['address'].value,
         "employee_mobile": this.employeeForm.controls['employee_mobile'].value,
         "aadhar_no": this.employeeForm.controls['aadhar_no'].value,
-        "joining_date": this.datePipe.transform(this.employeeForm.controls['joining_date'].value, 'dd-MM-yyyy'),
+        "joining_date": this.datePipe.transform(this.employeeForm.controls['joining_date'].value, 'yyyy-MM-dd'),
         "designation": this.employeeForm.controls['designation'].value,
       },
       conditions: {

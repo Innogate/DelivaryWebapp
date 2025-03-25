@@ -3,7 +3,7 @@
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         User Master</h2>
 </div>
-<div class="flex flex-col bg-gray-100 p-2 min-h-screen relative scrollable-container">
+<div class="p-4 bg-slate-100  rounded-lg shadow-md  m-0 scrollable-container h-full">
 
     <div *ngIf="userList" class="flex flex-col bg-slate-100 py-2 min-h-screen">
         <div *ngFor="let user of userList"
@@ -153,7 +153,7 @@
                 <div class="flex items-center">
                     <label class="text-gray-700 font-medium">Phone Number/User ID</label>
                     <span class="text-red-500 ml-1">*</span>
-                </div> <input pInputText type="text" formControlName="mobile" />
+                </div> <input pInputText type="number" formControlName="mobile" />
                 <small class="text-red-500"
                     *ngIf="addUserForm.get('mobile')?.touched && addUserForm.get('mobile')?.invalid">
                     Enter a valid 10-digit phone number
