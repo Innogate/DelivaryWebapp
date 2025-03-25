@@ -52,31 +52,40 @@ export class BookingComponent implements OnInit {
     private globalstore: GlobalStorageService
   ) {
     this.bookingForm = this.fb.group({
+        // package section
+        slip_no: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Booking sleep number
+        package_count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], //  package count
+        package_weight: ['', [Validators.required,]], // package weight
+        package_value: ['',], // package value
+        package_contents: ['0'], // package contents
 
-      consignee_id: [],
-      consignor_id: [],
-      consignor_name: ['', [Validators.required]],
-      consignor_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      consignee_name: ['', [Validators.required]],
-      consignee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      destination_city_id: [null, Validators.required],
-      destination_branch_id: [null, Validators.required],
-      transport_mode: [''],
-      count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      weight: ['', [Validators.required,]],
-      value: ['',],
-      paid_type: "Prepaid",
-      contents: ['0'],
-      address: ['0'],
-      charges: ['', [Validators.required,]],
-      shipper: ['',],
-      other: ['',],
-      cgst: ['', [Validators.required,]],
-      sgst: ['', [Validators.required,]],
-      igst: ['', [Validators.required,]],
-      total: ['', [Validators.required,]],
-      account: [],
-      amount: []
+        // booking details
+        consignor_name: ['', [Validators.required]], // consignor name
+        consignor_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // consignor mobile number
+        consignee_name: ['', [Validators.required]], // consignee name
+        consignee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // consignee mobile number
+        destination_city_id: [null, Validators.required], // destination city
+        destination_branch_id: [null, Validators.required], // destination branch
+        transport_mode: [''], // transport mode
+
+
+        // Billing section
+        paid_type: "Prepaid", // payment type
+        booking_address: ['0'], // booking address
+        shipper_charges: ['',], // shipper charges
+        other_charges: ['',], // other charges
+        declared_value: ['', [Validators.required,]],
+        cgst: ['', [Validators.required,]],
+        sgst: ['', [Validators.required,]],
+        igst: ['', [Validators.required,]],
+        total_value: ['', [Validators.required,]],
+
+        to_pay: [''],
+        on_account: [],
+        amount: [],
+
+        // extra fields
+        xp_branch_id: null,
     });
 
   }

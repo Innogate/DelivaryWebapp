@@ -4,7 +4,7 @@
 </div>
 <div class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full">
     <!-- Slip and Consignor Details -->
-   
+
     <form [formGroup]="bookingForm">
         <div class="grid grid-cols-2 gap-4 my-2">
 
@@ -12,7 +12,7 @@
                 <label for="slipNo" class="font-medium flex items-center">
                     <i class="pi pi-file text-blue-600 mr-2"></i> Slip No <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="slipNo" type="text" class="p-inputtext p-component" />
+                <input pInputText id="slipNo" formControlName="slip_no" type="text" class="p-inputtext p-component" />
             </div>
 
             <div class="flex flex-col">
@@ -151,14 +151,14 @@
 
             <!-- Checkbox (50% width) -->
             <div class="flex-1 flex items-center justify-center">
-                <p-checkbox inputId="toPayCheckbox" name="toPay" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="toPayCheckbox" name="toPay" formControlName="to_pay" value="Cheese"></p-checkbox>
                 <label for="toPayCheckbox" class="ml-2"> To Pay </label>
             </div>
         </div>
 
 
 
-        <!-- 
+        <!--
         <p-divider align="left" type="solid" class="border-blue-400">
             <div class="inline-flex items-center bg-cyan-400 text-white px-3 py-1 rounded-lg shadow-md">
                 <i class="pi pi-clone mr-2"></i>
@@ -172,14 +172,14 @@
                 <label for="packages" class="font-medium flex items-center">
                     No Pack <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="packages" formControlName="count" type="text" class="p-inputtext p-component" />
+                <input pInputText id="packages" formControlName="package_count" type="text" class="p-inputtext p-component" />
                 <small
-                    *ngIf="bookingForm.controls['count'].hasError('required') && bookingForm.controls['count'].touched"
+                    *ngIf="bookingForm.controls['package_count'].hasError('required') && bookingForm.controls['package_count'].touched"
                     class="text-red-500">
                     No of Packages is required.
                 </small>
                 <small
-                    *ngIf="bookingForm.controls['count'].hasError('pattern') && bookingForm.controls['count'].touched"
+                    *ngIf="bookingForm.controls['package_count'].hasError('pattern') && bookingForm.controls['package_count'].touched"
                     class="text-red-500">
                     Invalid Packages
                 </small>
@@ -188,15 +188,15 @@
                 <label for="weight" class="font-medium flex items-center">
                     <i class="pi pi-weight text-gray-600 mr-2"></i> Weight <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="weight" formControlName="weight" placeholder="KG" type="text"
+                <input pInputText id="weight" formControlName="package_weight" placeholder="KG" type="text"
                     class="p-inputtext p-component" />
                 <small
-                    *ngIf="bookingForm.controls['weight'].hasError('required') && bookingForm.controls['weight'].touched"
+                    *ngIf="bookingForm.controls['package_weight'].hasError('required') && bookingForm.controls['package_weight'].touched"
                     class="text-red-500">
                     Weight is required.
                 </small>
                 <small
-                    *ngIf="bookingForm.controls['weight'].hasError('pattern') && bookingForm.controls['weight'].touched"
+                    *ngIf="bookingForm.controls['package_weight'].hasError('pattern') && bookingForm.controls['package_weight'].touched"
                     class="text-red-500">
                     Invalid Weight
                 </small>
@@ -205,14 +205,14 @@
                 <label for="charges" class="font-medium flex items-center">
                     Charges/KG <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="charges" formControlName="charges" type="text" class="p-inputtext p-component" />
+                <input pInputText id="charges" formControlName="package_value" type="text" class="p-inputtext p-component" />
                 <small
-                    *ngIf="bookingForm.controls['charges'].hasError('required') && bookingForm.controls['charges'].touched"
+                    *ngIf="bookingForm.controls['package_value'].hasError('required') && bookingForm.controls['package_contents'].touched"
                     class="text-red-500">
                     Charges is required.
                 </small>
                 <small
-                    *ngIf="bookingForm.controls['charges'].hasError('pattern') && bookingForm.controls['charges'].touched"
+                    *ngIf="bookingForm.controls['package_contents'].hasError('pattern') && bookingForm.controls['package_contents'].touched"
                     class="text-red-500">
                     Invalid format
                 </small>
@@ -232,21 +232,21 @@
                 <label for="shipper" class="font-medium flex items-center">
                     <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
                 </label>
-                <input pInputText id="shipper" formControlName="shipper" type="text" class="p-inputtext p-component" />
+                <input pInputText id="shipper" formControlName="shipper_charges" type="text" class="p-inputtext p-component" />
                 <small
-                    *ngIf="bookingForm.controls['shipper'].hasError('pattern') && bookingForm.controls['shipper'].touched"
+                    *ngIf="bookingForm.controls['shipper_charges'].hasError('pattern') && bookingForm.controls['shipper_charges'].touched"
                     class="text-red-500">
                     Invalid format
                 </small>
             </div>
 
             <div class="flex flex-col">
-                <label for="other" class="font-medium flex items-center">
+                <label for="other_charges" class="font-medium flex items-center">
                     <i class="pi pi-file text-gray-600 mr-2"></i> Other
                 </label>
-                <input pInputText formControlName="other" type="text" class="p-inputtext p-component" />
+                <input pInputText formControlName="other_charges" type="text" class="p-inputtext p-component" />
                 <small
-                    *ngIf="bookingForm.controls['other'].hasError('pattern') && bookingForm.controls['other'].touched"
+                    *ngIf="bookingForm.controls['other_charges'].hasError('pattern') && bookingForm.controls['other_charges'].touched"
                     class="text-red-500">
                     Invalid format
                 </small>
@@ -255,10 +255,10 @@
                 <label for="declaredValue" class="font-medium flex items-center">
                     Declared Value
                 </label>
-                <input pInputText id="declaredValue" formControlName="value" type="text"
+                <input pInputText id="declaredValue" formControlName="declared_value" type="text"
                     class="p-inputtext p-component" />
                 <small
-                    *ngIf="bookingForm.controls['value'].hasError('pattern') && bookingForm.controls['value'].touched"
+                    *ngIf="bookingForm.controls['declared_value'].hasError('pattern') && bookingForm.controls['declared_value'].touched"
                     class="text-red-500">
                     Invalid Declared Value
                 </small>
@@ -318,15 +318,15 @@
                 <label for="total" class="font-medium flex items-center">
                     <i class="pi pi-calculator text-blue-600 mr-2"></i> Total <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="total" formControlName="total" type="text"
+                <input pInputText id="total" formControlName="total_value" type="text"
                     class="p-inputtext p-component w-full" />
                 <small
-                    *ngIf="bookingForm.controls['total'].hasError('required') && bookingForm.controls['total'].touched"
+                    *ngIf="bookingForm.controls['total_value'].hasError('required') && bookingForm.controls['total_value'].touched"
                     class="text-red-500">
                     Total is required.
                 </small>
                 <small
-                    *ngIf="bookingForm.controls['total'].hasError('pattern') && bookingForm.controls['total'].touched"
+                    *ngIf="bookingForm.controls['total_value'].hasError('pattern') && bookingForm.controls['total_value'].touched"
                     class="text-red-500">
                     Invalid format
                 </small>
@@ -334,7 +334,7 @@
             <!-- Account Yes/No Radio Buttons -->
             <div class="flex-1 flex items-center justify-center">
                 <label class="font-medium p-4">On Account:</label>
-                <p-checkbox inputId="onAccountCheckbox" name="onAccount" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="onAccountCheckbox" name="onAccount" formControlName="on_account" value="Cheese"></p-checkbox>
             </div>
         </div>
 
