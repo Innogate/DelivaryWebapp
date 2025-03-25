@@ -89,6 +89,7 @@ export class BookingSlipComponent {
           (res) => {
             if (res.body) {
               this.alertService.success(res.message);
+              this.gateAllToken();
               this.BookingSlip.reset();
             }
           },
