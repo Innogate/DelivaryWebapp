@@ -11,4 +11,10 @@ export class coloaderService {
   addNewColoader(data: any): Observable<any> {
     return this.apiService.post('/master/coloader/new', data);
   }
+
+
+  fetchColoader(data: any): Observable<any> {
+    return this.apiService.post('/master/coloader', data);
+  }
+  
 }

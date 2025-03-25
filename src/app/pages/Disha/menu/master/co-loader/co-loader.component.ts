@@ -36,11 +36,12 @@ export class CoLoaderComponent {
   coloaderForm: FormGroup;
   filteredCities: any[] = [];
   selectedCity: any = null;
+  coloaderList: any[] = [];
 
   constructor(private fb: FormBuilder, private globalstore: GlobalStorageService, private cityService: CityService, private coloaderService: coloaderService, private alertService: AlertService) {
     this.coloaderForm = this.fb.group({
       coloader_name: ['', Validators.required],
-      coloader_contact: [''],
+      coloader_contuct: [''],
       coloader_address: [''],
       coloader_postal_code: [''],
       coloader_email: [''],
@@ -50,6 +51,7 @@ export class CoLoaderComponent {
 
   ngOnInit(): void {
     this.gateAllcity();
+    this.gateAllColoaders();
   }
 
 
@@ -110,19 +112,41 @@ export class CoLoaderComponent {
       formData.coloader_city = formData.coloader_city.city_id;
     }
     if( this.coloaderForm.valid){
-      await this.coloaderService.addNewColoader(formData).pipe(
+      console.log("clearing coloader");
+      await firstValueFrom(this.coloaderService.addNewColoader(formData).pipe(
         tap((response) => {
-          if (response.body) {
             this.alertService.success(response.message);
             this.coloaderForm.reset();
-          }
+            this.gateAllColoaders();
         },
           (error) => {
             this.alertService.error(error.error.message);
           }
         )
-      )
+      ))
     }
+  }
+
+
+  // gate all coloaders
+  async gateAllColoaders() {
+    const payload = {
+      "fields" : [],
+      "max" : 12,
+      "current" : 0
+    }
+    await firstValueFrom(this.coloaderService.fetchColoader(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.coloaderList = res.body;
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
   }
 
 

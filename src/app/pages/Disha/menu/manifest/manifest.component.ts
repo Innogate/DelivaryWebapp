@@ -16,6 +16,8 @@ import { CityService } from '../../../../../services/city.service';
 import { GlobalStorageService } from '../../../../../services/global-storage.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { coloaderService } from '../../../../../services/coloader.service';
+import { AlertService } from '../../../../../services/alert.service';
 @Component({
   selector: 'app-manifest',
   imports: [DropdownModule, SelectModule, TableModule, AutoCompleteModule, RadioButtonModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule, DividerModule, CheckboxModule],
@@ -39,8 +41,13 @@ export class ManifestComponent {
   branches: any[] = [];
   coLoaderOptions: any[] = [];
   form: FormGroup;
-
-  constructor(private branchService: BranchService, private fb: FormBuilder, private cityService: CityService, private globalstore: GlobalStorageService) {
+  coloaderList: any[] = [];
+  constructor(private branchService: BranchService,
+    private coloaderService: coloaderService,
+    private fb: FormBuilder,
+    private cityService: CityService,
+    private globalstore: GlobalStorageService,
+    private alertService: AlertService) {
     this.form = this.fb.group({
       branch_name: ['', Validators.required],
       destination_city_id: ['', Validators.required],
@@ -53,6 +60,7 @@ export class ManifestComponent {
     this.gateAllBranch();
     this.loadTransportModes();
     this.gateAllcity();
+    this.gateAllColoaders();
   }
 
 
@@ -84,12 +92,6 @@ export class ManifestComponent {
       console.error('Error fetching cities:', error);
     }
   }
-
-
-
-
-
-
   async gateAllBranch() {
     const payload =
     {
@@ -103,6 +105,29 @@ export class ManifestComponent {
           if (res.body) {
             this.branches = res.body;
           }
+        }
+      )
+    ))
+  }
+
+
+
+  // gate all coloaders
+  async gateAllColoaders() {
+    const payload = {
+      "fields": [],
+      "max": 12,
+      "current": 0
+    }
+    await firstValueFrom(this.coloaderService.fetchColoader(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.coloaderList = res.body;
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
         }
       )
     ))
@@ -228,11 +253,11 @@ export class ManifestComponent {
   generatePDF() {
     const doc = new jsPDF();
     const today = new Date();
-  const formattedDate = today.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  });
+    const formattedDate = today.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
     // **Set Page Background Color**
     doc.setFillColor(230, 240, 255); // Light Blue Background
     doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F'); // Fills the page
@@ -316,6 +341,6 @@ export class ManifestComponent {
     // **Save PDF**
     doc.save('Styled_Manifest_Report.pdf');
   }
-  
+
 
 }

@@ -28,13 +28,11 @@
                     <label for="cities" class="font-medium flex items-center">
                         <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
                     </label>
-                    
                     <p-autoComplete [(ngModel)]="selectedCity"
                         formControlName="destination_city_id"
                         [suggestions]="filteredCities"
                         (completeMethod)="searchCity($event)"
                         optionLabel="city_name"
-                        optionValue="city_id"
                         placeholder="Search and Select a City"
                         (onSelect)="onCitySelect($event)"
                         class="w-full">
@@ -54,7 +52,7 @@
                     <label class="font-medium flex items-center">
                         <i class="pi pi-truck text-green-600 mr-2"></i> Co-loader <span class="text-red-500">*</span>
                     </label>
-                    <p-dropdown [options]="coLoaderOptions" formControlName="co_loader" placeholder="Select Co-loader"
+                    <p-dropdown [options]="coloaderList" optionLabel="coloader_name" optionValue="coloader_id"  formControlName="co_loader" placeholder="Select Co-loader"
                         class="w-full">
                     </p-dropdown>
                 </div>
