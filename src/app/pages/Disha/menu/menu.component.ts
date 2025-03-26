@@ -32,12 +32,12 @@ export class MenuComponent {
   manifest: boolean = false;
   decodedToken: any;
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.getAccess();
     const token: any = this.globalstore.get('token');;
     this.decodedToken = this.decodeJwt(token);
     console.log(this.decodedToken.branch_id);
-    this.getBranchById(this.decodedToken.branch_id);
+   await this.getBranchById(this.decodedToken.branch_id);
   }
 
   decodeJwt(token: string): any {

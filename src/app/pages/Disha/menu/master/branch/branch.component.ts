@@ -309,8 +309,4 @@ export class BranchComponent {
       this.alertService.error('Please fill in all the required fields correctly.');
     }
   }
-
-  grandUser(branch: any) {
-    this.router.navigate(["/pages/access/" + branch.user_id]);
-  }
 }

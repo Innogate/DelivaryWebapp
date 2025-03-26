@@ -2,7 +2,7 @@
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         Branch Master</h2>
 </div>
-<div class="flex flex-col bg-slate-100 p-2 h-full w-full relative scrollable-container">
+<div class="p-4 bg-slate-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full">
     <!-- Brach List -->
     <div *ngIf="branchList.length" class="flex flex-col bg-slate-100 py-2 min-h-screen">
         <div *ngFor="let branch of branchList"
@@ -110,11 +110,29 @@
                 <span
                     class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-blue-400">
                     <i class="pi pi-building text-blue-500 mr-2"></i>
-                    <p-dropdown [filter]="true" formControlName="representative_user_id" class="w-full custom-dropdown" [options]="user"
-                    optionLabel="first_name" optionValue="user_id" placeholder="Select user"
-                     [showClear]="true"
+                    <p-dropdown 
+                    [filter]="true" 
+                    formControlName="representative_user_id" 
+                    class="w-full custom-dropdown" 
+                    [options]="user"
+                    optionValue="user_id"
+                    placeholder="Select user"
+                    [showClear]="true"
                     [emptyMessage]="'User not found'">
+                    
+                    <!-- Custom display for dropdown list -->
+                    <ng-template let-user pTemplate="item">
+                        {{ user.first_name }} {{ user.last_name }}
+                    </ng-template>
+                
+                    <!-- Custom display for selected value -->
+                    <ng-template let-user pTemplate="selectedItem">
+                        {{ user?.first_name }} {{ user?.last_name }}
+                    </ng-template>
+                
                 </p-dropdown>
+                
+                
                 </span>
             </div>
 
@@ -164,8 +182,8 @@
                 <!-- State Dropdown -->
                 <div class="w-1/2">
                     <label class="text-gray-700 font-medium mb-2">State<span class="text-red-500 ml-1">*</span></label>
-                    <p-dropdown [filter]="true" formControlName="state_id" class="w-full custom-dropdown" [options]="states"
-                        optionLabel="state_name" optionValue="state_id" [showClear]="true"
+                    <p-dropdown [filter]="true" formControlName="state_id" class="w-full custom-dropdown"
+                        [options]="states" optionLabel="state_name" optionValue="state_id" [showClear]="true"
                         [emptyMessage]="'States not found'" placeholder="Select State">
                     </p-dropdown>
                 </div>
@@ -175,15 +193,10 @@
                     <label for="cities" class="font-medium flex items-center">
                         <i class="pi pi-map-marker text-red-500 mb-0"></i> City <span class="text-red-500">*</span>
                     </label>
-                    <p-autoComplete
-                        formControlName="city_id"
-                        [suggestions]="filteredCities"
-                        (completeMethod)="searchCity($event)"
-                        optionLabel="city_name"
-                        placeholder="Search and Select a City"
-                        (onSelect)="onCitySelect($event)"
-                        [emptyMessage]="'Cities not recorded for this state'"
-                        class="w-full">
+                    <p-autoComplete formControlName="city_id" [suggestions]="filteredCities"
+                        (completeMethod)="searchCity($event)" optionLabel="city_name"
+                        placeholder="Search and Select a City" (onSelect)="onCitySelect($event)"
+                        [emptyMessage]="'Cities not recorded for this state'" class="w-full">
                     </p-autoComplete>
                 </div>
             </div>

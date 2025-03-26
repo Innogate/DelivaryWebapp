@@ -17,7 +17,7 @@ import { GlobalStorageService } from '../../../services/global-storage.service';
                 <i class="pi pi-bars"></i>
             </button>
             <a class="layout-topbar-logo" routerLink="/">
-<span>{{ branchName?.branch_name || 'Disha Airways' }}</span>
+        <span>{{ branchName?.branch_name || 'Disha Airways' }}</span>
             </a>
         </div>
 

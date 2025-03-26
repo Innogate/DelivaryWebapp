@@ -69,8 +69,6 @@ export class BookingComponent implements OnInit {
       sgst: this.branchInfo.sgst,
       igst: this.branchInfo.igst,
     })
-
-
   }
 
 
