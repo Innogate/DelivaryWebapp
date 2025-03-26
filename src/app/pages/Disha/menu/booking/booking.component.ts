@@ -64,7 +64,7 @@ export class BookingComponent implements OnInit {
       .subscribe(() => this.calculateTotal());
     this.gateAllcity();
     this.branchInfo = this.globalstore.get('branchInfo');
-
+    this.onCheckboxChange(false);
   }
 
 
