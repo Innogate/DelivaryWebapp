@@ -73,7 +73,7 @@ export class BranchComponent {
       city_id: [null, [Validators.required, Validators.min(1)]],
       state_id: [null, [Validators.required, Validators.min(1)]],
       pin_code: ['', [Validators.pattern(/^[0-9]{6}$/)]],
-      contact_no: ['', [Validators.required]],
+      contact_no: [''],
       email: ['', [Validators.email]],
       gst_no: [''],
       cin_no: [''],
@@ -308,9 +308,5 @@ export class BranchComponent {
       console.log('Invalid Form Data:');
       this.alertService.error('Please fill in all the required fields correctly.');
     }
-  }
-
-  grandUser(branch: any) {
-    this.router.navigate(["/pages/access/" + branch.user_id]);
   }
 }
