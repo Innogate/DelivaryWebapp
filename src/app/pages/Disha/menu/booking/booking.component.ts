@@ -64,11 +64,7 @@ export class BookingComponent implements OnInit {
       .subscribe(() => this.calculateTotal());
     this.gateAllcity();
     this.branchInfo = this.globalstore.get('branchInfo');
-    this.bookingForm.patchValue({
-      cgst: this.branchInfo.cgst,
-      sgst: this.branchInfo.sgst,
-      igst: this.branchInfo.igst,
-    })
+
   }
 
 
@@ -220,6 +216,7 @@ export class BookingComponent implements OnInit {
   }
 
   calculateTotal() {
+    // Get the values from the form and convert them to numbers
     const shipper = Number(this.bookingForm.get('shipper_charges')?.value) || 0;
     const other = Number(this.bookingForm.get('other_charges')?.value) || 0;
     const cgst = Number(this.bookingForm.get('cgst')?.value) || 0;
@@ -235,10 +232,35 @@ export class BookingComponent implements OnInit {
     const sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
     const igstAmount = +(subtotal * (igst / 100)).toFixed(2);
 
-    // Final total
-    const total_value = +(subtotal + cgstAmount + sgstAmount + igstAmount).toFixed(2);
+    // Final total calculation
+    let total_value: number;
+    if (this.bookingForm.get('to_pay')?.value) {
+      // If 'toPay' is true, use IGST
+      total_value = +(subtotal + igstAmount).toFixed(2);
+    } else {
+      // If 'toPay' is false, use CGST and SGST
+      total_value = +(subtotal + cgstAmount + sgstAmount).toFixed(2);
+    }
 
+    // Update the form control for total_value
     this.bookingForm.patchValue({ total_value }, { emitEvent: false });
   }
+
+  onCheckboxChange(data: any) {
+    if (data) {
+      this.bookingForm.patchValue({
+        cgst: ['0'],
+        sgst: ['0'],
+        igst: this.branchInfo.igst,
+      })
+    } else {
+      this.bookingForm.patchValue({
+        cgst: this.branchInfo.cgst,
+        sgst: this.branchInfo.sgst,
+        igst: ['0'],
+      })
+    }
+  }
+
 
 }
