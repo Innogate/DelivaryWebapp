@@ -64,6 +64,7 @@ export class BranchComponent {
     private globalstore: GlobalStorageService
   ) {
     this.branchForm = this.fb.group({
+      branch_id: [],
       branch_name: ['', [Validators.required, Validators.minLength(3)]],
       branch_short_name: [''],
       alias_name: ['', [Validators.minLength(3)]],
@@ -228,38 +229,13 @@ export class BranchComponent {
   }
 
   async updateBranch() {
-    console.log(this.branchForm.value);
+    // console.log(this.branchForm.value);
     if (this.branchForm.valid) {
       const payload = {
-        updates: {
-          "branches.name": this.branchForm.value.name,
-          "branches.address": this.branchForm.value.address,
-          "branches.alias_name": this.branchForm.value.alias_name,
-          "branches.city_id": this.branchForm.value.city_id,
-          "branches.state_id": this.branchForm.value.state_id,
-          "branches.pin_code": this.branchForm.value.pin_code,
-          "branches.contact_no": this.branchForm.value.contact_no,
-          "branches.email": this.branchForm.value.email,
-          "branches.gst_no": this.branchForm.value.gst_no,
-          "branches.cin_no": this.branchForm.value.cin_no,
-          "branches.udyam_no": this.branchForm.value.udyam_no,
-          "branches.cgst": this.branchForm.value.cgst,
-          "branches.sgst": this.branchForm.value.sgst,
-          "branches.igst": this.branchForm.value.igst,
-          "branches.logo": this.branchForm.value.logo,
-        },
-        "conditions": "branches.id=" + this.branchForm.value.branch_id,
+        updates: 
+          { ...this.branchForm.value },
+        "conditions": "branches.branch_id=" + this.branchForm.value.branch_id,
       }
-
-      const payload2 = {
-        "updates": {
-          "users.mobile": this.branchForm.value.contact_no,
-        },
-        "conditions": {
-          "users.id": this.branchForm.value.user_id,
-        }
-      }
-
       await firstValueFrom(this.branchService.updateBranch(payload).pipe(
         tap((response) => {
           this.alertService.success(response.message);
@@ -334,11 +310,7 @@ export class BranchComponent {
     }
   }
 
-
-
   grandUser(branch: any) {
     this.router.navigate(["/pages/access/" + branch.user_id]);
   }
-
-
 }

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { GlobalStorageService } from '../../../services/global-storage.service';
 
 @Component({
     selector: 'app-topbar',
@@ -16,7 +17,7 @@ import { LayoutService } from '../service/layout.service';
                 <i class="pi pi-bars"></i>
             </button>
             <a class="layout-topbar-logo" routerLink="/">
-                <span>Disha Airways</span>
+<span>{{ branchName?.branch_name || 'Disha Airways' }}</span>
             </a>
         </div>
 
@@ -45,10 +46,15 @@ import { LayoutService } from '../service/layout.service';
 })
 export class AppTopbar {
     items!: MenuItem[];
-
-    constructor(public layoutService: LayoutService) {}
+    branchName: any;
+    constructor(public layoutService: LayoutService, private globalstorage: GlobalStorageService) { }
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
     }
+
+    ngOnInit() {
+        this.branchName = this.globalstorage.get('branchInfo');
+    }
+
 }

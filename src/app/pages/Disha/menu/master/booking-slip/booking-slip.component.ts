@@ -34,6 +34,7 @@ export class BookingSlipComponent {
 
   ngOnInit() {
     this.gateAllToken();
+    this.gateAllBranch();
   }
 
 
@@ -124,7 +125,6 @@ export class BookingSlipComponent {
 
   toggleAddState() {
     this.showAddState = !this.showAddState;
-    this.gateAllBranch();
   }
 
   onTouchStart(event: TouchEvent) {
