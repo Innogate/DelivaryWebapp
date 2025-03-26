@@ -52,40 +52,40 @@ export class BookingComponent implements OnInit {
     private globalstore: GlobalStorageService
   ) {
     this.bookingForm = this.fb.group({
-        // package section
-        slip_no: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Booking sleep number
-        package_count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], //  package count
-        package_weight: ['', [Validators.required,]], // package weight
-        package_value: ['',], // package value
-        package_contents: ['0'], // package contents
+      // package section
+      slip_no: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Booking sleep number
+      package_count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], //  package count
+      package_weight: ['', [Validators.required,]], // package weight
+      package_value: ['',], // package value
+      package_contents: ['0'], // package contents
 
-        // booking details
-        consignor_name: ['', [Validators.required]], // consignor name
-        consignor_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // consignor mobile number
-        consignee_name: ['', [Validators.required]], // consignee name
-        consignee_mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // consignee mobile number
-        destination_city_id: [null, Validators.required], // destination city
-        destination_branch_id: [null, Validators.required], // destination branch
-        transport_mode: [''], // transport mode
+      // booking details
+      consignor_name: ['', [Validators.required]], // consignor name
+      consignor_mobile: ['', [Validators.pattern('^[0-9]{10}$')]], // consignor mobile number
+      consignee_name: ['', [Validators.required]], // consignee name
+      consignee_mobile: ['', [Validators.pattern('^[0-9]{10}$')]], // consignee mobile number
+      destination_city_id: [null, Validators.required], // destination city
+      destination_branch_id: [null, Validators.required], // destination branch
+      transport_mode: [''], // transport mode
 
 
-        // Billing section
-        paid_type: "Prepaid", // payment type
-        booking_address: ['0'], // booking address
-        shipper_charges: ['',], // shipper charges
-        other_charges: ['',], // other charges
-        declared_value: ['', [Validators.required,]],
-        cgst: ['', [Validators.required,]],
-        sgst: ['', [Validators.required,]],
-        igst: ['', [Validators.required,]],
-        total_value: ['', [Validators.required,]],
+      // Billing section
+      paid_type: "Prepaid", // payment type
+      booking_address: ['0'], // booking address
+      shipper_charges: ['',], // shipper charges
+      other_charges: ['',], // other charges
+      declared_value: ['',],
+      cgst: ['',],
+      sgst: ['',],
+      igst: [''],
+      total_value: ['', [Validators.required,]],
 
-        to_pay: [''],
-        on_account: [],
-        amount: [],
+      to_pay: [false],
+      on_account: [false],
+      amount: [],
 
-        // extra fields
-        xp_branch_id: null,
+      // extra fields
+      xp_branch_id: null,
     });
 
   }
@@ -128,14 +128,10 @@ export class BookingComponent implements OnInit {
     }
     this.filteredCities = [];
   }
-
-
-
-
   searchCity(event: any) {
     const query = event.query.toLowerCase();
     this.filteredCities = this.cities.filter(city =>
-      city.name.toLowerCase().includes(query)
+      city.city_name.toLowerCase().includes(query)
     );
   }
 
@@ -147,96 +143,6 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  // gate Consignee
-  async gateConsignee() {
-    const payload = {
-      "mobile": this.bookingForm.get('consignee_mobile')?.value
-    }
-    await firstValueFrom(this.bookingService.GetConsigneebyMobileNumber(payload).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.bookingForm.patchValue({
-              consignee_name: res.body.consignee_name,
-              consignee_id: res.body.id,
-            });
-          }
-        },
-        // error => {
-        //   this.alertService.error(error.error.message);
-        // }
-      )
-    ))
-  }
-
-  // gate Consignor
-  async gateConsignor() {
-    const payload = {
-      "mobile": this.bookingForm.get('consignor_mobile')?.value
-    }
-    await firstValueFrom(this.bookingService.GetConsignorbyMobileNumber(payload).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.bookingForm.patchValue({
-              consignor_name: res.body.consignor_name,
-              consignor_id: res.body.id,
-            });
-          }
-        },
-        // error => {
-        //   this.alertService.error(error.error.message);
-        // }
-      )
-    ))
-  }
-
-  // Create Consignee
-  async createConsignee() {
-    const payload = {
-      "consignee_name": this.bookingForm.get('consignee_name')?.value,
-      "consignee_mobile": this.bookingForm.get('consignee_mobile')?.value
-    }
-    console.log(payload);
-    await firstValueFrom(this.bookingService.CreateConsignee(payload).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.bookingForm.patchValue({
-              consignee_id: res.body.consignee_id,
-            });
-          }
-        },
-        error => {
-          this.alertService.error(error.error.message);
-        }
-      )
-    ))
-  }
-
-
-  // Create Consignor
-  async createConsignor() {
-    const payload = {
-      "consignor_name": this.bookingForm.get('consignor_name')?.value,
-      "consignor_mobile": this.bookingForm.get('consignor_mobile')?.value
-    }
-    console.log(payload);
-    await firstValueFrom(this.bookingService.CreateConsignor(payload).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.bookingForm.patchValue({
-              consignor_id: res.body.consignor_id,
-            });
-          }
-        },
-        error => {
-          this.alertService.error(error.error.message);
-        }
-      )
-    ))
-  }
 
 
   async saveBooking() {
@@ -245,25 +151,23 @@ export class BookingComponent implements OnInit {
       return;
     }
 
-    try {
-      if (!this.bookingForm.get('consignor_id')?.value) {
-        await this.createConsignor();
-      }
-      if (!this.bookingForm.get('consignee_id')?.value) {
-        await this.createConsignee();
-      }
-
-      const res = await firstValueFrom(this.bookingService.addNewBooking(this.bookingForm.value));
-
-      if (res.body) {
-        this.alertService.success(res.message);
-        this.bookingForm.reset();
-      }
-    } catch (error: any) {
-      const errorMessage = error?.error?.message || error?.message || "An error occurred while saving booking.";
-      this.alertService.error(errorMessage);
-      console.error("Booking Save Error:", error);
+    let formData = { ...this.bookingForm.value };
+    if (formData.destination_city_id && typeof formData.destination_city_id === 'object') {
+      formData.destination_city_id = formData.destination_city_id.city_id;
     }
+
+    await firstValueFrom(this.bookingService.addNewBooking(formData).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.alertService.success(res.message);
+          }
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
   }
 
   async gateAllBranch() {
@@ -337,10 +241,10 @@ export class BookingComponent implements OnInit {
   }
 
   calculateTotal() {
-    const weight = Number(this.bookingForm.get('weight')?.value) || 0;
-    const charges = Number(this.bookingForm.get('charges')?.value) || 0;
-    const shipper = Number(this.bookingForm.get('shipper')?.value) || 0;
-    const other = Number(this.bookingForm.get('other')?.value) || 0;
+    const weight = Number(this.bookingForm.get('package_weight')?.value) || 0;
+    const charges = Number(this.bookingForm.get('package_value')?.value) || 0;
+    const shipper = Number(this.bookingForm.get('shipper_charges')?.value) || 0;
+    const other = Number(this.bookingForm.get('other_charges')?.value) || 0;
     const cgst = Number(this.bookingForm.get('cgst')?.value) || 0;
     const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
     const igst = Number(this.bookingForm.get('igst')?.value) || 0;
@@ -358,9 +262,9 @@ export class BookingComponent implements OnInit {
     const igstAmount = +(subtotal * (igst / 100)).toFixed(2);
 
     // Final total
-    const total = +(subtotal + cgstAmount + sgstAmount + igstAmount).toFixed(2);
+    const total_value = +(subtotal + cgstAmount + sgstAmount + igstAmount).toFixed(2);
 
-    this.bookingForm.patchValue({ total }, { emitEvent: false });
+    this.bookingForm.patchValue({ total_value }, { emitEvent: false });
   }
 
 }

@@ -12,7 +12,7 @@
                 <label for="slipNo" class="font-medium flex items-center">
                     <i class="pi pi-file text-blue-600 mr-2"></i> Slip No <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="slipNo" formControlName="slip_no" type="text" class="p-inputtext p-component" />
+                <input pInputText id="slipNo" formControlName="slip_no" type="number" class="p-inputtext p-component" />
             </div>
 
             <div class="flex flex-col">
@@ -40,8 +40,8 @@
                 <label for="consignorMobile" class="font-medium flex items-center">
                     <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile
                 </label>
-                <input pInputText id="consignorMobile" type="text" formControlName="consignor_mobile"
-                    class="p-inputtext p-component" (blur)="gateConsignor()" />
+                <input pInputText id="consignorMobile" type="number" formControlName="consignor_mobile"
+                    class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['consignor_mobile'].hasError('required') && bookingForm.controls['consignor_mobile'].touched"
                     class="text-red-500">
@@ -80,8 +80,8 @@
                 <label for="consigneeMobile" class="font-medium flex items-center">
                     <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile
                 </label>
-                <input pInputText id="consigneeMobile" type="text" formControlName="consignee_mobile"
-                    class="p-inputtext p-component" (blur)="gateConsignee()" />
+                <input pInputText id="consigneeMobile" type="number" formControlName="consignee_mobile"
+                    class="p-inputtext p-component"/>
                 <small
                     *ngIf="bookingForm.controls['consignee_mobile'].hasError('required') && bookingForm.controls['consignee_mobile'].touched"
                     class="text-red-500">
@@ -123,7 +123,7 @@
                     <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
                 </label>
                 <p-autoComplete [(ngModel)]="selectedCity" formControlName="destination_city_id"
-                    [suggestions]="filteredCities" (completeMethod)="searchCity($event)" optionLabel="name"
+                    [suggestions]="filteredCities" (completeMethod)="searchCity($event)" optionLabel="city_name"
                     placeholder="Search and Select a City" (onSelect)="onCitySelect($event)" class="w-full">
                 </p-autoComplete>
                 <small
@@ -151,7 +151,7 @@
 
             <!-- Checkbox (50% width) -->
             <div class="flex-1 flex items-center justify-center">
-                <p-checkbox inputId="toPayCheckbox" name="toPay" formControlName="to_pay" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="toPayCheckbox"   binary="true" name="toPay" formControlName="to_pay" value="Cheese"></p-checkbox>
                 <label for="toPayCheckbox" class="ml-2"> To Pay </label>
             </div>
         </div>
@@ -172,7 +172,7 @@
                 <label for="packages" class="font-medium flex items-center">
                     No Pack <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="packages" formControlName="package_count" type="text" class="p-inputtext p-component" />
+                <input pInputText id="packages" formControlName="package_count" type="number" class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['package_count'].hasError('required') && bookingForm.controls['package_count'].touched"
                     class="text-red-500">
@@ -188,7 +188,7 @@
                 <label for="weight" class="font-medium flex items-center">
                     <i class="pi pi-weight text-gray-600 mr-2"></i> Weight <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="weight" formControlName="package_weight" placeholder="KG" type="text"
+                <input pInputText id="weight" formControlName="package_weight" placeholder="KG" type="number"
                     class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['package_weight'].hasError('required') && bookingForm.controls['package_weight'].touched"
@@ -205,7 +205,7 @@
                 <label for="charges" class="font-medium flex items-center">
                     Charges/KG <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="charges" formControlName="package_value" type="text" class="p-inputtext p-component" />
+                <input pInputText id="charges" formControlName="package_value" type="number" class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['package_value'].hasError('required') && bookingForm.controls['package_contents'].touched"
                     class="text-red-500">
@@ -222,7 +222,7 @@
                 <label for="charges" class="font-medium flex items-center">
                     Amount <span class="text-red-500">*</span>
                 </label>
-                <input pInputText type="text" formControlName="amount" class="p-inputtext p-component" />
+                <input pInputText type="number" formControlName="amount" class="p-inputtext p-component" />
             </div>
         </div>
 
@@ -232,7 +232,7 @@
                 <label for="shipper" class="font-medium flex items-center">
                     <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
                 </label>
-                <input pInputText id="shipper" formControlName="shipper_charges" type="text" class="p-inputtext p-component" />
+                <input pInputText id="shipper" formControlName="shipper_charges" type="number" class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['shipper_charges'].hasError('pattern') && bookingForm.controls['shipper_charges'].touched"
                     class="text-red-500">
@@ -244,7 +244,7 @@
                 <label for="other_charges" class="font-medium flex items-center">
                     <i class="pi pi-file text-gray-600 mr-2"></i> Other
                 </label>
-                <input pInputText formControlName="other_charges" type="text" class="p-inputtext p-component" />
+                <input pInputText formControlName="other_charges" type="number" class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['other_charges'].hasError('pattern') && bookingForm.controls['other_charges'].touched"
                     class="text-red-500">
@@ -255,7 +255,7 @@
                 <label for="declaredValue" class="font-medium flex items-center">
                     Declared Value
                 </label>
-                <input pInputText id="declaredValue" formControlName="declared_value" type="text"
+                <input pInputText id="declaredValue" formControlName="declared_value" type="number"
                     class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['declared_value'].hasError('pattern') && bookingForm.controls['declared_value'].touched"
@@ -271,7 +271,7 @@
                 <label for="cgst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
                 </label>
-                <input pInputText id="cgst" formControlName="cgst" type="text" class="p-inputtext p-component" />
+                <input pInputText id="cgst" formControlName="cgst" type="number" class="p-inputtext p-component" />
                 <small *ngIf="bookingForm.controls['cgst'].hasError('required') && bookingForm.controls['cgst'].touched"
                     class="text-red-500">
                     CGST is required.
@@ -285,7 +285,7 @@
                 <label for="sgst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST
                 </label>
-                <input pInputText id="sgst" formControlName="sgst" type="text" class="p-inputtext p-component" />
+                <input pInputText id="sgst" formControlName="sgst" type="number" class="p-inputtext p-component" />
                 <small *ngIf="bookingForm.controls['sgst'].hasError('required') && bookingForm.controls['sgst'].touched"
                     class="text-red-500">
                     SGST is required.
@@ -299,7 +299,7 @@
                 <label for="igst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
                 </label>
-                <input pInputText id="igst" formControlName="igst" type="text" class="p-inputtext p-component" />
+                <input pInputText id="igst" formControlName="igst" type="number" class="p-inputtext p-component" />
                 <small *ngIf="bookingForm.controls['igst'].hasError('required') && bookingForm.controls['igst'].touched"
                     class="text-red-500">
                     IGST is required.
@@ -318,7 +318,7 @@
                 <label for="total" class="font-medium flex items-center">
                     <i class="pi pi-calculator text-blue-600 mr-2"></i> Total <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="total" formControlName="total_value" type="text"
+                <input pInputText id="total" formControlName="total_value" type="number"
                     class="p-inputtext p-component w-full" />
                 <small
                     *ngIf="bookingForm.controls['total_value'].hasError('required') && bookingForm.controls['total_value'].touched"
@@ -334,7 +334,7 @@
             <!-- Account Yes/No Radio Buttons -->
             <div class="flex-1 flex items-center justify-center">
                 <label class="font-medium p-4">On Account:</label>
-                <p-checkbox inputId="onAccountCheckbox" name="onAccount" formControlName="on_account" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="onAccountCheckbox" name="onAccount" binary="true"  formControlName="on_account" value="Cheese"></p-checkbox>
             </div>
         </div>
 
