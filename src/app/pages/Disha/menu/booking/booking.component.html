@@ -10,7 +10,12 @@
 
             <div class="flex flex-col">
                 <label for="slipNo" class="font-medium flex items-center">
-                    <i class="pi pi-file text-blue-600 mr-2"></i> Slip No <span class="text-red-500">*</span>
+                    <i class="pi pi-file text-blue-600 mr-2"></i>  
+                    <span [ngClass]="{'text-blue-600': branchInfo?.branch_short_name, 'text-gray-400': !branchInfo?.branch_short_name}">
+                      ({{ branchInfo?.branch_short_name }})
+                    </span> 
+                    Slip No <span class="text-red-500">*</span>
+                    
                 </label>
                 <input pInputText id="slipNo" formControlName="slip_no" type="number" class="p-inputtext p-component" />
             </div>
@@ -205,7 +210,7 @@
                 <label for="charges" class="font-medium flex items-center">
                     Charges/KG <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="charges" formControlName="package_value" type="number" class="p-inputtext p-component" />
+                <input pInputText id="charges" formControlName="package_value" type="number" class="p-inputtext p-component" (blur)="calculateAmount()"/>
                 <small
                     *ngIf="bookingForm.controls['package_value'].hasError('required') && bookingForm.controls['package_contents'].touched"
                     class="text-red-500">

@@ -40,6 +40,7 @@ export class BookingComponent implements OnInit {
   filteredCities: any[] = [];
   selectedCity: any = null;
   amount: number = 0;
+  branchInfo: any;
   constructor(
     private cityService: CityService,
     private stateService: StateService,
@@ -51,6 +52,29 @@ export class BookingComponent implements OnInit {
     private employeeService: EmployeesService,
     private globalstore: GlobalStorageService
   ) {
+    this.bookingForm = this.fb.group({});
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.createForm();
+    this.loadTransportModes();
+    this.gateAllBranch();
+    this.bookingForm.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(() => this.calculateTotal());
+    this.gateAllcity();
+    this.branchInfo = this.globalstore.get('branchInfo');
+    this.bookingForm.patchValue({
+      cgst: this.branchInfo.cgst,
+      sgst: this.branchInfo.sgst,
+      igst: this.branchInfo.igst,
+    })
+
+
+  }
+
+
+  createForm() {
     this.bookingForm = this.fb.group({
       // package section
       slip_no: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Booking sleep number
@@ -72,32 +96,21 @@ export class BookingComponent implements OnInit {
       // Billing section
       paid_type: "Prepaid", // payment type
       booking_address: ['0'], // booking address
-      shipper_charges: ['',], // shipper charges
-      other_charges: ['',], // other charges
-      declared_value: ['',],
-      cgst: ['',],
-      sgst: ['',],
-      igst: [''],
+      shipper_charges: [''], // shipper charges
+      other_charges: [''], // other charges
+      declared_value: [''],
+      cgst: ['0'],
+      sgst: ['0'],
+      igst: ['0'],
       total_value: ['', [Validators.required,]],
 
-      to_pay: [false],
-      on_account: [false],
+      to_pay: ['0'],
+      on_account: ['0'],
       amount: [],
 
       // extra fields
       xp_branch_id: null,
     });
-
-  }
-
-  async ngOnInit(): Promise<void> {
-    this.loadTransportModes();
-    this.gateAllBranch();
-    this.gateEmployeeInfo();
-    this.bookingForm.valueChanges
-      .pipe(debounceTime(300))
-      .subscribe(() => this.calculateTotal());
-    this.gateAllcity();
   }
 
   async gateAllcity() {
@@ -108,7 +121,6 @@ export class BookingComponent implements OnInit {
       this.filteredCities = [];
       return;
     }
-
     try {
       await firstValueFrom(
         this.cityService.getAllCities({
@@ -158,9 +170,10 @@ export class BookingComponent implements OnInit {
 
     await firstValueFrom(this.bookingService.addNewBooking(formData).pipe(
       tap(
-        (res) => {
+        async (res) => {
           if (res.body) {
-            this.alertService.success(res.message);
+            await this.alertService.success(res.message);
+            this.createForm();
           }
         },
         error => {
@@ -188,46 +201,6 @@ export class BookingComponent implements OnInit {
       )
     ))
   }
-
-
-  async gateEmployeeInfo() {
-    await firstValueFrom(this.employeeService.employeeInfo().pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.getBranchInfo(res.body.branch_id);
-          }
-        }
-      )
-    ))
-  }
-
-
-  async getBranchInfo(branchId: any) {
-    const payload =
-    {
-      fields: ["branches.*"],
-      relation: null,
-      branch_id: branchId
-    }
-    await firstValueFrom(this.branchService.getBranchById(payload).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            console.log(res.body);
-            this.bookingForm.patchValue({
-              cgst: res.body.cgst,
-              sgst: res.body.sgst,
-              igst: res.body.igst,
-            })
-          }
-        }
-      )
-    ))
-  }
-
-
-
   loadTransportModes(): void {
     this.transportModes = [
       { label: 'Bus', value: 'B' },
@@ -240,18 +213,21 @@ export class BookingComponent implements OnInit {
     console.log("Not implemented");
   }
 
-  calculateTotal() {
+
+  calculateAmount() {
     const weight = Number(this.bookingForm.get('package_weight')?.value) || 0;
     const charges = Number(this.bookingForm.get('package_value')?.value) || 0;
+    const amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
+    this.bookingForm.patchValue({ amount }, { emitEvent: false });
+  }
+
+  calculateTotal() {
     const shipper = Number(this.bookingForm.get('shipper_charges')?.value) || 0;
     const other = Number(this.bookingForm.get('other_charges')?.value) || 0;
     const cgst = Number(this.bookingForm.get('cgst')?.value) || 0;
     const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
     const igst = Number(this.bookingForm.get('igst')?.value) || 0;
-
-    // Ensure proper decimal multiplication
-    const amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
-    this.bookingForm.patchValue({ amount }, { emitEvent: false });
+    const amount = Number(this.bookingForm.get('amount')?.value) || 0;
 
     // Subtotal includes Amount + Shipper + Other charges
     const subtotal = +(amount + shipper + other).toFixed(2);
