@@ -249,15 +249,15 @@ export class BookingComponent implements OnInit {
   onCheckboxChange(data: any) {
     if (data) {
       this.bookingForm.patchValue({
-        cgst: ['0'],
-        sgst: ['0'],
+        cgst: 0,
+        sgst: 0,
         igst: this.branchInfo.igst,
       })
     } else {
       this.bookingForm.patchValue({
         cgst: this.branchInfo.cgst,
         sgst: this.branchInfo.sgst,
-        igst: ['0'],
+        igst: 0,
       })
     }
   }
