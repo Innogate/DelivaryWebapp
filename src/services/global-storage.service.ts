@@ -63,4 +63,10 @@ export class GlobalStorageService {
   has(key: string): boolean {
     return this.storage.has(key);
   }
+
+  // deistroy
+  destroy(): void {
+    this.storage = new Map();
+    localStorage.clear();
+  }
 }

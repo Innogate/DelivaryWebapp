@@ -33,7 +33,7 @@ export class LoginService {
 
   // Clear token (Logout function)
   logout(): void {
-    this.storage.delete('token');
+    this.storage.destroy();
   }
   verify(): Observable<any> {
     return this.apiService.get('/verify').pipe(
