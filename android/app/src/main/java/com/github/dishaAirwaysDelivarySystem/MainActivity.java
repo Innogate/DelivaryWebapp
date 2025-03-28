@@ -34,10 +34,10 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSIONS = 1;
-    private LocalHttpServer localHttpServer;
+//    private LocalHttpServer localHttpServer;
     private WebView webView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private String savedUrl = "http://localhost:65534";  // Default URL
+    private String savedUrl = "http://18.217.159.77:4200";  // Default URL
     private ValueCallback<Uri[]> fileUploadCallback;
     private ActivityResultLauncher<Intent> filePickerLauncher;
     private GeolocationPermissions.Callback pendingGeolocationCallback;
@@ -50,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        localHttpServer = new LocalHttpServer(this, 65534); // Or any port you want
-        try {
-            localHttpServer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        localHttpServer = new LocalHttpServer(this, 65534); // Or any port you want
+//        try {
+//            localHttpServer.start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         setContentView(R.layout.activity_main); // Make sure you have the layout file
 
