@@ -60,10 +60,10 @@
                     <i class="pi pi-map-marker mr-2 text-red-500"></i>
                     <strong>Address:</strong> {{ user.address }}
                 </p> -->
-                <p class="text-gray-700 flex items-center">
+                <!-- <p class="text-gray-700 flex items-center">
                     <i class="pi pi-user-plus mr-2 text-indigo-500"></i>
                     <strong>Created By:</strong> {{ user.created_by }}
-                </p>
+                </p> -->
                 <p class="text-gray-700 flex items-center">
                     <i class="pi pi-clock mr-2 text-gray-500"></i>
                     <strong>Last Updated:</strong> {{ user.updated_at | date: 'dd-MM-yyyy HH:mm' }}
@@ -124,7 +124,8 @@
                         <span class="text-red-500 ml-1">*</span>
                     </div>
                     <input pInputText type="text" formControlName="full_name" (input)="splitName()" />
-                    <small class="text-red-500" *ngIf="addUserForm.get('full_name')?.touched && addUserForm.get('full_name')?.invalid">
+                    <small class="text-red-500"
+                        *ngIf="addUserForm.get('full_name')?.touched && addUserForm.get('full_name')?.invalid">
                         Name is required
                     </small>
                 </div>
