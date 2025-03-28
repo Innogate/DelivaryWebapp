@@ -59,12 +59,16 @@ export class BookingComponent implements OnInit {
     this.createForm();
     this.loadTransportModes();
     this.gateAllBranch();
-    this.bookingForm.valueChanges
-      .pipe(debounceTime(300))
-      .subscribe(() => this.calculateTotal());
+    this.bookingForm.valueChanges.subscribe(() => {
+      this.calculateTotal();
+    });
+    setTimeout(() => {
+      this.bookingForm.patchValue({ to_pay: false }, { emitEvent: false });
+      this.calculateTotal();
+    }, 0);
     this.gateAllcity();
     this.branchInfo = this.globalstore.get('branchInfo');
-    this.onCheckboxChange(false);
+    // this.onCheckboxChange(false);
   }
 
 
@@ -212,55 +216,30 @@ export class BookingComponent implements OnInit {
     const weight = Number(this.bookingForm.get('package_weight')?.value) || 0;
     const charges = Number(this.bookingForm.get('package_value')?.value) || 0;
     const amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
-    this.bookingForm.patchValue({ amount }, { emitEvent: false });
+
+    this.bookingForm.patchValue({ total_value: amount, amount }, { emitEvent: false });
   }
 
   calculateTotal() {
-    // Get the values from the form and convert them to numbers
-    const shipper = Number(this.bookingForm.get('shipper_charges')?.value) || 0;
-    const other = Number(this.bookingForm.get('other_charges')?.value) || 0;
-    const cgst = Number(this.bookingForm.get('cgst')?.value) || 0;
-    const sgst = Number(this.bookingForm.get('sgst')?.value) || 0;
-    const igst = Number(this.bookingForm.get('igst')?.value) || 0;
-    const amount = Number(this.bookingForm.get('amount')?.value) || 0;
-
-    // Subtotal includes Amount + Shipper + Other charges
+    const formValues = this.bookingForm.value;
+    const shipper = Number(formValues.shipper_charges) || 0;
+    const other = Number(formValues.other_charges) || 0;
+    const cgst = Number(formValues.cgst) || 0;
+    const sgst = Number(formValues.sgst) || 0;
+    const igst = Number(formValues.igst) || 0;
+    const amount = Number(formValues.amount) || 0;
     const subtotal = +(amount + shipper + other).toFixed(2);
-
-    // Calculate GST amounts
-    const cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
-    const sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
-    const igstAmount = +(subtotal * (igst / 100)).toFixed(2);
-
-    // Final total calculation
-    let total_value: number;
-    if (this.bookingForm.get('to_pay')?.value) {
-      // If 'toPay' is true, use IGST
-      total_value = +(subtotal + igstAmount).toFixed(2);
+    let gstAmount = 0;
+    if (formValues.to_pay) {
+      gstAmount = +(subtotal * (igst / 100)).toFixed(2);
     } else {
-      // If 'toPay' is false, use CGST and SGST
-      total_value = +(subtotal + cgstAmount + sgstAmount).toFixed(2);
+      const cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
+      const sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
+      gstAmount = +(cgstAmount + sgstAmount).toFixed(2);
     }
 
-    // Update the form control for total_value
+    const total_value = +(subtotal + gstAmount).toFixed(2);
+
     this.bookingForm.patchValue({ total_value }, { emitEvent: false });
   }
-
-  onCheckboxChange(data: any) {
-    if (data) {
-      this.bookingForm.patchValue({
-        cgst: 0,
-        sgst: 0,
-        igst: this.branchInfo.igst,
-      })
-    } else {
-      this.bookingForm.patchValue({
-        cgst: this.branchInfo.cgst,
-        sgst: this.branchInfo.sgst,
-        igst: 0,
-      })
-    }
-  }
-
-
 }

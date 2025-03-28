@@ -156,7 +156,7 @@
 
             <!-- Checkbox (50% width) -->
             <div class="flex-1 flex items-center justify-center">
-                <p-checkbox inputId="toPayCheckbox" (onChange)="onCheckboxChange($event.checked)"   binary="true" name="toPay" formControlName="to_pay" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="toPayCheckbox"   binary="true" name="toPay" formControlName="to_pay" value="Cheese"></p-checkbox>
                 <label for="toPayCheckbox" class="ml-2"> To Pay </label>
             </div>
         </div>
@@ -276,7 +276,7 @@
                 <label for="cgst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
                 </label>
-                <input pInputText id="cgst" formControlName="cgst" type="number" class="p-inputtext p-component" />
+                <input pInputText id="cgst" formControlName="cgst" type="number" class="p-inputtext p-component"/>
                 <small *ngIf="bookingForm.controls['cgst'].hasError('required') && bookingForm.controls['cgst'].touched"
                     class="text-red-500">
                     CGST is required.
@@ -304,7 +304,7 @@
                 <label for="igst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
                 </label>
-                <input pInputText id="igst" formControlName="igst" type="number" class="p-inputtext p-component" />
+                <input pInputText id="igst" formControlName="igst" type="number" class="p-inputtext p-component"/>
                 <small *ngIf="bookingForm.controls['igst'].hasError('required') && bookingForm.controls['igst'].touched"
                     class="text-red-500">
                     IGST is required.
