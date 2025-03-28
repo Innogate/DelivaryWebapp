@@ -73,6 +73,12 @@ export class BookingComponent implements OnInit {
 
 
   createForm() {
+    this.branchInfo = this.globalstore.get('branchInfo');
+    //  set default values
+    const cgst = this.branchInfo.cgst ?? 0;
+    const sgst = this.branchInfo.sgst ?? 0;
+    const igst = this.branchInfo.igst ?? 0;
+
     this.bookingForm = this.fb.group({
       // package section
       slip_no: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Booking sleep number
@@ -97,9 +103,9 @@ export class BookingComponent implements OnInit {
       shipper_charges: [0], // shipper charges
       other_charges: [0], // other charges
       declared_value: [0],
-      cgst: ['0'],
-      sgst: ['0'],
-      igst: ['0'],
+      cgst: [cgst],
+      sgst: [sgst],
+      igst: [igst],
       total_value: ['', [Validators.required,]],
 
       to_pay: ['0'],
