@@ -53,7 +53,7 @@ export class CityComponent {
   async GetAllState() {
     await firstValueFrom(this.stateService.getAllStates({
       fields: [],
-      max: this.max,
+      max: 50,
       current: this.current
     }).pipe(
       tap(
