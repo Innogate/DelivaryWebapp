@@ -52,6 +52,9 @@ export class BranchComponent {
   filteredCities: any[] = [];
   selectedCity: any = null;
 
+  // update requre
+  city_update: any = {};
+
   constructor(
     private fb: FormBuilder,
     private branchService: BranchService,
@@ -228,12 +231,18 @@ export class BranchComponent {
     if (branch) {
       this.showAddState = true;
       this.branchForm.patchValue(branch);
+      // pach city name \
+      const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
+      this.city_update=  storedCities?.find((city) => city.city_id === branch.city_id);
+      this.branchForm.patchValue({ city_id: this.city_update.city_name });
     }
   }
 
   async updateBranch() {
     if (this.branchForm.valid) {
-     
+      this.branchForm.patchValue({
+        city_id: this.city_update.city_id
+      })
       let branchData = { ...this.branchForm.value };
       if (branchData.city_id && typeof branchData.city_id === 'object') {
         branchData.city_id = branchData.city_id.city_id;
