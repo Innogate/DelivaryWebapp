@@ -94,9 +94,9 @@ export class BookingComponent implements OnInit {
       // Billing section
       paid_type: "Prepaid", // payment type
       booking_address: ['0'], // booking address
-      shipper_charges: [''], // shipper charges
-      other_charges: [''], // other charges
-      declared_value: [''],
+      shipper_charges: [0], // shipper charges
+      other_charges: [0], // other charges
+      declared_value: [0],
       cgst: ['0'],
       sgst: ['0'],
       igst: ['0'],
