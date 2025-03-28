@@ -68,7 +68,7 @@ export class BranchComponent {
       branch_name: ['', [Validators.required, Validators.minLength(3)]],
       branch_short_name: [''],
       alias_name: ['', [Validators.minLength(3)]],
-      representative_user_id: ['', Validators.required],  // ! add it
+      representative_id: ['', Validators.required],  // ! add it
       address: ['', [Validators.minLength(3)]],
       city_id: [null, [Validators.required, Validators.min(1)]],
       state_id: [null, [Validators.required, Validators.min(1)]],
@@ -78,10 +78,10 @@ export class BranchComponent {
       gst_no: [''],
       cin_no: [''],
       udyam_no: [''],
-      cgst: [null],
-      sgst: [null],
-      igst: [null],
-      logo: [null],
+      cgst: [0],
+      sgst: [0],
+      igst: [0],
+      logo: [0],
       manifest_sires: [''] // ! add it
     });
 
@@ -119,7 +119,10 @@ export class BranchComponent {
       tap(
         (res) => {
           if (res.body) {
-            this.user = res.body;
+            this.user = res.body.map((branch: any) => ({
+                ...branch,
+                fullName: `${branch.first_name} ${branch.last_name}`
+              }));
           }
         },
         (error) => {

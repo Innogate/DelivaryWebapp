@@ -112,25 +112,16 @@
                     <i class="pi pi-building text-blue-500 mr-2"></i>
                     <p-dropdown 
                     [filter]="true" 
-                    formControlName="representative_user_id" 
+                    formControlName="representative_id" 
                     class="w-full custom-dropdown" 
                     [options]="user"
                     optionValue="user_id"
+                    optionLabel="fullName"
                     placeholder="Select user"
                     [showClear]="true"
                     [emptyMessage]="'User not found'">
-                    
-                    <!-- Custom display for dropdown list -->
-                    <ng-template let-user pTemplate="item">
-                        {{ user.first_name }} {{ user.last_name }}
-                    </ng-template>
-                
-                    <!-- Custom display for selected value -->
-                    <ng-template let-user pTemplate="selectedItem">
-                        {{ user?.first_name }} {{ user?.last_name }}
-                    </ng-template>
-                
                 </p-dropdown>
+                
                 
                 
                 </span>
