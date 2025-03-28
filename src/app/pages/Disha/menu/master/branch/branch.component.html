@@ -184,10 +184,11 @@
                     <label for="cities" class="font-medium flex items-center">
                         <i class="pi pi-map-marker text-red-500 mb-0"></i> City <span class="text-red-500">*</span>
                     </label>
-                    <p-dropdown [filter]="true" formControlName="city_id" class="w-full custom-dropdown"
-                        [options]="cities" optionLabel="city_name" optionLabel="city_name" optionValue="city_id" [showClear]="true"
-                        [emptyMessage]="'States not found'" placeholder="Select State" (onSelect)="onCitySelect($event)">
-                    </p-dropdown>
+                    <p-autoComplete formControlName="city_id" [suggestions]="filteredCities"
+                         (completeMethod)="searchCity($event)" optionLabel="city_name"
+                         placeholder="Search and Select a City" (onSelect)="onCitySelect($event)"
+                         [emptyMessage]="'Cities not recorded for this state'" class="w-full">
+                     </p-autoComplete>
                 </div>
             </div>
 
