@@ -30,11 +30,11 @@
       <div *ngIf="booking.showMore" class="bg-gray-100 p-4 rounded-lg mt-3 border border-gray-300">
         <p class="text-gray-700 text-sm flex items-center mb-2">
           <i class="pi pi-user mr-2 text-blue-500"></i>
-          <strong>Consignee:</strong> {{ booking.consignee_name }} ({{ booking.consignee_mobile }})
+          <strong>Consignee: </strong> {{ booking.consignee_name | uppercase }} ({{ booking.consignee_mobile | uppercase }})
         </p>
         <p class="text-gray-700 text-sm flex items-center mb-2">
           <i class="pi pi-user mr-2 text-red-500"></i>
-          <strong>Consignor:</strong> {{ booking.consignor_name }} ({{ booking.consignor_mobile }})
+          <strong>Consignor: </strong> {{ booking.consignor_name | uppercase }} ({{ booking.consignor_mobile | uppercase }})
         </p>
         <p class="text-gray-700 text-sm flex items-center mb-2">
           <i class="pi pi-truck mr-2 text-gray-500"></i>
@@ -48,13 +48,13 @@
 
         <p class="text-gray-700 text-sm flex items-center mb-2">
             <i class="pi pi-map-marker mr-2 text-purple-500"></i>
-            <strong>City:</strong> {{ booking.city_name }}
+            <strong></strong> {{ booking.booking_address }}
         </p>
 
-        <p class="text-gray-700 text-sm flex items-center mb-2">
+        <!-- <p class="text-gray-700 text-sm flex items-center mb-2">
           <i class="pi pi-box mr-2 text-yellow-500"></i>
           <strong>Package ID:</strong> {{ booking.package_id }}
-        </p>
+        </p> -->
         <p class="text-gray-700 text-sm flex items-center mb-2">
           <i class="pi pi-info-circle mr-2 text-blue-500"></i>
           <strong>Contents:</strong> {{ booking.contents }}

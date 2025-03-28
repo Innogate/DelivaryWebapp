@@ -99,7 +99,7 @@ export class BookingComponent implements OnInit {
 
       // Billing section
       paid_type: "Prepaid", // payment type
-      booking_address: ['0'], // booking address
+      booking_address: ['UNSET'], // booking address
       shipper_charges: [0], // shipper charges
       other_charges: [0], // other charges
       declared_value: [0],
@@ -247,5 +247,9 @@ export class BookingComponent implements OnInit {
     const total_value = +(subtotal + gstAmount).toFixed(2);
 
     this.bookingForm.patchValue({ total_value }, { emitEvent: false });
+  }
+
+  upperCase(event: any) {
+    event.target.value = event.target.value.toUpperCase();
   }
 }

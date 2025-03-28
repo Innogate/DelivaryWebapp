@@ -36,7 +36,7 @@ export class BookingStatusComponent implements OnInit {
         tap(
           (res) => {
             if (res?.body && Array.isArray(res.body)) {
-              this.current += 10;
+              this.current = res.body.length;
               this.bookingList = this.bookingList ? [...this.bookingList, ...res.body] : res.body;
             }
           },

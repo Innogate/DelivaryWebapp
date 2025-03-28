@@ -25,7 +25,7 @@
                     <i class="pi pi-user text-green-600 mr-2"></i> Consignor <span class="text-red-500">*</span>
                 </label>
                 <input pInputText id="consignor" formControlName="consignor_name" type="text"
-                    class="p-inputtext p-component" />
+                    class="p-inputtext p-component"   (input)="upperCase($event)" />
                 <small
                     *ngIf="bookingForm.controls['consignor_name'].hasError('required') && bookingForm.controls['consignor_name'].touched"
                     class="text-red-500">
@@ -64,7 +64,7 @@
                     <i class="pi pi-user text-red-600 mr-2"></i> Consignee <span class="text-red-500">*</span>
                 </label>
                 <input pInputText id="consignee" type="text" formControlName="consignee_name"
-                    class="p-inputtext p-component" />
+                    class="p-inputtext p-component"   (input)="upperCase($event)"  />
                 <small
                     *ngIf="bookingForm.controls['consignee_name'].hasError('required') && bookingForm.controls['consignee_name'].touched"
                     class="text-red-500">
