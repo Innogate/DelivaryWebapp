@@ -232,26 +232,36 @@ export class BranchComponent {
   }
 
   async updateBranch() {
-    // console.log(this.branchForm.value);
     if (this.branchForm.valid) {
-      const payload = {
-        updates: 
-          { ...this.branchForm.value },
-        "conditions": "branches.branch_id=" + this.branchForm.value.branch_id,
+     
+      let branchData = { ...this.branchForm.value };
+      if (branchData.city_id && typeof branchData.city_id === 'object') {
+        branchData.city_id = branchData.city_id.city_id;
       }
-      await firstValueFrom(this.branchService.updateBranch(payload).pipe(
-        tap((response) => {
-          this.alertService.success(response.message);
-          this.fetchBranches();
-          this.toggleAddState();
-        },
-          (error) => {
-            this.alertService.error(error.error.message);
-          }
-        ))
-      )
+  
+      const payload = {
+        updates: branchData, 
+        conditions: `branches.branch_id=${this.branchForm.value.branch_id}`,
+      };
+  
+      try {
+        await firstValueFrom(
+          this.branchService.updateBranch(payload).pipe(
+            tap((res) => {
+              this.alertService.success(res.message);
+              this.fetchBranches();
+              this.toggleAddState(); 
+            })
+          )
+        );
+      } catch (error: any) {
+        this.alertService.error(error.error?.message || 'Error updating branch.');
+      }
+    } else {
+      this.alertService.error('Please fill in all required fields correctly.');
     }
   }
+  
 
   setAliseName() {
     this.branchForm.patchValue({
