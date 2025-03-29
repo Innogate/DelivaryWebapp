@@ -1,7 +1,7 @@
 <div *ngIf="bookingList" class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen overflow-auto pb-[500px]" style="max-height: 100vh;"(scroll)="onScroll($event)">
     <div *ngFor="let booking of bookingList" class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
       <!-- Slip Details -->
-      <div class="flex justify-between items-center mb-3">
+      <div class="flex justify-between items-center">
         <p class="text-blue-800 font-semibold text-lg flex items-center">
           <i class="pi pi-file mr-2 text-blue-600"></i>
           Slip No: <span class="text-blue-600 font-bold ml-1">{{ booking.slip_no }}</span>
@@ -10,6 +10,18 @@
           <i class="pi pi-calendar mr-1 text-gray-400"></i>
           {{ booking.created_at | date: 'dd-MM-yyyy HH:mm' }}
         </p>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <p class="text-blue-800 font-semibold text-lg flex items-center">
+          <i class="pi pi-building mr-2 text-purple-500"></i>
+          Branch: <span class="text-rose-600 font-bold ml-1">    {{ booking.branch_name }} --To-- {{ booking.destination_branch_name }}
+          </span>
+        </p>
+        <!-- <p class="text-sm text-gray-600 flex items-center">
+          <i class="pi pi-calendar mr-1 text-gray-400"></i>
+          {{ booking.destination_branch_id }}
+        </p> -->
       </div>
 
       <!-- Payment Details -->
@@ -38,7 +50,7 @@
         </p>
         <p class="text-gray-700 text-sm flex items-center mb-2">
           <i class="pi pi-truck mr-2 text-gray-500"></i>
-          <strong>Transport Mode:</strong> {{ booking.transport_mode }}
+          <strong>Transport Mode:</strong> {{ getTransportModeLabel(booking.transport_mode) }}
         </p>
 
         <p class="text-gray-700 text-sm flex items-center mb-2">

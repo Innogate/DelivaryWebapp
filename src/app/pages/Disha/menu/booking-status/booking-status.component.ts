@@ -5,6 +5,7 @@ import { BookingService } from '../../../../../services/booking.service';
 import { AlertService } from '../../../../../services/alert.service';
 import { StateService } from '../../../../../services/state.service';
 import { CityService } from '../../../../../services/city.service';
+import { BranchService } from '../../../../../services/branch.service';
 
 @Component({
   selector: 'app-booking-status',
@@ -22,16 +23,17 @@ export class BookingStatusComponent implements OnInit {
   constructor(
     private bookService: BookingService,
     private alertService: AlertService,
-  ) {}
+    private branchService: BranchService,
+  ) { }
 
-  ngOnInit() {
-    this.getAllBooking();
+  async ngOnInit() {
+    await this.getAllBooking();
   }
 
   async getAllBooking() {
     try {
       await firstValueFrom(this.bookService.getBookingList({
-      
+
       }).pipe(
         tap(
           (res) => {
@@ -52,6 +54,17 @@ export class BookingStatusComponent implements OnInit {
     }
   }
 
+  transportModes = [
+    { label: 'Bus', value: 'B' },
+    { label: 'Train', value: 'T' },
+    { label: 'Flight', value: 'F' },
+    { label: 'Cab', value: 'C' }
+  ];
+
+  getTransportModeLabel(value: string): string {
+    const mode = this.transportModes.find(mode => mode.value === value);
+    return mode ? mode.label : value;
+  }
   calculateTotal(charges?: number, shipper?: number, other?: number, cgst?: number, sgst?: number, igst?: number): number {
     // Ensure all values are numbers, replace undefined/null with 0
     const c = Number(charges) || 0;
@@ -69,10 +82,10 @@ export class BookingStatusComponent implements OnInit {
     return subtotal + cgstAmount + sgstAmount + igstAmount;
   }
 
-  onScroll(event: any): void {
+  async onScroll(event: any): Promise<void> {
     const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
     if (bottom) {
-      this.getAllBooking();
+      await this.getAllBooking();
     }
   }
 }
