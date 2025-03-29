@@ -38,5 +38,8 @@ export class BookingService {
     return this.apiService.post('/consignor/byMobile', payload);
   }
 
+  searchConsignee(text: string): Observable<any> {
+    return this.apiService.post('/autofill/newBooking', { search: text });
+  }
 
 }

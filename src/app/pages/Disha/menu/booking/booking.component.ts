@@ -41,6 +41,9 @@ export class BookingComponent implements OnInit {
   selectedCity: any = null;
   amount: number = 0;
   branchInfo: any;
+
+  listOfConnersAndConsignees: any[] = [];
+
   constructor(
     private cityService: CityService,
     private stateService: StateService,
@@ -249,7 +252,50 @@ export class BookingComponent implements OnInit {
     this.bookingForm.patchValue({ total_value }, { emitEvent: false });
   }
 
+  async search($event: any) {
+    const string = $event.query;
+    await firstValueFrom(this.bookingService.searchConsignee(string).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.listOfConnersAndConsignees = res.body;
+          }
+        }
+      )
+    ))
+  }
+
   upperCase(event: any) {
     event.target.value = event.target.value.toUpperCase();
+  }
+
+  onConsigneeSelect(event: any) {
+    this.bookingForm.patchValue(
+      { 
+        consignee_name: event.value.consignee_name, 
+        consignee_mobile: event.value.consignee_mobile,
+        destination_branch_id: event.value.destination_branch_id
+      })
+
+      // patch destination city id
+      const destinationCity = this.cities.find(city => city.city_id === event.value.destination_city_id);
+      if (destinationCity) {
+        this.bookingForm.patchValue({ destination_city_id: destinationCity });
+      }
+  }
+
+  onConsignorSelect(event: any) {
+    this.bookingForm.patchValue({
+      consignor_name: event.value.consignor_name,
+      consignor_mobile: event.value.consignor_mobile,
+      consignee_name: event.value.consignee_name, 
+      consignee_mobile: event.value.consignee_mobile,
+      destination_branch_id: event.value.destination_branch_id
+    });
+    // patch destination city id
+    const destinationCity = this.cities.find(city => city.city_id === event.value.destination_city_id);
+    if (destinationCity) {
+      this.bookingForm.patchValue({ destination_city_id: destinationCity });
+    }
   }
 }

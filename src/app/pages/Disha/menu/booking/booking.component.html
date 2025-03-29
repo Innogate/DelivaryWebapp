@@ -24,8 +24,17 @@
                 <label for="consignor" class="font-medium flex items-center">
                     <i class="pi pi-user text-green-600 mr-2"></i> Consignor <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="consignor" formControlName="consignor_name" type="text"
-                    class="p-inputtext p-component"   (input)="upperCase($event)" />
+
+                <p-autocomplete 
+                    id="consignor"
+                    formControlName="consignor_name"
+                     [suggestions]="listOfConnersAndConsignees" 
+                     (completeMethod)="search($event)"
+                     [inputStyle]="{'text-transform': 'uppercase'}"
+                     field="consignor_name"
+                     (onSelect)="onConsignorSelect($event)"
+                    />
+
                 <small
                     *ngIf="bookingForm.controls['consignor_name'].hasError('required') && bookingForm.controls['consignor_name'].touched"
                     class="text-red-500">
@@ -45,8 +54,15 @@
                 <label for="consignorMobile" class="font-medium flex items-center">
                     <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile
                 </label>
-                <input pInputText id="consignorMobile" type="number" formControlName="consignor_mobile"
-                    class="p-inputtext p-component" />
+                <p-autocomplete 
+                    id="consignorMobile"
+                    inputMode="numeric"
+                    formControlName="consignor_mobile"
+                     [suggestions]="listOfConnersAndConsignees" 
+                     (completeMethod)="search($event)"
+                     field="consignor_mobile"
+                     (onSelect)="onConsignorSelect($event)"
+                />
                 <small
                     *ngIf="bookingForm.controls['consignor_mobile'].hasError('required') && bookingForm.controls['consignor_mobile'].touched"
                     class="text-red-500">
@@ -63,8 +79,16 @@
                 <label for="consignee" class="font-medium flex items-center">
                     <i class="pi pi-user text-red-600 mr-2"></i> Consignee <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="consignee" type="text" formControlName="consignee_name"
-                    class="p-inputtext p-component"   (input)="upperCase($event)"  />
+
+                <p-autocomplete 
+                formControlName="consignee_name"
+                 [suggestions]="listOfConnersAndConsignees" 
+                 (completeMethod)="search($event)"
+                 [inputStyle]="{'text-transform': 'uppercase'}"
+                 field="consignee_name"
+                 (onSelect)="onConsigneeSelect($event)"
+                />
+                
                 <small
                     *ngIf="bookingForm.controls['consignee_name'].hasError('required') && bookingForm.controls['consignee_name'].touched"
                     class="text-red-500">
@@ -85,8 +109,16 @@
                 <label for="consigneeMobile" class="font-medium flex items-center">
                     <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile
                 </label>
-                <input pInputText id="consigneeMobile" type="number" formControlName="consignee_mobile"
-                    class="p-inputtext p-component"/>
+
+                <p-autocomplete 
+                    inputMode="numeric"
+                    formControlName="consignee_mobile"
+                     [suggestions]="listOfConnersAndConsignees" 
+                     (completeMethod)="search($event)"
+                     field="consignee_mobile"
+                     (onSelect)="onConsigneeSelect($event)"
+                />
+
                 <small
                     *ngIf="bookingForm.controls['consignee_mobile'].hasError('required') && bookingForm.controls['consignee_mobile'].touched"
                     class="text-red-500">
