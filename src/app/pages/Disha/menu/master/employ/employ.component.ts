@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -12,6 +12,7 @@ import { EmployeesService } from '../../../../../../services/employees.service';
 import { UserService } from '../../../../../../services/user.service';
 import { BranchService } from '../../../../../../services/branch.service';
 import { AlertService } from '../../../../../../services/alert.service';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
 
 @Component({
   selector: 'app-employ',
@@ -21,7 +22,7 @@ import { AlertService } from '../../../../../../services/alert.service';
   styleUrl: './employ.component.scss',
   providers: [DatePipe]
 })
-export class EmployComponent {
+export class EmployComponent implements OnInit {
 
   employeeForm: FormGroup;
   showAddState: boolean = false;
@@ -32,8 +33,15 @@ export class EmployComponent {
   isEditing: boolean = false;
   filterType: string = 'all'; // Default filter
 
-  constructor(private EmployeeService: EmployeesService, private branchService: BranchService, private datePipe: DatePipe,
-    private alertService: AlertService, private userService: UserService, private fb: FormBuilder) {
+  constructor(
+    private EmployeeService: EmployeesService, 
+    private branchService: BranchService, 
+    private datePipe: DatePipe,
+    private alertService: AlertService, 
+    private userService: UserService, 
+    private fb: FormBuilder,
+    private storage: GlobalStorageService
+  ) {
     this.employeeForm = this.fb.group({
       employee_id: [null],
       employee_name: ['', Validators.required],
@@ -45,6 +53,7 @@ export class EmployComponent {
     });
   }
   ngOnInit() {
+    this.storage.set('PAGE_TITLE', "EMPLOYEE");
     this.gateAllEmployee();
     this.gateAllUser();
     // this.fetchBranches();

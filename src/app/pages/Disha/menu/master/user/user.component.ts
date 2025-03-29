@@ -11,6 +11,7 @@ import { AlertService } from '../../../../../../services/alert.service';
 import { UserService } from '../../../../../../services/user.service';
 import { PasswordModule } from 'primeng/password'
 import { Router } from '@angular/router';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
 @Component({
   selector: 'app-user',
   imports: [DialogModule, ButtonModule, FormsModule, CommonModule, InputTextModule,
@@ -34,7 +35,8 @@ export class UserComponent {
     private alertService: AlertService,
     private userService: UserService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private storage: GlobalStorageService
 ) {
     this.addUserForm = this.fb.group({
       full_name: ['', Validators.required],  // Single input field
@@ -50,6 +52,7 @@ export class UserComponent {
   }
 
   ngOnInit() {
+    this.storage.set('PAGE_TITLE', "USER");
     this.gateAllUser();
   }
 

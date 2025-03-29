@@ -10,6 +10,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { AlertService } from '../../../../services/alert.service';
+import { GlobalStorageService } from '../../../../services/global-storage.service';
 
 @Component({
   selector: 'app-access',
@@ -38,10 +39,12 @@ export class AccessComponent implements OnInit {
     constructor (
         private route: ActivatedRoute,
         private service: PagesService,
-        private alert: AlertService
+        private alert: AlertService,
+        private storage: GlobalStorageService
     ) { }
 
     ngOnInit() {
+        this.storage.set('PAGE_TITLE', "PERMISSIONS");
         this.userId = this.route.snapshot.paramMap.get('userId');
         this.getAllPageList();
         this.getUserAccess(this.userId);

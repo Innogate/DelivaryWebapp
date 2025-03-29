@@ -7,6 +7,7 @@ import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
 import { Theme } from '@primeng/themes';
 import { StateService } from '../../../../../../services/state.service';
 import { AlertService } from '../../../../../../services/alert.service';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
 @Component({
   selector: 'app-state',
   imports: [DialogModule, FormsModule, CommonModule, ReactiveFormsModule, CommonModule],
@@ -20,7 +21,12 @@ export class StateComponent {
   stateId?: number;
   isEditing: boolean = false;
 
-  constructor(private service: StateService, private fb: FormBuilder, private alertservice: AlertService) {
+  constructor(
+    private service: StateService, 
+    private fb: FormBuilder, 
+    private alertservice: AlertService,
+    private storage: GlobalStorageService
+  ) {
     this.stateForm = this.fb.group({
       stateName: ['', [Validators.required, Validators.minLength(3)]]
     });
@@ -50,6 +56,7 @@ export class StateComponent {
   private touchStartY: number = 0;
   newStateName = '';
   ngOnInit() {
+    this.storage.set('PAGE_TITLE', "STATE");
     this.GetAllState();
   }
 

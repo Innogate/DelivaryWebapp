@@ -6,6 +6,7 @@ import { AlertService } from '../../../../../services/alert.service';
 import { StateService } from '../../../../../services/state.service';
 import { CityService } from '../../../../../services/city.service';
 import { BranchService } from '../../../../../services/branch.service';
+import { GlobalStorageService } from '../../../../../services/global-storage.service';
 
 @Component({
   selector: 'app-booking-status',
@@ -24,9 +25,11 @@ export class BookingStatusComponent implements OnInit {
     private bookService: BookingService,
     private alertService: AlertService,
     private branchService: BranchService,
+    private storage: GlobalStorageService
   ) { }
 
   async ngOnInit() {
+    this.storage.set('PAGE_TITLE', "BOOKING STATUS");
     await this.getAllBooking();
   }
 

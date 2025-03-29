@@ -35,6 +35,7 @@ export class MenuComponent {
   decodedToken: any;
 
   async ngOnInit(): Promise<void> {
+    this.globalstore.set('PAGE_TITLE', "MENU");
     this.getAccess();
     const token: any = this.globalstore.get('token');;
     this.decodedToken = this.decodeJwt(token);

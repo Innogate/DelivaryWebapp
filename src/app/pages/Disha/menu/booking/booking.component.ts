@@ -59,6 +59,7 @@ export class BookingComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.globalstore.set('PAGE_TITLE', "BOOKING");
     this.createForm();
     this.loadTransportModes();
     this.gateAllBranch();

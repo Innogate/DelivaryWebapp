@@ -17,6 +17,7 @@ import { BranchService } from "../../../../../services/branch.service";
 import { CityService } from "../../../../../services/city.service";
 import { DropdownModule } from "primeng/dropdown";
 import { CompanyService } from "../../../../../services/company.service";
+import { GlobalStorageService } from "../../../../../services/global-storage.service";
 
 
 
@@ -50,7 +51,8 @@ export class CompanyComponent {
     private fb: FormBuilder,
     private alertService: AlertService,
     private companyService: CompanyService,
-    private stateService: StateService
+    private stateService: StateService,
+    private storage: GlobalStorageService
   ) {
 
     this.companyForm = this.fb.group({
@@ -69,6 +71,7 @@ export class CompanyComponent {
   }
 
   ngOnInit() {
+    this.storage.set('PAGE_TITLE', "COMPANY");
     this.gateAllCompany();
   }
 

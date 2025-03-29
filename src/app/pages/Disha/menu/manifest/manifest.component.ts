@@ -57,6 +57,7 @@ export class ManifestComponent {
   }
 
   ngOnInit(): void {
+    this.globalstore.set('PAGE_TITLE', "MANIFEST");
     this.gateAllBranch();
     this.loadTransportModes();
     this.gateAllcity();

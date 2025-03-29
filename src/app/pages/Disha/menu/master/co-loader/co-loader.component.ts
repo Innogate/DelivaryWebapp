@@ -38,7 +38,13 @@ export class CoLoaderComponent {
   selectedCity: any = null;
   coloaderList: any[] = [];
 
-  constructor(private fb: FormBuilder, private globalstore: GlobalStorageService, private cityService: CityService, private coloaderService: coloaderService, private alertService: AlertService) {
+  constructor(
+    private fb: FormBuilder,
+    private globalstore: GlobalStorageService,
+    private cityService: CityService,
+    private coloaderService: coloaderService,
+    private alertService: AlertService
+  ) {
     this.coloaderForm = this.fb.group({
       coloader_name: ['', Validators.required],
       coloader_contuct: [''],
@@ -50,6 +56,7 @@ export class CoLoaderComponent {
   }
 
   ngOnInit(): void {
+    this.globalstore.set('PAGE_TITLE', "CO-LOADER");
     this.gateAllcity();
     this.gateAllColoaders();
   }

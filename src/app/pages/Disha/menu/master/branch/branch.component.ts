@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BranchService } from '../../../../../../services/branch.service';
@@ -37,7 +37,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     AutoCompleteModule
   ]
 })
-export class BranchComponent {
+export class BranchComponent implements OnInit {
   branchForm: FormGroup;
   companies: any[] = [];
   states: any[] = [];
@@ -92,6 +92,9 @@ export class BranchComponent {
     this.loadStates();
     this.gateAllcity();
     this.gateAllUser();
+  }
+  ngOnInit(): void {
+    this.globalstore.set('PAGE_TITLE', "BRANCH");
   }
 
   async fetchBranches() {

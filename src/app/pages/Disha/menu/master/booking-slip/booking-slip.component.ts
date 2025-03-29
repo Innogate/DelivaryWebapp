@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { BranchService } from '../../../../../../services/branch.service';
 import { AlertService } from '../../../../../../services/alert.service';
 import { TokenService } from '../../../../../../services/token.service';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
 
 @Component({
   selector: 'app-booking-slip',
@@ -24,7 +25,13 @@ export class BookingSlipComponent {
   selectedFileName: string = '';
   private touchStartY: number = 0;
   company_id: number = 1;
-  constructor(private branchService: BranchService, private alertService: AlertService, private fb: FormBuilder, private tokenService: TokenService) {
+  constructor(
+    private branchService: BranchService, 
+    private alertService: AlertService, 
+    private fb: FormBuilder, 
+    private tokenService: TokenService,
+    private storage: GlobalStorageService) {
+  
     this.BookingSlip = this.fb.group({
       branch_id: ['', Validators.required],
       start_no: ['', Validators.required],
@@ -33,6 +40,7 @@ export class BookingSlipComponent {
   }
 
   ngOnInit() {
+    this.storage.set('PAGE_TITLE', "BOOKING SLIP");
     this.gateAllToken();
     this.gateAllBranch();
   }

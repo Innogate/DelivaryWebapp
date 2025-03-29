@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { CityService } from '../../../../../../services/city.service';
@@ -10,6 +10,7 @@ import { AlertService } from '../../../../../../services/alert.service';
 import { throwError as rxjsThrowError } from 'rxjs';
 import { Theme } from '@primeng/themes';
 import { ThLargeIcon } from 'primeng/icons';
+import { GlobalStorageService } from '../../../../../../services/global-storage.service';
 
 @Component({
   selector: 'app-city',
@@ -17,7 +18,7 @@ import { ThLargeIcon } from 'primeng/icons';
   templateUrl: './city.component.html',
   styleUrl: './city.component.scss'
 })
-export class CityComponent {
+export class CityComponent implements OnInit {
 
   showAddState: boolean = false;
   dropdownOptions = [];
@@ -38,7 +39,8 @@ export class CityComponent {
     private cityService: CityService,
     private stateService: StateService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private storage: GlobalStorageService
   ) {
     this.Form = this.fb.group({
         state_id: ['', [Validators.required]],
@@ -46,6 +48,7 @@ export class CityComponent {
     });
   }
   ngOnInit() {
+    this.storage.set('PAGE_TITLE', "CITY");
     this.GetAllState();
   }
 
