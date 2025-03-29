@@ -29,7 +29,7 @@ export class BookingStatusComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.storage.set('PAGE_TITLE', "BOOKING STATUS");
+    this.storage.set('PAGE_TITLE', "BOOKING LIST");
     await this.getAllBooking();
   }
 
@@ -57,6 +57,12 @@ export class BookingStatusComponent implements OnInit {
     }
   }
 
+  getCityName(cityId: number): string {
+    const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || []; 
+    const city = cities.find(city => city.city_id === cityId);
+    return city ? city.city_name : ''; // Return city name or empty string if not found
+  }
+  
   transportModes = [
     { label: 'Bus', value: 'B' },
     { label: 'Train', value: 'T' },

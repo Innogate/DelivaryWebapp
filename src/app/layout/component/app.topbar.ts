@@ -10,7 +10,7 @@ import { GlobalStorageService } from '../../../services/global-storage.service';
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
+    imports: [RouterModule, CommonModule, StyleClassModule],
     template: ` 
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
