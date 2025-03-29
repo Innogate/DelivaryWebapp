@@ -7,7 +7,7 @@ import { payload } from '../../interfaces/payload.interface';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   getAllUsers(payload: any): Observable<any> {
     return this.apiService.post('/master/users', payload);
@@ -23,6 +23,11 @@ export class UserService {
 
 
   updateUser(payload: any): Observable<any> {
-    return this.apiService.post('/master/users/update',  payload);
+    return this.apiService.post('/master/users/update', payload);
   }
+
+  gateMyInfo(): Observable<any> {
+    return this.apiService.get('/master/users/myInfo');
+  }
+
 }

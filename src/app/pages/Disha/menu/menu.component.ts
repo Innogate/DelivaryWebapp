@@ -8,6 +8,7 @@ import { AlertService } from '../../../../services/alert.service';
 import { GlobalStorageService } from '../../../../services/global-storage.service';
 import { jwtDecode } from 'jwt-decode';
 import { BranchService } from '../../../../services/branch.service';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-menu',
@@ -22,7 +23,8 @@ export class MenuComponent {
     private pageService: PagesService,
     private alertService: AlertService,
     private globalstore: GlobalStorageService,
-    private branchService: BranchService
+    private branchService: BranchService,
+    private userService: UserService
   ) { }
   selectedCard: string = ''; // Initially, no card is selected
   allowedPageIds: any[] = [];
@@ -36,8 +38,8 @@ export class MenuComponent {
     this.getAccess();
     const token: any = this.globalstore.get('token');;
     this.decodedToken = this.decodeJwt(token);
-    console.log(this.decodedToken.branch_id);
    await this.getBranchById(this.decodedToken.branch_id);
+   await this.gateMtInfo();
   }
 
   decodeJwt(token: string): any {
@@ -69,6 +71,23 @@ export class MenuComponent {
           }
         )))
     }
+  }
+
+
+  async gateMtInfo(){
+    if(this.globalstore.get('userInfo')){
+      return;
+    }
+    
+   await firstValueFrom(this.userService.gateMyInfo().pipe(
+      tap((response) => {
+        this.globalstore.set('userInfo', response.body, true);
+      }
+        , (error) => {
+          this.alertService.error(error.error.message);
+        } 
+      )
+   ))
   }
 
   async getAccess() {
