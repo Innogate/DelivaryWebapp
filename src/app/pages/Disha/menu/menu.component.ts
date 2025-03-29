@@ -96,7 +96,6 @@ export class MenuComponent {
       const res: any = await firstValueFrom(this.pageService.getMyAccess());
       this.allowedPageIds = res.body || [];
       this.globalstore.set('allowedPageIds', this.allowedPageIds);
-      console.log("Fetched from API and stored:", this.allowedPageIds);
     } catch (error: any) {
       this.alertService.error(error.error.message);
     }
