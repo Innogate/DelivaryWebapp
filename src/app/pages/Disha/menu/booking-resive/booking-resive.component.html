@@ -34,26 +34,24 @@
       <div class="flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
         <i class="pi pi-rupee mr-2 text-green-600"></i> ₹{{ booking.total_value }}
       </div>
-    
+
       <!-- Right Side: toPay & On Acc (if applicable) -->
       <div class="flex gap-2">
-        <div *ngIf="booking.to_pay == 1" 
-             [ngClass]="{
+        <div *ngIf="booking.to_pay == 1" [ngClass]="{
                'bg-green-100 text-green-800': booking.paid_type === 'Prepaid',
                'bg-yellow-100 text-yellow-800': booking.paid_type === 'COD'
-             }" 
-             class="px-4 py-2 rounded-full text-sm font-medium">
+             }" class="px-4 py-2 rounded-full text-sm font-medium">
           <i class="pi pi-wallet mr-2"></i> toPay
         </div>
-    
-        <div *ngIf="booking.on_account == 1" 
-     class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-  <i class="pi pi-wallet mr-2"></i> On Acc
-</div>
+
+        <div *ngIf="booking.on_account == 1"
+          class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+          <i class="pi pi-wallet mr-2"></i> On Acc
+        </div>
 
       </div>
     </div>
-    
+
     <!-- Additional Details -->
     <div *ngIf="booking.showMore" class="bg-gray-100 p-4 rounded-lg mt-3 border border-gray-300">
       <p class="text-gray-700 text-sm flex items-center mb-2">
@@ -90,13 +88,6 @@
           <i class="pi pi-times-circle"></i>
           <span>Cancel Order</span>
         </button> -->
-
-        <button pButton
-          class="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-green-700 active:bg-green-800 transition-all">
-          <i class="pi pi-check-circle"></i>
-          <span>Received Order</span>
-        </button>
-
         <button pButton
           class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
           <i class="pi pi-arrow-right"></i>
@@ -112,5 +103,54 @@
       <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
       {{ booking.showMore ? 'Show Less' : 'Show More' }}
     </button>
+  </div>
+  
+</div>
+
+
+
+<!-- Floating Action Button (FAB) -->
+<button
+  class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
+  (click)="toggleAddState()">
+  <i class="pi pi-plus"></i>
+</button>
+
+<!-- Background Overlay -->
+<div *ngIf="showAddState" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+</div>
+
+<!-- Bottom Sheet Modal -->
+<div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-sky-100 shadow-xl rounded-t-3xl transition-transform duration-300 ease-in-out
+min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
+  [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
+
+
+  <div class="sticky top-0 bg-blue-300 z-10 shadow-md rounded-t-3xl">
+    <h2 class="text-2xl font-bold pt-4 pb-2 text-gray-800 text-center border-b border-gray-300">
+      Received Booking
+    </h2>
+  </div>
+<div class="mx-2">
+  <form class="mb-4" [formGroup]="bookingReceivedForm">
+    <div class="flex flex-col mt-4">
+      <label class="text-gray-700 font-medium">Enter slip no.</label>
+      <input formControlName="slip_no" class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 transition-all"
+        pInputText type="text" />
+    </div>
+  </form>
+
+  <div class="flex items-center gap-4 mt-6">
+    <button
+      class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+      (click)="toggleAddState()">
+      Cancel
+    </button>
+    <button *ngIf="!isEditing"
+      class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+      (click)="acceptBooking()">
+      Received
+    </button>
+  </div>
   </div>
 </div>

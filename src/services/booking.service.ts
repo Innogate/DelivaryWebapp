@@ -42,8 +42,4 @@ export class BookingService {
     return this.apiService.post('/autofill/newBooking', { search: text });
   }
 
-  getResivedBookings(): Observable<any> {
-    return this.apiService.post('/booking/received', {});
-  }
-
 }

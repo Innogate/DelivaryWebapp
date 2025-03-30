@@ -5,10 +5,15 @@ import { AlertService } from '../../../../../services/alert.service';
 import { BranchService } from '../../../../../services/branch.service';
 import { GlobalStorageService } from '../../../../../services/global-storage.service';
 import { CommonModule } from '@angular/common';
+import { TrakingService } from '../../../../../services/traking.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BookingReceivedService } from '../../../../../services/booking-received.service';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-booking-resive',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, InputTextModule, ReactiveFormsModule],
   templateUrl: './booking-resive.component.html',
   styleUrl: './booking-resive.component.scss'
 })
@@ -17,22 +22,50 @@ export class BookingResiveComponent {
   bookingList?: any[];
   current = 0;
   max = 10;
-
+  showAddState: boolean = false;
+  stateId?: number;
+  isEditing: boolean = false;
+  bookingReceivedForm: FormGroup;
   constructor(
     private bookService: BookingService,
     private alertService: AlertService,
     private branchService: BranchService,
-    private storage: GlobalStorageService
-  ) { }
+    private storage: GlobalStorageService,
+    private trakingService: TrakingService,
+    private BookingresiveService: BookingReceivedService,
+    private fb: FormBuilder,
+  ) {
+    this.bookingReceivedForm = this.fb.group({
+      slip_no: ['', Validators.required]
+    });
+  }
 
   async ngOnInit() {
     this.storage.set('PAGE_TITLE', "BOOKING RECEIVED");
     await this.getAllResivedBookings();
   }
 
+  transportModes = [
+    { label: 'Bus', value: 'B' },
+    { label: 'Train', value: 'T' },
+    { label: 'Flight', value: 'F' },
+    { label: 'Cab', value: 'C' }
+  ];
+
+  getTransportModeLabel(value: string): string {
+    const mode = this.transportModes.find(mode => mode.value === value);
+    return mode ? mode.label : value;
+  }
+
+  // Gate all Bookings Recieved
   async getAllResivedBookings() {
     try {
-      await firstValueFrom(this.bookService.getResivedBookings().pipe(
+      const payload = {
+        fields: [],
+        max: 10,
+        current: 0
+      }
+      await firstValueFrom(this.BookingresiveService.getResivedBookings(payload).pipe(
         tap(
           (res) => {
             if (res?.body && Array.isArray(res.body)) {
@@ -45,45 +78,43 @@ export class BookingResiveComponent {
           }
         )
       ))
-
-
     } catch (error: any) {
       this.alertService.error(error?.error?.message || 'An error occurred while fetching bookings.');
     }
   }
 
+  // Accept Booking
+  async acceptBooking() {
+    if (this.bookingReceivedForm.invalid) {
+      this.alertService.error('Please enter slip number');
+      return;
+    }
+    try {
+      const payload = {
+        slip_no: this.bookingReceivedForm.value.slip_no,
+      }
+      await firstValueFrom(this.BookingresiveService.addNewBookingReceived(payload).pipe(
+        tap(
+          (res) => {
+            if (res?.body) {
+              this.alertService.success(res.message);
+              this.bookingReceivedForm.reset();
+              this.getAllResivedBookings();
+            }
+          },
+          (error) => {
+            this.alertService.error(error?.error?.message || 'An error occurred while accepting booking.');
+          }
+        )))
+    } catch (error: any) {
+      this.alertService.error(error?.error?.message || 'An error occurred while accepting booking.');
+    }
+  }
+
   getCityName(cityId: number): string {
-    const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || []; 
+    const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || [];
     const city = cities.find(city => city.city_id === cityId);
-    return city ? city.city_name : ''; // Return city name or empty string if not found
-  }
-  
-  transportModes = [
-    { label: 'Bus', value: 'B' },
-    { label: 'Train', value: 'T' },
-    { label: 'Flight', value: 'F' },
-    { label: 'Cab', value: 'C' }
-  ];
-
-  getTransportModeLabel(value: string): string {
-    const mode = this.transportModes.find(mode => mode.value === value);
-    return mode ? mode.label : value;
-  }
-  calculateTotal(charges?: number, shipper?: number, other?: number, cgst?: number, sgst?: number, igst?: number): number {
-    // Ensure all values are numbers, replace undefined/null with 0
-    const c = Number(charges) || 0;
-    const s = Number(shipper) || 0;
-    const o = Number(other) || 0;
-    const cgstVal = Number(cgst) || 0;
-    const sgstVal = Number(sgst) || 0;
-    const igstVal = Number(igst) || 0;
-
-    const subtotal = c + s + o;
-    const cgstAmount = (cgstVal / 100) * subtotal;
-    const sgstAmount = (sgstVal / 100) * subtotal;
-    const igstAmount = (igstVal / 100) * subtotal;
-
-    return subtotal + cgstAmount + sgstAmount + igstAmount;
+    return city ? city.city_name : '';
   }
 
   async onScroll(event: any): Promise<void> {
@@ -91,5 +122,9 @@ export class BookingResiveComponent {
     if (bottom) {
       await this.getAllResivedBookings();
     }
+  }
+  toggleAddState() {
+    this.showAddState = !this.showAddState;
+    this.isEditing = false;
   }
 }
