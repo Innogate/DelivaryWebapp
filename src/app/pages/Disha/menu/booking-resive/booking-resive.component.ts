@@ -9,6 +9,7 @@ import { TrakingService } from '../../../../../services/traking.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingReceivedService } from '../../../../../services/booking-received.service';
 import { InputTextModule } from 'primeng/inputtext';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-booking-resive',
@@ -96,9 +97,16 @@ export class BookingResiveComponent {
       await firstValueFrom(this.BookingresiveService.addNewBookingReceived(payload).pipe(
         tap(
           (res) => {
-            if (res?.body) {
-              this.alertService.success(res.message);
+            if (res) {
+              Swal.fire({
+                title: 'Success',
+                text: res.message,
+                icon: 'success',
+                timer: 800, // Auto close after 1 second
+                showConfirmButton: false
+              });
               this.bookingReceivedForm.reset();
+              this.bookingList = [];
               this.getAllResivedBookings();
             }
           },
