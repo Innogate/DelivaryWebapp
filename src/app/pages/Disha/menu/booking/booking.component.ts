@@ -36,7 +36,7 @@ export class BookingComponent implements OnInit {
   // searchResults: any[] = [];
   selectedBranch: any;
   selectedTransportMode: any;
-  bookingForm: FormGroup;
+  bookingForm: FormGroup = new FormGroup({});
   filteredCities: any[] = [];
   selectedCity: any = null;
   amount: number = 0;
@@ -55,10 +55,14 @@ export class BookingComponent implements OnInit {
     private employeeService: EmployeesService,
     private globalstore: GlobalStorageService
   ) {
-    this.bookingForm = this.fb.group({});
+    this.createForm();
   }
 
   async ngOnInit(): Promise<void> {
+    this.createForm();
+    if (!this.bookingForm) {
+      return;
+    }
     this.globalstore.set('PAGE_TITLE', "BOOKING");
     this.createForm();
     this.loadTransportModes();
@@ -67,6 +71,9 @@ export class BookingComponent implements OnInit {
       this.calculateTotal();
     });
     setTimeout(() => {
+      if (!this.bookingForm) {
+        return;
+      }
       this.bookingForm.patchValue({ to_pay: false }, { emitEvent: false });
       this.calculateTotal();
     }, 0);
@@ -166,6 +173,9 @@ export class BookingComponent implements OnInit {
 
 
   async saveBooking() {
+    if (!this.bookingForm) {
+      return;
+    }
     if (!this.bookingForm.valid) {
       this.alertService.error("Form is invalid. Please fill in all required fields.");
       return;
@@ -223,6 +233,9 @@ export class BookingComponent implements OnInit {
 
 
   calculateAmount() {
+    if (!this.bookingForm) {
+      return;
+    }
     const weight = Number(this.bookingForm.get('package_weight')?.value) || 0;
     const charges = Number(this.bookingForm.get('package_value')?.value) || 0;
     const amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
@@ -231,6 +244,9 @@ export class BookingComponent implements OnInit {
   }
 
   calculateTotal() {
+    if (!this.bookingForm) {
+      return;
+    }
     const formValues = this.bookingForm.value;
     const shipper = Number(formValues.shipper_charges) || 0;
     const other = Number(formValues.other_charges) || 0;
@@ -271,6 +287,9 @@ export class BookingComponent implements OnInit {
   }
 
   onConsigneeSelect(event: any) {
+    if (!this.bookingForm) {
+      return;
+    }
     this.bookingForm.patchValue(
       { 
         consignee_name: event.value.consignee_name, 
@@ -286,6 +305,9 @@ export class BookingComponent implements OnInit {
   }
 
   onConsignorSelect(event: any) {
+    if (!this.bookingForm) {
+      return;
+    }
     this.bookingForm.patchValue({
       consignor_name: event.value.consignor_name,
       consignor_mobile: event.value.consignor_mobile,
