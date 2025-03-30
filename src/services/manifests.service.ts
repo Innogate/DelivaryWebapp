@@ -20,6 +20,14 @@ export class ManifestsService {
 
    generateManifest(payload: any): Observable<any> {
         return this.apiService.post('/manifests/new', payload);
-    }
+  }
+
+  getManifest(payload: any): Observable<any> {
+    return this.apiService.post('/manifests', payload);
+  }
+
+  getManifestById(payload: any): Observable<any> {
+    return this.apiService.post('/manifests/byId', payload);
+  }
 
 }

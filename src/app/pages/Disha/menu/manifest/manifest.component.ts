@@ -46,6 +46,10 @@ export class ManifestComponent {
   searchTerm: string = '';
   selectAll: boolean = false;
 
+  showManufest: boolean = false;
+  allManifests: any[] = [];
+
+
 
   loadTransportModes(): void {
     this.transportModes = [
@@ -106,6 +110,23 @@ export class ManifestComponent {
     } catch (error) {
       console.error('Error fetching cities:', error);
     }
+  }
+
+  async getAllManifests() {
+    const payload = {
+      "fields": [],
+      "max": 10,
+      "current": 0
+    }
+    await firstValueFrom(this.manifestsService.getManifest(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.allManifests = res.body;          
+          }
+        }
+      )
+    ))
   }
 
   async gateAllBranch() {
@@ -225,6 +246,7 @@ export class ManifestComponent {
     this.filteredBookings.forEach(booking => booking.selected = this.selectAll);
   }
 
+
   updateSelected() {
     this.selectAll = this.filteredBookings.every(booking => booking.selected);
   }
@@ -258,7 +280,14 @@ export class ManifestComponent {
   }
 
 
-  generatePDF() {
+  generatePDF(data: any | null | undefined = null) {
+    if (!data) {
+      return;
+    }
+    else{
+      return;
+    }
+
     const doc = new jsPDF();
     const today = new Date();
     const formattedDate = today.toLocaleDateString('en-GB', {
@@ -282,7 +311,7 @@ export class ManifestComponent {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0); // Black Text
-    doc.text('Origin Branch: DISHA KALAKAR STREET KOLKATA', 20, 35);
+    doc.text('Origin Branch: ', 20, 35);
     doc.text('Destination Branch: DISHA SURAT', 20, 42);
     doc.text('Co-loader: SHAKTI CARGO AND LOGISTICS', 20, 49);
     doc.text(`Generated on: ${formattedDate}`, 20, 56);
@@ -350,5 +379,26 @@ export class ManifestComponent {
     doc.save('Styled_Manifest_Report.pdf');
   }
 
+  showManifest() {
+    this.showManufest = !this.showManufest;
+    if (this.showManufest) {
+      this.getAllManifests();
+    }
+  }
 
+  async downloadManifest(id:any) {
+    const payload: any = {
+      "fields" : [],
+      "manifests_id": id
+    }
+    await firstValueFrom(this.manifestsService.getManifestById(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            console.log(res.body);
+          }
+        }
+      )
+    ))
+  }
 }
