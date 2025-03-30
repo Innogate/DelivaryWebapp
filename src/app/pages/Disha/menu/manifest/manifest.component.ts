@@ -18,6 +18,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { coloaderService } from '../../../../../services/coloader.service';
 import { AlertService } from '../../../../../services/alert.service';
+import { ManifestsService } from '../../../../../services/manifests.service';
 @Component({
   selector: 'app-manifest',
   imports: [DropdownModule, SelectModule, TableModule, AutoCompleteModule, RadioButtonModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule, DividerModule, CheckboxModule],
@@ -25,10 +26,7 @@ import { AlertService } from '../../../../../services/alert.service';
   styleUrl: './manifest.component.scss'
 })
 export class ManifestComponent {
-  companies: any[] = [];
-  states: any[] = [];
   cities: any[] = [];
-  branchList: any[] = [];
   showAddState: boolean = false;
   selectedFileName: string = '';
   private touchStartY: number = 0;
@@ -42,17 +40,35 @@ export class ManifestComponent {
   coLoaderOptions: any[] = [];
   form: FormGroup;
   coloaderList: any[] = [];
+  bookings: any[] = [];
+  bookingList: any[] = [];
+  filteredBookings: any[] = [];
+  searchTerm: string = '';
+  selectAll: boolean = false;
+
+
+  loadTransportModes(): void {
+    this.transportModes = [
+      { label: 'Bus', value: 'B' },
+      { label: 'Train', value: 'T' },
+      { label: 'Flight', value: 'F' },
+      { label: 'Cab', value: 'C' }
+    ];
+  }
   constructor(private branchService: BranchService,
     private coloaderService: coloaderService,
     private fb: FormBuilder,
     private cityService: CityService,
     private globalstore: GlobalStorageService,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private manifestsService: ManifestsService,
+  ) {
     this.form = this.fb.group({
-      branch_name: ['', Validators.required],
-      destination_city_id: ['', Validators.required],
+      destination_id: ['', Validators.required],
+      destination_city_id: [''],
       co_loader: ['', Validators.required],
-      transport_mode: ['', Validators.required]
+      transport_mode: ['', Validators.required],
+      transport_branch_id: ['', Validators.required],
     })
   }
 
@@ -62,10 +78,8 @@ export class ManifestComponent {
     this.loadTransportModes();
     this.gateAllcity();
     this.gateAllColoaders();
+    this.getAllBookings();
   }
-
-
-
   async gateAllcity() {
     const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
     if (storedCities) {
@@ -93,6 +107,7 @@ export class ManifestComponent {
       console.error('Error fetching cities:', error);
     }
   }
+
   async gateAllBranch() {
     const payload =
     {
@@ -110,8 +125,6 @@ export class ManifestComponent {
       )
     ))
   }
-
-
 
   // gate all coloaders
   async gateAllColoaders() {
@@ -133,42 +146,101 @@ export class ManifestComponent {
       )
     ))
   }
+ 
+  // gate all bookings
+  async getAllBookings() {  
+    try {
+      await firstValueFrom(this.manifestsService.gateAllBookings().pipe(
+        tap((res: any) => {
+          if (res?.body) {
+            this.bookings = res.body;
+  
+            this.bookingList = this.bookings.map((booking: any) => ({
+              id: booking.booking_id,  
+              slipNo: booking.slip_no,  
+              destinationBranchId: booking.destination_branch_id,
+              transportMode: booking.transport_mode, 
+              selected: false
+            }));
+  
+            this.filteredBookings = [...this.bookingList];
+          }
+        })
+      ));
+    } catch (error: any) {
+      this.alertService.error(error?.error?.message || 'An error occurred while fetching bookings.');
+    }
+  }
 
 
 
+  filterBookings() {
+    this.filteredBookings = this.bookingList.filter(booking =>
+      booking.slipNo.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
+      (this.form?.value.destination_id ? booking.destinationBranchId == this.form.value.destination_id : true) &&
+      (this.selectedTransportMode ? booking.transportMode == this.selectedTransportMode : true)
+    );
+  }
 
-  // Filter city suggestions based on user input
+  // generate Manifest
+  generateManifest() {
+    const selectedBookingIds = this.bookingList
+      .filter(b => b.selected)
+      .map(b => b.id); 
+
+    try{
+      if (this.form.invalid) {
+        this.alertService.error('Please fill all required fields');
+        return;
+      }
+      const payload = {
+        destination_id: this.form.value.transport_branch_id,
+        coloader_id: this.form.value.co_loader,
+        booking_id: selectedBookingIds
+      }
+      console.log(payload)
+      firstValueFrom(this.manifestsService.generateManifest(payload).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.alertService.success(res.message);
+              this.form.reset();
+              this.getAllBookings();
+            }
+          },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        )
+      ))
+    } catch{
+      this.alertService.error('An error occurred while generating manifest.');
+    }
+
+    console.log('Selected Booking IDs:', selectedBookingIds, this.form.value);
+  }
+  
+
+  toggleSelectAll() {
+    this.filteredBookings.forEach(booking => booking.selected = this.selectAll);
+  }
+
+  updateSelected() {
+    this.selectAll = this.filteredBookings.every(booking => booking.selected);
+  }
   searchCity(event: any) {
-    // console.log('Search City:', event.query);
-    const query = event?.query?.toLowerCase() || ''; // Ensure query exists
+    const query = event?.query?.toLowerCase() || ''; 
     console.log(query)
 
 
     this.filteredCities = this.cities.filter(city =>
-      city.city_name?.toLowerCase().includes(query) // Ensure city.name exists
+      city.city_name?.toLowerCase().includes(query) 
     );
-    console.log(this.filteredCities)
   }
 
-
-  // Handle city selection
   onCitySelect(event: any) {
     console.log('Selected City:', event);
   }
-
-
-  loadTransportModes(): void {
-    this.transportModes = [
-      { label: 'Bus', value: 'B' },
-      { label: 'Train', value: 'T' },
-      { label: 'Flight', value: 'F' },
-      { label: 'Cab', value: 'C' }
-    ];
-  }
-
-
-
-
   toggleAddState() {
     this.showAddState = !this.showAddState;
     this.isEditing = false;
@@ -184,71 +256,6 @@ export class ManifestComponent {
       this.showAddState = false;
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  bookingList = [
-    { number: 'BK-1001', selected: false },
-    { number: 'BK-1002', selected: false },
-    { number: 'BK-1003', selected: false },
-    { number: 'BK-1004', selected: false },
-    { number: 'BK-1005', selected: false },
-    { number: 'BK-1005', selected: false }
-
-  ];
-  filteredBookings = [...this.bookingList]; // Copy of booking list
-  searchTerm: string = '';
-  selectAll: boolean = false;
-
-  // Toggle Select All
-  toggleSelectAll() {
-    this.filteredBookings.forEach(booking => booking.selected = this.selectAll);
-  }
-
-  // Update Selected Checkboxes
-  updateSelected() {
-    this.selectAll = this.filteredBookings.every(booking => booking.selected);
-  }
-
-  // Search and Filter Bookings
-  filterBookings() {
-    this.filteredBookings = this.bookingList.filter(booking =>
-      booking.number.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-  }
-
-  // Save Selected Bookings
-  saveSelectedBookings() {
-    const selectedBookings = this.bookingList
-      .filter(b => b.selected)
-      .map(b => b.number);
-
-    console.log('Selected Booking Numbers:', selectedBookings);
-  }
-
-
-
-
-
-
-
-
-
-
-
 
 
   generatePDF() {

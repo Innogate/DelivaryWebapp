@@ -121,15 +121,20 @@ export class MenuComponent {
 
   selectCard(card: string) {
     this.selectedCard = card;
-    if (card === "booking") {
-      this.router.navigate(["/pages/booking"]);
-    } else if (card === "booking-status") {
-      this.router.navigate(["/pages/booking-status"]);
-    } else if (card === "master") {
-      this.router.navigate(["/pages/master"]);
-    } else if (card === "manifest") {
-      this.router.navigate(["/pages/manifest"]);
+  
+    const routes: { [key: string]: string } = {
+      booking: "/pages/booking",
+      "booking-status": "/pages/booking-status",
+      master: "/pages/master",
+      manifest: "/pages/manifest",
+      "booking-Received": "/pages/booking-Received",
+    };
+  
+    const route = routes[card];
+    if (route) {
+      this.router.navigate([route]);
     }
   }
+  
 }
 

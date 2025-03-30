@@ -18,6 +18,7 @@ import { StateComponent } from './Disha/menu/master/state/state.component';
 import { EmployComponent } from './Disha/menu/master/employ/employ.component';
 import { BookingSlipComponent } from './Disha/menu/master/booking-slip/booking-slip.component';
 import { MasterComponent } from './Disha/menu/master/master.component';
+import { BookingResiveComponent } from './Disha/menu/booking-resive/booking-resive.component';
 export default [
     {path: 'documentation', component: Documentation },
     {path: 'scan', component: MenuComponent },
@@ -27,6 +28,7 @@ export default [
     {path: 'state', component: StateComponent, canActivate: [AuthGuard]},
     {path: 'city', component: CityComponent, canActivate: [AuthGuard]},
     {path: 'booking-status', component: BookingStatusComponent, canActivate: [AuthGuard]},
+    {path: 'booking-Received', component: BookingResiveComponent, canActivate: [AuthGuard]},
     {path: 'employee', component: EmployComponent, canActivate: [AuthGuard]},
     {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
     {path: 'company', component: CompanyComponent, canActivate: [AuthGuard]},
