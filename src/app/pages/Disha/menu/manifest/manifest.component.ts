@@ -330,7 +330,7 @@ export class ManifestComponent {
     // **Manifest ID & Mode of Transport**
     doc.setTextColor(255, 0, 0); // Red
     doc.text('Manifest ID: '+data.manifests_number, 150, 35);
-    doc.text('Total shipment to dispatch: 8', 150, 42);
+    doc.text('Total shipment to dispatch: '+data.bookings.length, 150, 42);
     doc.text('Mode Of Transport: Air', 150, 49);
 
     // **Table Columns**
@@ -385,7 +385,7 @@ export class ManifestComponent {
     doc.text('This is a system-generated manifest. No signature required.', 20, doc.internal.pageSize.height - 7);
 
     // **Save PDF**
-    doc.save('Styled_Manifest_Report.pdf');
+    doc.save(data.manifests_number + '_Manifest_Report.pdf');
   }
 
   showManifest() {
