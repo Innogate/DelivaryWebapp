@@ -38,7 +38,6 @@ export class ManifestComponent {
   selectedCity: any = null;
   branches: any[] = [];
   coLoaderOptions: any[] = [];
-  form: FormGroup;
   coloaderList: any[] = [];
   bookings: any[] = [];
   bookingList: any[] = [];
@@ -49,6 +48,8 @@ export class ManifestComponent {
   showManufest: boolean = false;
   allManifests: any[] = [];
 
+  selectedBookings: any[] = [];
+  manifestsForm: FormGroup = new FormGroup({});
 
 
   loadTransportModes(): void {
@@ -67,13 +68,14 @@ export class ManifestComponent {
     private alertService: AlertService,
     private manifestsService: ManifestsService,
   ) {
-    this.form = this.fb.group({
+    this.manifestsForm = this.fb.group({
       destination_id: ['', Validators.required],
+      coloader_id: ['', Validators.required],
+      booking_id: [],
       destination_city_id: [''],
-      co_loader: ['', Validators.required],
-      transport_mode: ['', Validators.required],
-      transport_branch_id: ['', Validators.required],
-    })
+      transport_mode: ['', Validators.required]
+    });
+
   }
 
   ngOnInit(): void {
@@ -122,7 +124,7 @@ export class ManifestComponent {
       tap(
         (res) => {
           if (res.body) {
-            this.allManifests = res.body;          
+            this.allManifests = res.body;
           }
         }
       )
@@ -167,23 +169,22 @@ export class ManifestComponent {
       )
     ))
   }
- 
+
   // gate all bookings
-  async getAllBookings() {  
+  async getAllBookings() {
     try {
       await firstValueFrom(this.manifestsService.gateAllBookings().pipe(
         tap((res: any) => {
           if (res?.body) {
             this.bookings = res.body;
-  
+
             this.bookingList = this.bookings.map((booking: any) => ({
-              id: booking.booking_id,  
-              slipNo: booking.slip_no,  
+              id: booking.booking_id,
+              slipNo: booking.slip_no,
               destinationBranchId: booking.destination_branch_id,
-              transportMode: booking.transport_mode, 
-              selected: false
+              transportMode: booking.transport_mode
             }));
-  
+
             this.filteredBookings = [...this.bookingList];
           }
         })
@@ -198,34 +199,33 @@ export class ManifestComponent {
   filterBookings() {
     this.filteredBookings = this.bookingList.filter(booking =>
       booking.slipNo.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-      (this.form?.value.destination_id ? booking.destinationBranchId == this.form.value.destination_id : true) &&
+      (this.manifestsForm?.value.destination_id ? booking.destinationBranchId == this.manifestsForm.value.destination_id : true) &&
       (this.selectedTransportMode ? booking.transportMode == this.selectedTransportMode : true)
     );
   }
 
   // generate Manifest
   generateManifest() {
-    const selectedBookingIds = this.bookingList
-      .filter(b => b.selected)
-      .map(b => b.id); 
+    // get all id from selected bookings
+    const selectedBookingIds = this.selectedBookings.map(booking => booking.id);
 
     try{
-      if (this.form.invalid) {
+      if (this.manifestsForm.invalid) {
         this.alertService.error('Please fill all required fields');
         return;
       }
-      const payload = {
-        destination_id: this.form.value.transport_branch_id,
-        coloader_id: this.form.value.co_loader,
-        booking_id: selectedBookingIds
-      }
-      console.log(payload)
+
+     this.manifestsForm.value.booking_id = selectedBookingIds;
+     this.manifestsForm.value.dest
+     const payload = this.manifestsForm.value
+
       firstValueFrom(this.manifestsService.generateManifest(payload).pipe(
         tap(
           (res) => {
             if (res.body) {
               this.alertService.success(res.message);
-              this.form.reset();
+              this.manifestsForm.reset();
+              this.selectedBookings = [];
               this.getAllBookings();
             }
           },
@@ -238,45 +238,42 @@ export class ManifestComponent {
       this.alertService.error('An error occurred while generating manifest.');
     }
 
-    console.log('Selected Booking IDs:', selectedBookingIds, this.form.value);
-  }
-  
-
-  toggleSelectAll() {
-    this.filteredBookings.forEach(booking => booking.selected = this.selectAll);
+    console.log('Selected Booking IDs:', selectedBookingIds, this.manifestsForm.value);
   }
 
+
+  selectAllBookings() {
+    this.selectedBookings = this.filteredBookings;
+    this.filteredBookings = [];
+    this.bookings = [];
+  }
+
+  deselectAllBookings() {
+    this.selectedBookings = [];
+    this.filteredBookings = this.bookingList;
+  }
 
   updateSelected() {
     this.selectAll = this.filteredBookings.every(booking => booking.selected);
   }
+
   searchCity(event: any) {
-    const query = event?.query?.toLowerCase() || ''; 
+    const query = event?.query?.toLowerCase() || '';
     console.log(query)
 
 
     this.filteredCities = this.cities.filter(city =>
-      city.city_name?.toLowerCase().includes(query) 
+      city.city_name?.toLowerCase().includes(query)
     );
   }
 
   onCitySelect(event: any) {
-    console.log('Selected City:', event);
+    // console.log('Selected City:', event);
   }
+
   toggleAddState() {
     this.showAddState = !this.showAddState;
     this.isEditing = false;
-  }
-
-  onTouchStart(event: TouchEvent) {
-    this.touchStartY = event.touches[0].clientY;
-  }
-
-  onTouchEnd(event: TouchEvent) {
-    const touchEndY = event.changedTouches[0].clientY;
-    if (touchEndY - this.touchStartY > 50) {
-      this.showAddState = false;
-    }
   }
 
 
@@ -290,11 +287,11 @@ export class ManifestComponent {
 
     const doc = new jsPDF();
     const today = new Date();
-    const formattedDate = new Date(data.create_at).toLocaleString('en-GB', { 
-      day: '2-digit', month: '2-digit', year: 'numeric', 
+    const formattedDate = new Date(data.create_at).toLocaleString('en-GB', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     }).replace(',', ''); // Removing the comma for better formatting
-    
+
     const formatWeight = (weight: any) => {
       if (typeof weight === "string") {
           weight = parseFloat(weight.replace(/[^\d.]/g, ""));
@@ -302,13 +299,13 @@ export class ManifestComponent {
       if (typeof weight === "number") {
           weight = weight * 1000; // Convert KG to GM if input is in KG
       }
-      
+
       let kg = Math.floor(weight / 1000);
       let gm = Math.round(weight % 1000);
-  
+
       return `${kg} KG ${gm} GM`;
   };
-  
+
     // **Set Page Background Color**
     doc.setFillColor(230, 240, 255); // Light Blue Background
     doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F'); // Fills the page
@@ -412,5 +409,11 @@ export class ManifestComponent {
         }
       )
     ))
+  }
+
+  selectBooking(booking: any) {
+    this.selectedBookings.push(booking);
+    this.filteredBookings.splice(this.filteredBookings.indexOf(booking), 1);
+    this.bookingList.splice(this.bookingList.indexOf(booking), 1);
   }
 }
