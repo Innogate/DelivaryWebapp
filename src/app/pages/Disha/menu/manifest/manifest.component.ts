@@ -339,8 +339,8 @@ export class ManifestComponent {
     ];
 
     // **Table Rows (Data)**
-    const tableRows = data.bookings.map((b: { booking_id: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignor_name: string; destination_branch_name: any; }) => [
-      b.booking_id.toString(),
+    const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignor_name: string; destination_branch_name: any; }) => [
+      b.slip_no.toString(),
       b.package_count.toString(),
       formatWeight(parseInt(b.package_weight)),
       b.consignor_name.toUpperCase(),
