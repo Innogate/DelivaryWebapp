@@ -43,7 +43,7 @@ export class BookingResiveComponent {
 
   async ngOnInit() {
     this.storage.set('PAGE_TITLE', "BOOKING RECEIVED");
-    await this.getAllResivedBookings();
+    await this.getAllRelivedBookings();
   }
 
   transportModes = [
@@ -59,12 +59,12 @@ export class BookingResiveComponent {
   }
 
   // Gate all Bookings Recieved
-  async getAllResivedBookings() {
+  async getAllRelivedBookings() {
     try {
       const payload = {
         fields: [],
-        max: 10,
-        current: 0
+        max: this.max,
+        current: this.current
       }
       await firstValueFrom(this.BookingresiveService.getResivedBookings(payload).pipe(
         tap(
@@ -107,7 +107,7 @@ export class BookingResiveComponent {
               });
               this.bookingReceivedForm.reset();
               this.bookingList = [];
-              this.getAllResivedBookings();
+              this.getAllRelivedBookings();
             }
           },
           (error) => {
@@ -129,7 +129,7 @@ export class BookingResiveComponent {
   async onScroll(event: any): Promise<void> {
     const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
     if (bottom) {
-      await this.getAllResivedBookings();
+      await this.getAllRelivedBookings();
     }
   }
   toggleAddState() {
