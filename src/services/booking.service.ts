@@ -44,13 +44,7 @@ export class BookingService {
 
 
   cancelBooking(id:any): Observable<any> {
-    const payload = {
-        updates: {
-            status: "1234509877"
-        },
-        conditions: `booking_id=${id}`
-    }
-    return this.apiService.post('/booking/update', { booking_id: id });
+    return this.apiService.post('/booking/cancel', { booking_id: id });
   }
 
 }
