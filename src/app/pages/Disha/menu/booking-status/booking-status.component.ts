@@ -107,6 +107,7 @@ export class BookingStatusComponent implements OnInit {
       tap(
         (res) => {
           if (res?.body) {
+            this.alertService.success(res.body.message);
             // remove this booking from list
             this.bookingList = this.bookingList?.filter(booking => booking?.booking_id !== bookingId);
           }
