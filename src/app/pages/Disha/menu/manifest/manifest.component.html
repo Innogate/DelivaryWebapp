@@ -50,7 +50,6 @@
                         <div class="w-full">
                             <p-autoComplete
                                 [(ngModel)]="selectedCity"
-                                formControlName="destination_city_id"
                                 [suggestions]="filteredCities"
                                 (completeMethod)="searchCity($event)"
                                 optionLabel="city_name"
@@ -115,7 +114,7 @@
             <div class="relative">
                 <i class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input type="text" [(ngModel)]="searchTerm" placeholder="Search Booking..."
-                    class="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none" (input)="filterApply($event)" />
+                    class="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none" (input)="filterBookings()" />
             </div>
         </div>
 
@@ -123,6 +122,11 @@
         <div class="flex items-center mb-4">
             <button pButton icon="pi pi-check" [disabled]="filteredBookingsInventory.length === 0" class="mr-2 bg-red-700" (click)="selectAllBookings()">Select All</button>
         </div>
+<!--
+        <p-toast />
+        <p-menu #menu [model]="filter_item" [popup]="true" />
+        <p-button (click)="menu.toggle($event)" icon="pi pi-ellipsis-v"/> -->
+
 
         <!-- Booking List in a Grid Layout -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
