@@ -44,11 +44,7 @@ import { MenuModule } from 'primeng/menu';
 })
 export class ManifestComponent {
     cities: any[] = [];
-    showAddState: boolean = false;
-    selectedFileName: string = '';
-    private touchStartY: number = 0;
-    isEditing: boolean = false;
-    company_id: number = 1;
+
     transportModes: any[] = [];
     selectedTransportMode: any;
     filteredCities: any[] = [];
