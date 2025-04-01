@@ -9,7 +9,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
-import { firstValueFrom, tap } from 'rxjs';
+import { tap, firstValueFrom } from 'rxjs';
 import { BranchService } from '../../../../../services/branch.service';
 import { TableModule } from 'primeng/table';
 import { CityService } from '../../../../../services/city.service';
@@ -39,17 +39,24 @@ export class ManifestComponent {
   branches: any[] = [];
   coLoaderOptions: any[] = [];
   coloaderList: any[] = [];
+
   bookings: any[] = [];
   bookingList: any[] = [];
   filteredBookings: any[] = [];
   searchTerm: string = '';
   selectAll: boolean = false;
 
-  showManufest: boolean = false;
+  showManifests: boolean = false;
   allManifests: any[] = [];
 
   selectedBookings: any[] = [];
   manifestsForm: FormGroup = new FormGroup({});
+
+//   inventory
+  bookingsInventory: any[] = [];
+  selectedBookingsInventory: any[] = [];
+  filteredBookingsInventory: any[] = [];
+  searchTermInventory: string = '';
 
 
   loadTransportModes(): void {
@@ -176,16 +183,8 @@ export class ManifestComponent {
       await firstValueFrom(this.manifestsService.gateAllBookings().pipe(
         tap((res: any) => {
           if (res?.body) {
-            this.bookings = res.body;
-
-            this.bookingList = this.bookings.map((booking: any) => ({
-              id: booking.booking_id,
-              slipNo: booking.slip_no,
-              destinationBranchId: booking.destination_branch_id,
-              transportMode: booking.transport_mode
-            }));
-
-            this.filteredBookings = [...this.bookingList];
+            this.filteredBookingsInventory =  this.bookingsInventory = res.body;
+            console.log(this.filteredBookingsInventory)
           }
         })
       ));
@@ -195,14 +194,24 @@ export class ManifestComponent {
   }
 
 
+filterApply($even:any = null) {
+    console.log($even);
+    this.filterBookings(2, 2, '2025-03-01', '2025-03-31');
+    console.log(this.filteredBookingsInventory);
+}
 
-  filterBookings() {
-    this.filteredBookings = this.bookingList.filter(booking =>
-      booking.slipNo.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-      (this.manifestsForm?.value.destination_id ? booking.destinationBranchId == this.manifestsForm.value.destination_id : true) &&
-      (this.selectedTransportMode ? booking.transportMode == this.selectedTransportMode : true)
-    );
-  }
+filterBookings(destinationBranchId: any = null, destinationCityId: any = null, startDate: any = null, endDate:any = null) {
+    // Filter by destination branch ID, city ID, and date range
+    this.filteredBookingsInventory = this.bookingsInventory.filter(booking => {
+        const isBranchMatch = booking.destination_branch_id === destinationBranchId;
+        const isCityMatch = booking.destination_city_id === destinationCityId;
+        const isDateMatch = (startDate && endDate)
+            ? new Date(booking.created_at) >= new Date(startDate) && new Date(booking.created_at) <= new Date(endDate)
+            : true;
+        return isBranchMatch && isCityMatch && isDateMatch;
+    });
+}
+
 
   // generate Manifest
   generateManifest() {
@@ -242,21 +251,6 @@ export class ManifestComponent {
   }
 
 
-  selectAllBookings() {
-    this.selectedBookings = this.filteredBookings;
-    this.filteredBookings = [];
-    this.bookings = [];
-  }
-
-  deselectAllBookings() {
-    this.selectedBookings = [];
-    this.filteredBookings = this.bookingList;
-  }
-
-  updateSelected() {
-    this.selectAll = this.filteredBookings.every(booking => booking.selected);
-  }
-
   searchCity(event: any) {
     const query = event?.query?.toLowerCase() || '';
     console.log(query)
@@ -271,10 +265,6 @@ export class ManifestComponent {
     // console.log('Selected City:', event);
   }
 
-  toggleAddState() {
-    this.showAddState = !this.showAddState;
-    this.isEditing = false;
-  }
 
 
   generatePDF(data: any | null | undefined = null) {
@@ -389,8 +379,8 @@ export class ManifestComponent {
   }
 
   showManifest() {
-    this.showManufest = !this.showManufest;
-    if (this.showManufest) {
+    this.showManifests = !this.showManifests;
+    if (this.showManifests) {
       this.getAllManifests();
     }
   }
@@ -412,8 +402,23 @@ export class ManifestComponent {
   }
 
   selectBooking(booking: any) {
-    this.selectedBookings.push(booking);
-    this.filteredBookings.splice(this.filteredBookings.indexOf(booking), 1);
-    this.bookingList.splice(this.bookingList.indexOf(booking), 1);
+    this.selectedBookingsInventory.push(booking);
+    this.filteredBookingsInventory.splice(this.filteredBookingsInventory.indexOf(booking), 1);
   }
+
+  removeBooking(booking: any) {
+    this.filteredBookingsInventory.push(booking);
+    this.selectedBookingsInventory.splice(this.selectedBookingsInventory.indexOf(booking), 1);
+  }
+
+  selectAllBookings() {
+    this.selectedBookingsInventory = this.filteredBookingsInventory;
+    this.filteredBookingsInventory = [];
+  }
+
+  deselectAllBookings() {
+    this.filteredBookingsInventory = this.selectedBookingsInventory;
+    this.selectedBookingsInventory = [];
+  }
+
 }
