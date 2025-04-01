@@ -42,4 +42,15 @@ export class BookingService {
     return this.apiService.post('/autofill/newBooking', { search: text });
   }
 
+
+  cancelBooking(id:any): Observable<any> {
+    const payload = {
+        updates: {
+            status: "1234509877"
+        },
+        conditions: `booking_id=${id}`
+    }
+    return this.apiService.post('/booking/update', { booking_id: id });
+  }
+
 }

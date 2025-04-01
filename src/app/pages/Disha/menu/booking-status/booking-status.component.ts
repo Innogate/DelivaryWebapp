@@ -101,4 +101,17 @@ export class BookingStatusComponent implements OnInit {
       await this.getAllBooking();
     }
   }
+
+  async cancelOder(bookingId: number) {
+    await firstValueFrom(this.bookService.cancelBooking(bookingId).pipe(
+      tap(
+        (res) => {
+          if (res?.body) {
+            // remove this booking from list
+            this.bookingList = this.bookingList?.filter(booking => booking?.booking_id !== bookingId);
+          }
+        }
+      )
+    ))
+  }
 }
