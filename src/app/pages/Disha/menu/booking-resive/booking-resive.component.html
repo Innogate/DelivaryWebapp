@@ -1,119 +1,137 @@
 <div *ngIf="bookingList"
-  class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen overflow-auto pb-[500px]"
-  style="max-height: 100vh;" (scroll)="onScroll($event)">
-  <div *ngFor="let booking of bookingList"
-    class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
-    <!-- Slip Details -->
-    <div class="flex justify-between items-center">
-      <p class="text-blue-800 font-semibold text-lg flex items-center">
-        <i class="pi pi-file mr-2 text-blue-600"></i>
-        Slip No: <span class="text-blue-600 font-bold ml-1">{{ booking.slip_no }}</span>
-      </p>
-      <p class="text-sm text-gray-600 flex items-center">
-        <i class="pi pi-calendar mr-1 text-gray-400"></i>
-        {{ booking.created_at | date: 'dd-MM-yyyy HH:mm' }}
-      </p>
-    </div>
-
-    <div class="flex justify-between items-center">
-      <p class="text-blue-800 font-semibold text-lg flex items-center">
-        <i class="pi pi-building mr-2 text-purple-500"></i>
-        Branch: <span class="text-rose-600 font-bold ml-1"> {{ booking.booking_branch_name }} --To-- {{
-          booking.destination_branch_name }}
-        </span>
-      </p>
-      <!-- <p class="text-sm text-gray-600 flex items-center">
-          <i class="pi pi-calendar mr-1 text-gray-400"></i>
-          {{ booking.destination_branch_id }}
-        </p> -->
-    </div>
-
-    <!-- Payment Details -->
-    <div class="flex justify-between items-center mb-3">
-      <!-- Left Side: Amount -->
-      <div class="flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
-        <i class="pi pi-rupee mr-2 text-green-600"></i> ₹{{ booking.total_value }}
-      </div>
-
-      <!-- Right Side: toPay & On Acc (if applicable) -->
-      <div class="flex gap-2">
-        <div *ngIf="booking.to_pay == 1" [ngClass]="{
-               'bg-green-100 text-green-800': booking.paid_type === 'Prepaid',
-               'bg-yellow-100 text-yellow-800': booking.paid_type === 'COD'
-             }" class="px-4 py-2 rounded-full text-sm font-medium">
-          <i class="pi pi-wallet mr-2"></i> toPay
+    class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen overflow-auto pb-[500px]"
+    style="max-height: 100vh;" (scroll)="onScroll($event)">
+    <div *ngFor="let booking of bookingList"
+        class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
+        <!-- Slip Details -->
+        <div class="flex justify-between items-center">
+            <p class="text-blue-800 font-semibold text-lg flex items-center">
+                <i class="pi pi-file mr-2 text-blue-600"></i>
+                Slip No: <span class="text-blue-600 font-bold ml-1">{{ booking.slip_no }}</span>
+            </p>
+            <p class="text-sm text-gray-600 flex items-center">
+                <i class="pi pi-calendar mr-1 text-gray-400"></i>
+                {{ booking.booking_created_at | date: 'dd-MM-yyyy' }}
+            </p>
         </div>
 
-        <div *ngIf="booking.on_account == 1"
-          class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-          <i class="pi pi-wallet mr-2"></i> On Acc
+        <div class="flex justify-between items-center mb-3 w-full">
+            <!-- Left Side: Amount -->
+            <div class="flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
+                <i class="pi pi-rupee mr-2 text-green-600"></i> ₹{{ booking.total_value }}
+            </div>
+
+            <!-- Right Side: toPay & On Acc (if applicable) -->
+            <div class="flex gap-2">
+                <div *ngIf="booking.to_pay == 1" [ngClass]="{
+                 'bg-green-100 text-green-800': booking.paid_type === 'Prepaid',
+                 'bg-yellow-100 text-yellow-800': booking.paid_type === 'COD'
+               }" class="px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="pi pi-wallet mr-2"></i> toPay
+                </div>
+
+                <div *ngIf="booking.on_account == 1"
+                    class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <i class="pi pi-wallet mr-2"></i> On Acc
+                </div>
+
+            </div>
         </div>
 
-      </div>
-    </div>
+        <div class="flex flex-col items-left space-y-2">
+            <!-- Branch Name Section -->
+            <div class="flex items-center space-x-2">
+                <i class="pi pi-building text-purple-500 text-xl"></i>
+                <p class="text-blue-800 font-semibold text-lg">
+                    {{ booking.booking_branch_name }}
+                </p>
+            </div>
 
-    <!-- Additional Details -->
-    <div *ngIf="booking.showMore" class="bg-gray-100 p-4 rounded-lg mt-3 border border-gray-300">
-      <p class="text-gray-700 text-sm flex items-center mb-2">
-        <i class="pi pi-user mr-2 text-blue-500"></i>
-        <strong>Consignee: </strong> {{ booking.consignee_name | uppercase }} ({{ booking.consignee_mobile | uppercase
-        }})
-      </p>
-      <p class="text-gray-700 text-sm flex items-center mb-2">
-        <i class="pi pi-user mr-2 text-red-500"></i>
-        <strong>Consignor: </strong> {{ booking.consignor_name | uppercase }} ({{ booking.consignor_mobile | uppercase
-        }})
-      </p>
-      <p class="text-gray-700 text-sm flex items-center mb-2">
-        <i class="pi pi-truck mr-2 text-gray-500"></i>
-        <strong>Transport Mode:</strong> {{ getTransportModeLabel(booking.transport_mode) }}
-      </p>
+            <!-- Arrow Icon -->
+            <div class="flex items-center">
+                <i class="pi pi-arrow-down text-gray-400 text-xl"></i>
+            </div>
 
-      <p class="text-gray-700 text-sm flex items-center mb-2">
-        <i class="pi pi-map-marker mr-2 text-purple-500"></i>
-        <strong>{{ getCityName(booking.destination_city_id) }}</strong>
-      </p>
-      <!-- <p class="text-gray-700 text-sm flex items-center mb-2">
+            <!-- Destination Branch Name Section -->
+            <div class="flex items-center space-x-2">
+                <i class="pi pi-building text-green-500 text-xl"></i>
+                <p class="text-blue-600 font-bold text-lg">
+                    {{ booking.destination_branch_name }}
+                </p>
+            </div>
+        </div>
+
+
+        <!-- Additional Details -->
+        <div *ngIf="booking.showMore" class="bg-gray-100 p-4 rounded-lg mt-3 border border-gray-300">
+            <p class="text-gray-700 text-sm flex items-center mb-2">
+                <i class="pi pi-user mr-2 text-blue-500"></i>
+                <strong>Consignee: </strong> {{ booking.consignee_name | uppercase }} ({{ booking.consignee_mobile |
+                uppercase
+                }})
+            </p>
+            <p class="text-gray-700 text-sm flex items-center mb-2">
+                <i class="pi pi-user mr-2 text-blue-500"></i>
+                <strong>Consignor: </strong> {{ booking.consignor_name | uppercase }} ({{ booking.consignor_mobile |
+                uppercase
+                }})
+            </p>
+            <p class="text-gray-700 text-sm flex items-center mb-2">
+                <i class="pi pi-truck mr-2 text-gray-500"></i>
+                <strong>Transport Mode:</strong> {{ getTransportModeLabel(booking.transport_mode) }}
+            </p>
+
+            <p class="text-gray-700 text-sm flex items-center mb-2">
+                <i class="pi pi-map-marker mr-2 text-purple-500"></i>
+                <strong>{{booking.booking_address }}</strong>
+            </p>
+            <!-- <p class="text-gray-700 text-sm flex items-center mb-2">
         <i class="pi pi-info-circle mr-2 text-blue-500"></i>
         <strong>Contents:</strong> {{ booking.contents }}
       </p> -->
-      <p class="text-gray-700 text-sm flex items-center mb-2">
-        <i class="pi pi-percentage mr-2 text-indigo-500"></i>
-        <strong>GST:</strong> {{ booking.cgst }}% + {{ booking.sgst }}% + {{ booking.igst }}%
-      </p>
+            <p class="text-gray-700 text-sm flex items-center mb-2">
+                <i class="pi pi-percentage mr-2 text-indigo-500"></i>
+                <strong>GST:</strong> {{ booking.cgst }}% + {{ booking.sgst }}% + {{ booking.igst }}%
+            </p>
 
-      <div class="flex flex-col md:flex-row gap-2 mt-2">
-        <!-- <button pButton *ngIf="booking.status <= 2 && booking.status != 0"
+            <div class="flex flex-col md:flex-row gap-2 mt-2">
+                <!-- <button pButton *ngIf="booking.status <= 2 && booking.status != 0"
           class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-red-700 active:bg-red-800 transition-all">
           <i class="pi pi-times-circle"></i>
           <span>Cancel Order</span>
         </button> -->
-        <button pButton
-          class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
-          <i class="pi pi-arrow-right"></i>
-          <span>Forward Order</span>
-        </button>
-      </div>
+                <button pButton *ngIf="booking.received_booking_status" (click)="forwardOrder(booking)"
+                    class="flex items-center gap-2 bg-blue-100 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
+                    <i class="pi pi-truck"></i>
+                    <span>Forward Order</span>
+                </button>
 
+                <button pButton *ngIf="!booking.received_booking_status" (click)="outForDevilry(booking)"
+                    class="flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
+                    <i class="pi pi-box"></i>
+                    <span>Out for delivery</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Show More / Less Button -->
+        <button (click)="booking.showMore = !booking.showMore"
+            class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
+            <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
+            {{ booking.showMore ? 'Show Less' : 'Show More' }}
+        </button>
     </div>
 
-    <!-- Show More / Less Button -->
-    <button (click)="booking.showMore = !booking.showMore"
-      class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
-      <i [ngClass]="booking.showMore ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="mr-2"></i>
-      {{ booking.showMore ? 'Show Less' : 'Show More' }}
-    </button>
-  </div>
-  
 </div>
 
 
 
 <!-- Floating Action Button (FAB) -->
 <button
-  class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
-  (click)="toggleAddState()">
-  <i class="pi pi-plus"></i>
+    class="fixed bottom-20 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-16 h-16 shadow-lg flex items-center justify-center text-3xl transition-transform transform hover:scale-110 hover:rotate-6 pulse"
+    (click)="toggleAddState()">
+    <i class="pi pi-plus"></i>
 </button>
 
 <!-- Background Overlay -->
@@ -123,34 +141,35 @@
 <!-- Bottom Sheet Modal -->
 <div style="padding-bottom: 100px;" class="fixed bottom-0 left-0 w-full bg-sky-100 shadow-xl rounded-t-3xl transition-transform duration-300 ease-in-out
 min-h-[50vh] max-h-[90vh] overflow-y-auto glass-effect" [class.translate-y-full]="!showAddState"
-  [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
+    [class.translate-y-0]="showAddState" (click)="$event.stopPropagation()">
 
 
-  <div class="sticky top-0 bg-blue-300 z-10 shadow-md rounded-t-3xl">
-    <h2 class="text-2xl font-bold pt-4 pb-2 text-gray-800 text-center border-b border-gray-300">
-      Received Booking
-    </h2>
-  </div>
-<div class="mx-2">
-  <form class="mb-4" [formGroup]="bookingReceivedForm">
-    <div class="flex flex-col mt-4">
-      <label class="text-gray-700 font-medium">Enter slip no.</label>
-      <input formControlName="slip_no" class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 transition-all"
-        pInputText type="text" />
+    <div class="sticky top-0 bg-blue-300 z-10 shadow-md rounded-t-3xl">
+        <h2 class="text-2xl font-bold pt-4 pb-2 text-gray-800 text-center border-b border-gray-300">
+            Received Booking
+        </h2>
     </div>
-  </form>
+    <div class="mx-2">
+        <form class="mb-4" [formGroup]="bookingReceivedForm">
+            <div class="flex flex-col mt-4">
+                <label class="text-gray-700 font-medium">Enter slip no.</label>
+                <input formControlName="slip_no"
+                    class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 transition-all"
+                    pInputText type="text" />
+            </div>
+        </form>
 
-  <div class="flex items-center gap-4 mt-6">
-    <button
-      class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
-      (click)="toggleAddState()">
-      Cancel
-    </button>
-    <button *ngIf="!isEditing"
-      class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
-      (click)="acceptBooking()">
-      Received
-    </button>
-  </div>
-  </div>
+        <div class="flex items-center gap-4 mt-6">
+            <button
+                class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-red-700"
+                (click)="toggleAddState()">
+                Cancel
+            </button>
+            <button *ngIf="!isEditing"
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg w-full shadow-md transition-all hover:scale-105 hover:bg-green-700"
+                (click)="acceptBooking()">
+                Received
+            </button>
+        </div>
+    </div>
 </div>
