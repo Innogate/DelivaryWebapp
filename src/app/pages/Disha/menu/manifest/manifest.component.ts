@@ -410,20 +410,26 @@ export class ManifestComponent {
     selectBooking(booking: any) {
         this.selectedBookingsInventory.push(booking);
         this.filteredBookingsInventory.splice(this.filteredBookingsInventory.indexOf(booking), 1);
+        this.bookingsInventory.splice(this.bookingsInventory.indexOf(booking), 1);
     }
 
     removeBooking(booking: any) {
         this.filteredBookingsInventory.push(booking);
+        this.bookingsInventory.push(booking);
         this.selectedBookingsInventory.splice(this.selectedBookingsInventory.indexOf(booking), 1);
     }
 
     selectAllBookings() {
         this.selectedBookingsInventory = this.filteredBookingsInventory;
+        // remover all item from bookingsInventory
+        this.bookingsInventory = this.bookingsInventory.filter(booking => !this.filteredBookingsInventory.includes(booking));
         this.filteredBookingsInventory = [];
     }
 
     deselectAllBookings() {
         this.filteredBookingsInventory = this.selectedBookingsInventory;
+        // add all item from bookingsInventory
+        this.bookingsInventory = this.bookingsInventory.concat(this.selectedBookingsInventory);
         this.selectedBookingsInventory = [];
     }
 
