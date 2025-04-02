@@ -21,6 +21,9 @@ import { AlertService } from '../../../../../services/alert.service';
 import { ManifestsService } from '../../../../../services/manifests.service';
 import { ToastModule } from 'primeng/toast';
 import { MenuModule } from 'primeng/menu';
+import { CardModule } from 'primeng/card';
+import { CalendarModule } from 'primeng/calendar';
+
 @Component({
     selector: 'app-manifest',
     imports: [
@@ -37,7 +40,9 @@ import { MenuModule } from 'primeng/menu';
         DividerModule,
         CheckboxModule,
         ToastModule,
-        MenuModule
+        MenuModule,
+        CardModule,
+        CalendarModule
     ],
     templateUrl: './manifest.component.html',
     styleUrl: './manifest.component.scss'
@@ -431,6 +436,18 @@ export class ManifestComponent {
         // add all item from bookingsInventory
         this.bookingsInventory = this.bookingsInventory.concat(this.selectedBookingsInventory);
         this.selectedBookingsInventory = [];
+    }
+
+    getCityName(cityId: number): string {
+        const cities = this.globalstore.get('cities') as { city_id: number; city_name: string }[] || [];
+        const city = cities.find(city => city.city_id === cityId);
+        return city ? city.city_name : 'Unknown City';
+    }
+
+    getBranchName(branchId: number): string {
+        const branches = this.branches
+        const branch = branches.find(branch => branch.branch_id === branchId);
+        return branch ? branch.branch_name : 'Unknown Branch';
     }
 
 }
