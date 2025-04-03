@@ -214,14 +214,16 @@ export class ManifestComponent {
         }
     }
 
-    filterBookings() {
+    filterBookings() {      
         this.filteredBookingsInventory = this.bookingsInventory.filter(booking =>
           booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
           (this.manifestsForm?.value.destination_id ? booking.destination_branch_id == this.manifestsForm.value.destination_id : true) &&
-          (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true)
+          (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true) &&
+          (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
         );
       }
-
+      
+      
 
     // generate Manifest
     generateManifest() {
