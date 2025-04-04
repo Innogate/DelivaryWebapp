@@ -102,6 +102,7 @@ export class ManifestComponent {
             coloader_id: ['', Validators.required],
             booking_id: [],
             destination_city_id: [''],
+            bag_count: [''],
             transport_mode: ['', Validators.required]
         });
 
@@ -280,68 +281,69 @@ export class ManifestComponent {
 
 
 
-    generatePDF(data: any | null | undefined = null) {
+    async printManifest(id: any) {
+        const payload: any = {
+            "fields": [],
+            "manifests_id": id
+        };
+        
+        await firstValueFrom(this.manifestsService.getManifestById(payload).pipe(
+            tap((res) => {
+                if (res.body) {
+                    this.generatePDF(res.body, true);  // Pass `true` for printing
+                }
+            })
+        ));
+    }
+    
+    generatePDF(data: any | null | undefined = null, isPrint = false) {
         if (!data) {
             return;
         }
-        else {
-            console.log(data)
-        }
-
+    
         const doc = new jsPDF();
         const today = new Date();
         const formattedDate = new Date(data.create_at).toLocaleString('en-GB', {
             day: '2-digit', month: '2-digit', year: 'numeric',
             hour: '2-digit', minute: '2-digit'
-        }).replace(',', ''); // Removing the comma for better formatting
-
+        }).replace(',', ''); 
+    
         const formatWeight = (weight: any) => {
             if (typeof weight === "string") {
                 weight = parseFloat(weight.replace(/[^\d.]/g, ""));
             }
             if (typeof weight === "number") {
-                weight = weight * 1000; // Convert KG to GM if input is in KG
+                weight = weight * 1000;
             }
-
             let kg = Math.floor(weight / 1000);
             let gm = Math.round(weight % 1000);
-
             return `${kg} KG ${gm} GM`;
         };
-
-        // **Set Page Background Color**
-        doc.setFillColor(230, 240, 255); // Light Blue Background
-        doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F'); // Fills the page
-
-        // **Company Title with Background**
-        doc.setFillColor(0, 51, 102); // Dark Blue
+    
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+    
+        doc.setFillColor(0, 51, 102);
         doc.rect(0, 10, doc.internal.pageSize.width, 15, 'F');
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(16);
-        doc.setTextColor(255, 255, 255); // White Text
+        doc.setTextColor(255, 255, 255);
         doc.text('Disha Airways Enterprise Manifest', 105, 20, { align: 'center' });
-
-        // **Header Information**
+    
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 0, 0); // Black Text
+        doc.setTextColor(0, 0, 0);
         doc.text('Origin Branch: ' + data.origin_branch, 20, 35);
         doc.text('Destination Branch: ' + data.destination_branch, 20, 42);
         doc.text('Co-loader: ' + data.coloader_name, 20, 49);
         doc.text(`Generated on: ${formattedDate}`, 20, 56);
-
-        // **Manifest ID & Mode of Transport**
-        doc.setTextColor(255, 0, 0); // Red
+    
+        doc.setTextColor(255, 0, 0);
         doc.text('Manifest ID: ' + data.manifests_number, 150, 35);
         doc.text('Total shipment to dispatch: ' + data.bookings.length, 150, 42);
         doc.text('Mode Of Transport: Air', 150, 49);
-
-        // **Table Columns**
-        const tableColumn = [
-            'CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'
-        ];
-
-        // **Table Rows (Data)**
+    
+        const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];
         const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignor_name: string; destination_city_name: any; }) => [
             b.slip_no.toString(),
             b.package_count.toString(),
@@ -350,10 +352,9 @@ export class ManifestComponent {
             b.destination_city_name,
             ''
         ]);
-
-        // **Styled Table**
+    
         autoTable(doc, {
-            startY: 65, // Start position below the header
+            startY: 65,
             head: [tableColumn],
             body: tableRows,
             theme: 'grid',
@@ -361,35 +362,40 @@ export class ManifestComponent {
                 fontSize: 10,
                 cellPadding: 4,
                 halign: 'center',
-                textColor: [0, 0, 0], // Black Text
+                textColor: [0, 0, 0],
             },
             headStyles: {
-                fillColor: [0, 102, 204], // Vibrant Blue Header
-                textColor: [255, 255, 255], // White Text
+                fillColor: [0, 102, 204],
+                textColor: [255, 255, 255],
                 fontSize: 11
             },
-            alternateRowStyles: { fillColor: [245, 245, 245] }, // Light Gray alternate row
+            alternateRowStyles: { fillColor: [245, 245, 245] },
             columnStyles: {
-                0: { halign: 'center', textColor: [0, 0, 255] }, // Blue for CN No.
+                0: { halign: 'center', textColor: [0, 0, 255] },
                 1: { halign: 'center' },
-                2: { halign: 'center', textColor: [255, 0, 0] }, // Red for Product Weight
+                2: { halign: 'center', textColor: [255, 0, 0] },
                 3: { halign: 'left' },
-                4: { halign: 'center', textColor: [0, 128, 0] }, // Green for Destination
+                4: { halign: 'center', textColor: [0, 128, 0] },
                 5: { halign: 'center' }
             }
         });
-
-        // **Footer Section with Gradient**
-        doc.setFillColor(0, 51, 102); // Dark Blue
+    
+        doc.setFillColor(0, 51, 102);
         doc.rect(0, doc.internal.pageSize.height - 15, doc.internal.pageSize.width, 15, 'F');
         doc.setFontSize(10);
         doc.setFont('helvetica', 'italic');
-        doc.setTextColor(255, 255, 255); // White Text
+        doc.setTextColor(255, 255, 255);
         doc.text('This is a system-generated manifest. No signature required.', 20, doc.internal.pageSize.height - 7);
-
-        // **Save PDF**
-        doc.save(data.manifests_number + '_Manifest_Report.pdf');
+    
+        // **Print Instead of Download**
+        if (isPrint) {
+            doc.autoPrint();
+            window.open(doc.output('bloburl'), '_blank');  // Open print dialog
+        } else {
+            doc.save(data.manifests_number + '_Manifest_Report.pdf');
+        }
     }
+    
 
     showManifest() {
         this.showManifests = !this.showManifests;
