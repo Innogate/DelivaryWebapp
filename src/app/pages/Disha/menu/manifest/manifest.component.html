@@ -1,20 +1,41 @@
-<div class="sticky top-0 bg-blue-300 z-10 shadow-md">
+<!-- <div class="sticky top-0 bg-blue-300 z-10 shadow-md">
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         Manifest Genaration</h2>
+</div> -->
+<div class="sticky top-0 bg-blue-300 z-10 shadow-md p-1" *ngIf="showManifests">
+    <div class="grid grid-cols-4 gap-4 items-center">
+        <!-- Calendar Input (Fixed Styling) -->
+        <div class="relative w-full">
+            <p-calendar [showIcon]="true" placeholder="Select Date">
+            </p-calendar>
+        </div>
+
+        <!-- Branch Dropdown -->
+        <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
+            formControlName="destination_id" placeholder="Select Branch" class="w-full">
+        </p-dropdown>
+
+        <!-- City Autocomplete -->
+        <div class="w-full">
+            <!-- <label for="cities" class="font-medium flex items-center">
+                <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
+            </label> -->
+            <p-autoComplete [(ngModel)]="selectedCity" [suggestions]="filteredCities"
+                (completeMethod)="searchCity($event)" optionLabel="city_name" placeholder="Search and Select a City"
+                (onSelect)="onCitySelect($event)" class="w-full">
+            </p-autoComplete>
+        </div>
+
+
+    </div>
 </div>
+
+
 <div *ngIf="!showManifests" class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full ">
     <!-- showing selected bookings -->
     <div class="card p-4">
         <form [formGroup]="manifestsForm">
-            <p-divider align="left" type="solid" class="mt-4 w-full">
-                <div class="inline-flex align-items-center mb-2 bg-cyan-300">
-                    <i class="pi pi-clone mr-2"></i>
-                    <b>Transport Details</b>
-                </div>
-            </p-divider>
-
-
-            <div class="flex gap-4 mt-2 w-full flex-col">
+            <div class="flex gap-4 w-full flex-col">
 
                 <div class="flex flex-wrap gap-4 mt-2">
                     <!-- Branch Selection -->
@@ -22,15 +43,15 @@
                         <label for="branches" class="font-medium flex items-center">
                             <i class="pi pi-building text-gray-500 mr-2"></i> Branch <span class="text-red-500">*</span>
                         </label>
-                        <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
-                            formControlName="destination_id" (onChange)="filterBookings()" placeholder="Select Branch"
-                            class="w-full">
+                        <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name"
+                            optionValue="branch_id" formControlName="destination_id" (onChange)="filterBookings()"
+                            placeholder="Select Branch" class="w-full">
                         </p-dropdown>
                     </div>
                 </div>
 
-                  <!-- Transport Mode -->
-                  <div class="w-full mt-4">
+                <!-- Transport Mode -->
+                <div class="w-full mt-4">
                     <label class="font-medium flex items-center">
                         <i class="pi pi-truck text-green-600 mr-2"></i> Transport Mode <span
                             class="text-red-500">*</span>
@@ -48,15 +69,11 @@
                             <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
                         </label>
                         <div class="w-full">
-                            <p-autoComplete
-                                [(ngModel)]="selectedCity"
-                                [suggestions]="filteredCities"
-                                (completeMethod)="searchCity($event)"
-                                optionLabel="city_name"
-                                placeholder="Search and Select a City"
-                                (onSelect)="onCitySelect($event)"
-                                (onSelect)="filterBookings()"
-                                [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}">
+                            <p-autoComplete [(ngModel)]="selectedCity" [suggestions]="filteredCities"
+                                (completeMethod)="searchCity($event)" optionLabel="city_name"
+                                placeholder="Search and Select a City" (onSelect)="onCitySelect($event)"
+                                (onSelect)="filterBookings()" [style]="{'width':'100%'}"
+                                [inputStyle]="{'width':'100%'}">
                             </p-autoComplete>
                         </div>
                     </div>
@@ -65,12 +82,24 @@
                     <!-- Co-loader -->
                     <div class="w-full">
                         <label class="font-medium flex items-center">
-                            <i class="pi pi-truck text-green-600 mr-2"></i> Co-loader <span class="text-red-500">*</span>
+                            <i class="pi pi-truck text-green-600 mr-2"></i> Co-loader <span
+                                class="text-red-500">*</span>
                         </label>
                         <p-dropdown [options]="coloaderList" optionLabel="coloader_name" optionValue="coloader_id"
                             formControlName="coloader_id" placeholder="Select Co-loader" class="w-full">
                         </p-dropdown>
                     </div>
+
+
+                    <!-- Bag Count -->
+                    <div class="w-full">
+                        <label class="font-medium flex items-center">
+                            <i class="pi  text-green-600 mr-2"></i> Bag Count
+                        </label>
+                        <input type="number" formControlName="bag_count" placeholder="Enter Bag Count"
+                            class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500" />
+                    </div>
+
                 </div>
 
                 <!-- Destination Branch  -->
@@ -89,17 +118,20 @@
             <div class="mt-4">
                 <h3 class="text-xl font-semibold">Selected Booking List</h3>
                 <div class="flex items-center mb-4">
-                    <button [disabled]="selectedBookingsInventory.length === 0" pButton icon="pi pi-check" class="mr-2 bg-red-700" (click)="deselectAllBookings()">Deselect All</button>
+                    <button [disabled]="selectedBookingsInventory.length === 0" pButton icon="pi pi-check"
+                        class="mr-2 bg-red-700" (click)="deselectAllBookings()">Deselect All</button>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div *ngFor="let booking of selectedBookingsInventory" class="p-3 border rounded-lg flex items-center shadow">
+                    <div *ngFor="let booking of selectedBookingsInventory"
+                        class="p-3 border rounded-lg flex items-center shadow">
                         <button pButton icon="pi pi-times" severity="danger" (click)="removeBooking(booking)"></button>
                         <label class="ml-3">{{ booking.slip_no }}</label>
                     </div>
                 </div>
-                 <!-- Save Button -->
-                <button pButton [disabled]="selectedBookingsInventory.length === 0" label="Save" class="mt-4 w-full" (click)="generateManifest()"></button>
+                <!-- Save Button -->
+                <button pButton [disabled]="selectedBookingsInventory.length === 0" label="Save" class="mt-4 w-full"
+                    (click)="generateManifest()"></button>
 
             </div>
         </form>
@@ -120,9 +152,10 @@
 
         <!-- Select All Checkbox -->
         <div class="flex items-center mb-4">
-            <button pButton icon="pi pi-check" [disabled]="filteredBookingsInventory.length === 0" class="mr-2 bg-red-700" (click)="selectAllBookings()">Select All</button>
+            <button pButton icon="pi pi-check" [disabled]="filteredBookingsInventory.length === 0"
+                class="mr-2 bg-red-700" (click)="selectAllBookings()">Select All</button>
         </div>
-<!--
+        <!--
         <p-toast />
         <p-menu #menu [model]="filter_item" [popup]="true" />
         <p-button (click)="menu.toggle($event)" icon="pi pi-ellipsis-v"/> -->
@@ -130,8 +163,9 @@
 
         <!-- Booking List in a Grid Layout -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div *ngFor="let booking of filteredBookingsInventory" class="p-3 border rounded-lg flex items-center shadow">
-                <button pButton icon="pi pi-plus" severity="success" (click)="selectBooking(booking)" ></button>
+            <div *ngFor="let booking of filteredBookingsInventory"
+                class="p-3 border rounded-lg flex items-center shadow">
+                <button pButton icon="pi pi-plus" severity="success" (click)="selectBooking(booking)"></button>
                 <label class="ml-3">{{ booking.slip_no }}</label>
             </div>
         </div>
@@ -149,27 +183,34 @@
 </div>
 
 <!-- ALL MANIFEST -->
-<div *ngIf="showManifests" class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full w-full ">
+<div *ngIf="showManifests"
+    class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full w-full ">
     <div *ngFor="let manifest of allManifests"
-     class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
+        class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
 
-  <!-- Manifest Details -->
-  <div class="flex justify-between items-center">
-    <p class="text-blue-800 font-semibold text-lg flex items-center">
-      <i class="pi pi-file mr-2 text-blue-600"></i>
-      Manifest No: <span class="text-blue-600 font-bold ml-1">{{ manifest.manifests_number }}</span>
-    </p>
-    <p class="text-sm text-gray-600 flex items-center">
-      <i class="pi pi-calendar mr-1 text-gray-400"></i>
-      {{ (manifest.create_at | date: 'dd-MM-yyyy HH:mm') ?? "N/A" }}
-    </p>
-  </div>
+        <!-- Manifest Details -->
+        <div class="flex justify-between items-center">
+            <p class="text-blue-800 font-semibold text-lg flex items-center">
+                <i class="pi pi-file mr-2 text-blue-600"></i>
+                Manifest No: <span class="text-blue-600 font-bold ml-1">{{ manifest.manifests_number }}</span>
+            </p>
+            <p class="text-sm text-gray-600 flex items-center">
+                <i class="pi pi-calendar mr-1 text-gray-400"></i>
+                {{ (manifest.create_at | date: 'dd-MM-yyyy HH:mm') ?? "N/A" }}
+            </p>
+        </div>
 
-  <!-- Download Button -->
-  <button (click)="downloadManifest(manifest.manifest_id)"
-          class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
-    <i class="pi pi-download mr-2"></i> Download
-  </button>
-</div>
-
+        <div class="gap-2">
+        <!-- Download Button -->
+        <button (click)="downloadManifest(manifest.manifest_id)"
+            class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">
+            <i class="pi pi-download mr-2"></i> Download
+        </button>
+        <!-- Print Button -->
+        <button (click)="printManifest(manifest.manifest_id)"
+            class="mt-3 bg-green-600 text-white px-6 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-green-700 active:bg-green-800 transition-all">
+            <i class="pi pi-print mr-2"></i> Print
+        </button>
+        </div>
+    </div>
 </div>

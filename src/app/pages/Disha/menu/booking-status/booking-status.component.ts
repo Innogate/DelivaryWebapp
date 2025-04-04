@@ -7,30 +7,54 @@ import { StateService } from '../../../../../services/state.service';
 import { CityService } from '../../../../../services/city.service';
 import { BranchService } from '../../../../../services/branch.service';
 import { GlobalStorageService } from '../../../../../services/global-storage.service';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DatePicker, DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-booking-status',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AutoCompleteModule, DropdownModule, CalendarModule,FormsModule,ReactiveFormsModule, DatePickerModule],
   templateUrl: './booking-status.component.html',
   styleUrls: ['./booking-status.component.scss']
 })
 export class BookingStatusComponent implements OnInit {
 
   bookingList?: any[];
+  filteredBookingsInventory?: any[];
   current = 0;
   max = 10;
+  bookingStatusForm: FormGroup;
+  branches: any[] = [];
+  cities: any[] = [];
+  filteredCities: any[] = [];
+  selectedCity: any;
 
   constructor(
     private bookService: BookingService,
     private alertService: AlertService,
     private branchService: BranchService,
-    private storage: GlobalStorageService
-  ) { }
+    private storage: GlobalStorageService,
+    private fb: FormBuilder,
+    private globalStorage: GlobalStorageService,
+    private cityService: CityService,
+  ) {
+    this.bookingStatusForm = this.fb.group({
+      bookingDate: [''],
+      destination_city_id: [''],
+      destination_id: ['']
+    })
+
+  }
 
   async ngOnInit() {
     this.storage.set('PAGE_TITLE', "BOOKING LIST");
     await this.getAllBooking();
+    this.gateAllBranch();
+    this.gateAllcity();
+    this.filterBookingList()
   }
 
   async getAllBooking() {
@@ -59,12 +83,93 @@ export class BookingStatusComponent implements OnInit {
     }
   }
 
+
+
+  async gateAllBranch() {
+    const payload =
+    {
+      "fields": [],
+      "max": 5000,
+      "current": 0,
+    }
+    await firstValueFrom(this.branchService.getAllBranches(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            this.branches = res.body;
+          }
+        }
+      )
+    ))
+  }
+
+
+  async gateAllcity() {
+    const storedCities = this.globalStorage.get<{ city_id: number; city_name: string }[]>('cities');
+    if (storedCities) {
+      this.cities = storedCities;
+      this.filteredCities = [];
+      return;
+    }
+
+    try {
+      await firstValueFrom(this.cityService.getAllCities({
+        "fields": ["city_id", "city_name"],
+        "max": 5000,
+        "current": 0,
+      }).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.cities = res.body;
+              this.globalStorage.set('cities', this.cities, true);
+            }
+          }
+        )
+      ))
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  }
+
+  onCitySelect(event: any) {
+    console.log(event.value);
+    this.bookingStatusForm?.patchValue({ destination_city_id: event.value.city_id });
+    this.selectedCity = event.value;
+  }
+
+  searchCity(event: any) {
+    const query = event?.query?.toLowerCase() || '';
+    console.log(query)
+
+
+    this.filteredCities = this.cities.filter(city =>
+      city.city_name?.toLowerCase().includes(query)
+    );
+  }
+
   getCityName(cityId: number): string {
     const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || [];
     const city = cities.find(city => city.city_id === cityId);
     return city ? city.city_name : ''; // Return city name or empty string if not found
   }
 
+
+
+  filterBookingList() {
+    const { bookingDate } = this.bookingStatusForm.value;
+    this.filteredBookingsInventory = this.bookingList?.filter(booking =>
+      (bookingDate
+        ? new Date(booking.created_at).toISOString().split('T')[0] === new Date(bookingDate).toISOString().split('T')[0]
+        : true) &&
+        (this.bookingStatusForm.value.destination_city_id ? booking.destination_city_id === this.bookingStatusForm.value.destination_city_id : true) &&
+        (this.bookingStatusForm.value.destination_id ? booking.destination_branch_id === this.bookingStatusForm.value.destination_id : true)
+
+    );
+  }
+  
+  
+  
   transportModes = [
     { label: 'Bus', value: 'B' },
     { label: 'Train', value: 'T' },

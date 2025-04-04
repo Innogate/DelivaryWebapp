@@ -1,7 +1,36 @@
+<form class="sticky top-0 bg-blue-300 z-10 shadow-md p-1" [formGroup]="bookingStatusForm">
+    <div class="grid grid-cols-4 gap-4 items-center">
+        <!-- Calendar Input (Fixed Styling) -->
+        <div class="relative w-full">
+            <p-datepicker formControlName="bookingDate"  placeholder="Select Date"  (onSelect)="filterBookingList()">
+            </p-datepicker>
+        </div>
+
+        <!-- Branch Dropdown -->
+        <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
+            (onChange)="filterBookingList()" formControlName="destination_id" placeholder="Select Branch"
+            class="w-full">
+        </p-dropdown>
+
+        <!-- City Autocomplete -->
+        <div class="w-full">
+            <!-- <label for="cities" class="font-medium flex items-center">
+                <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
+            </label> -->
+            <p-autoComplete [(ngModel)]="selectedCity" [ngModelOptions]="{ standalone: true }"
+                [suggestions]="filteredCities" (completeMethod)="searchCity($event)" [field]="'city_name'"
+                (onSelect)="onCitySelect($event)" (onSelect)="filterBookingList()" (input)="filterBookingList()">
+            </p-autoComplete>
+        </div>
+
+
+    </div>
+</form>
+
 <div *ngIf="bookingList"
     class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen overflow-auto pb-[500px]"
     style="max-height: 100vh;" (scroll)="onScroll($event)">
-    <div *ngFor="let booking of bookingList"
+    <div *ngFor="let booking of filteredBookingsInventory"
         class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
         <!-- Slip Details -->
         <div class="flex justify-between items-center">
