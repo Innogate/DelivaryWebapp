@@ -102,7 +102,7 @@ export class ManifestComponent {
             coloader_id: ['', Validators.required],
             booking_id: [],
             destination_city_id: [''],
-            bag_count: [''],
+            bag_no: [],
             transport_mode: ['', Validators.required]
         });
 
