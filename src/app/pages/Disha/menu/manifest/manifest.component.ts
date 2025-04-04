@@ -102,7 +102,7 @@ export class ManifestComponent {
             coloader_id: ['', Validators.required],
             booking_id: [],
             destination_city_id: [''],
-            bag_count: [''],
+            bag_count: [],
             transport_mode: ['', Validators.required]
         });
 
@@ -215,7 +215,7 @@ export class ManifestComponent {
         }
     }
 
-    filterBookings() {      
+    filterBookings() {
         this.filteredBookingsInventory = this.bookingsInventory.filter(booking =>
           booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
           (this.manifestsForm?.value.destination_id ? booking.destination_branch_id == this.manifestsForm.value.destination_id : true) &&
@@ -223,8 +223,8 @@ export class ManifestComponent {
           (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
         );
       }
-      
-      
+
+
 
     // generate Manifest
     generateManifest() {
@@ -286,7 +286,7 @@ export class ManifestComponent {
             "fields": [],
             "manifests_id": id
         };
-        
+
         await firstValueFrom(this.manifestsService.getManifestById(payload).pipe(
             tap((res) => {
                 if (res.body) {
@@ -295,19 +295,19 @@ export class ManifestComponent {
             })
         ));
     }
-    
+
     generatePDF(data: any | null | undefined = null, isPrint = false) {
         if (!data) {
             return;
         }
-    
+
         const doc = new jsPDF();
         const today = new Date();
         const formattedDate = new Date(data.create_at).toLocaleString('en-GB', {
             day: '2-digit', month: '2-digit', year: 'numeric',
             hour: '2-digit', minute: '2-digit'
-        }).replace(',', ''); 
-    
+        }).replace(',', '');
+
         const formatWeight = (weight: any) => {
             if (typeof weight === "string") {
                 weight = parseFloat(weight.replace(/[^\d.]/g, ""));
@@ -319,17 +319,17 @@ export class ManifestComponent {
             let gm = Math.round(weight % 1000);
             return `${kg} KG ${gm} GM`;
         };
-    
+
         doc.setFillColor(255, 255, 255);
         doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
-    
+
         doc.setFillColor(0, 51, 102);
         doc.rect(0, 10, doc.internal.pageSize.width, 15, 'F');
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(16);
         doc.setTextColor(255, 255, 255);
         doc.text('Disha Airways Enterprise Manifest', 105, 20, { align: 'center' });
-    
+
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
@@ -337,12 +337,12 @@ export class ManifestComponent {
         doc.text('Destination Branch: ' + data.destination_branch, 20, 42);
         doc.text('Co-loader: ' + data.coloader_name, 20, 49);
         doc.text(`Generated on: ${formattedDate}`, 20, 56);
-    
+
         doc.setTextColor(255, 0, 0);
         doc.text('Manifest ID: ' + data.manifests_number, 150, 35);
         doc.text('Total shipment to dispatch: ' + data.bookings.length, 150, 42);
         doc.text('Mode Of Transport: Air', 150, 49);
-    
+
         const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];
         const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignor_name: string; destination_city_name: any; }) => [
             b.slip_no.toString(),
@@ -352,7 +352,7 @@ export class ManifestComponent {
             b.destination_city_name,
             ''
         ]);
-    
+
         autoTable(doc, {
             startY: 65,
             head: [tableColumn],
@@ -379,14 +379,14 @@ export class ManifestComponent {
                 5: { halign: 'center' }
             }
         });
-    
+
         doc.setFillColor(0, 51, 102);
         doc.rect(0, doc.internal.pageSize.height - 15, doc.internal.pageSize.width, 15, 'F');
         doc.setFontSize(10);
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(255, 255, 255);
         doc.text('This is a system-generated manifest. No signature required.', 20, doc.internal.pageSize.height - 7);
-    
+
         // **Print Instead of Download**
         if (isPrint) {
             doc.autoPrint();
@@ -395,7 +395,7 @@ export class ManifestComponent {
             doc.save(data.manifests_number + '_Manifest_Report.pdf');
         }
     }
-    
+
 
     showManifest() {
         this.showManifests = !this.showManifests;
