@@ -221,14 +221,40 @@ export class ManifestComponent {
         }
     }
 
+    // filterBookings() {
+    //     this.filteredBookingsInventory = this.bookingsInventory.filter(booking =>
+    //         booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
+    //         (this.manifestsForm?.value.destination_id ? booking.destination_branch_id == this.manifestsForm.value.destination_id : true) &&
+    //         (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true) &&
+    //         (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
+    //     );
+    // }
     filterBookings() {
-        this.filteredBookingsInventory = this.bookingsInventory.filter(booking =>
-            booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-            (this.manifestsForm?.value.destination_id ? booking.destination_branch_id == this.manifestsForm.value.destination_id : true) &&
-            (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true) &&
-            (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
-        );
+        this.filteredBookingsInventory = this.bookingsInventory.filter(booking => {
+            const isSlipMatched = booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase());
+            const isCityMatched = this.selectedCity ? this.selectedCity.city_id === booking.destination_city_id : true;
+    
+            if (booking.status === 5) {
+                // Show only if manifested and city matches
+                if (booking.manifest_id !== null && isCityMatched) {
+                    console.log('Slip:', booking.slip_no, 'City:', booking.destination_city_id);
+                    return isCityMatched;
+                }
+                return false;
+            }
+    
+            // For other statuses, apply all filters
+            const isTransportMatched = this.selectedTransportMode ? booking.transport_mode === this.selectedTransportMode : true;
+            const isBranchMatched = this.manifestsForm?.value.destination_id
+                ? booking.destination_branch_id === this.manifestsForm.value.destination_id
+                : true;
+    
+            return isSlipMatched && isCityMatched && isTransportMatched && isBranchMatched;
+        });
     }
+    
+
+
 
 
 
@@ -352,7 +378,7 @@ export class ManifestComponent {
         doc.setTextColor(255, 0, 0);
         doc.text('Manifest ID: ' + data.manifests_number, 150, 35);
         doc.text('Total shipment to dispatch: ' + data.bookings.length, 150, 42);
-        doc.text('Mode Of Transport: '+ transportLabel, 150, 49);
+        doc.text('Mode Of Transport: ' + transportLabel, 150, 49);
         doc.text('Number of Bag: ' + data.bag_count, 150, 56);
 
         const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];

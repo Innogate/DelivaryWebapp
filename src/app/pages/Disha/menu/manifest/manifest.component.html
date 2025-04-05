@@ -126,7 +126,9 @@
                     <div *ngFor="let booking of selectedBookingsInventory"
                         class="p-3 border rounded-lg flex items-center shadow">
                         <button pButton icon="pi pi-times" severity="danger" (click)="removeBooking(booking)"></button>
-                        <label class="ml-3">{{ booking.slip_no }}</label>
+                        <label class="ml-3">{{ booking.slip_no }}
+                            <span *ngIf="booking.status === 5" class="text-xs text-red-500 ml-2">(forward Booking)</span>
+                        </label>
                     </div>
                 </div>
                 <!-- Save Button -->
