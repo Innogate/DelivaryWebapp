@@ -23,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
 import { MenuModule } from 'primeng/menu';
 import { CardModule } from 'primeng/card';
 import { CalendarModule } from 'primeng/calendar';
+import { TagModule } from 'primeng/tag';
 
 @Component({
     selector: 'app-manifest',
@@ -42,7 +43,8 @@ import { CalendarModule } from 'primeng/calendar';
         ToastModule,
         MenuModule,
         CardModule,
-        CalendarModule
+        CalendarModule,
+        TagModule
     ],
     templateUrl: './manifest.component.html',
     styleUrl: './manifest.component.scss'
@@ -233,7 +235,7 @@ export class ManifestComponent {
         this.filteredBookingsInventory = this.bookingsInventory.filter(booking => {
             const isSlipMatched = booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase());
             const isCityMatched = this.selectedCity ? this.selectedCity.city_id === booking.destination_city_id : true;
-    
+
             if (booking.status === 5) {
                 // Show only if manifested and city matches
                 if (booking.manifest_id !== null && isCityMatched) {
@@ -242,17 +244,17 @@ export class ManifestComponent {
                 }
                 return false;
             }
-    
+
             // For other statuses, apply all filters
             const isTransportMatched = this.selectedTransportMode ? booking.transport_mode === this.selectedTransportMode : true;
             const isBranchMatched = this.manifestsForm?.value.destination_id
                 ? booking.destination_branch_id === this.manifestsForm.value.destination_id
                 : true;
-    
+
             return isSlipMatched && isCityMatched && isTransportMatched && isBranchMatched;
         });
     }
-    
+
 
 
 

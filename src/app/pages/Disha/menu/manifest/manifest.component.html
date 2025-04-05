@@ -124,13 +124,17 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div *ngFor="let booking of selectedBookingsInventory"
-                        class="p-3 border rounded-lg flex items-center shadow">
+                        class="p-3 border rounded-lg flex items-center shadow justify-between">
+
                         <button pButton icon="pi pi-times" severity="danger" (click)="removeBooking(booking)"></button>
-                        <label class="ml-3">{{ booking.slip_no }}
-                            <span *ngIf="booking.status === 5" class="text-xs text-red-500 ml-2">(forward Booking)</span>
-                        </label>
+
+                        <label class="ml-3">{{ booking.slip_no }}</label>
+
+                        <!-- p-tag aligned to the right side of the flex container -->
+                        <p-tag *ngIf="booking.status === 5" value="Forward" class="ml-auto" />
                     </div>
                 </div>
+
                 <!-- Save Button -->
                 <button pButton [disabled]="selectedBookingsInventory.length === 0" label="Save" class="mt-4 w-full"
                     (click)="generateManifest()"></button>
@@ -164,14 +168,14 @@
 
 
         <!-- Booking List in a Grid Layout -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-end">
             <div *ngFor="let booking of filteredBookingsInventory"
-                class="p-3 border rounded-lg flex items-center shadow">
+                class="p-3 border rounded-lg flex items-center shadow ml-auto">
                 <button pButton icon="pi pi-plus" severity="success" (click)="selectBooking(booking)"></button>
                 <label class="ml-3">{{ booking.slip_no }}</label>
+                <p-tag value="Forward" class="ml-5" />
             </div>
         </div>
-
 
     </div>
 
