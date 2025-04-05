@@ -46,6 +46,10 @@
                     <i class="pi pi-building  mr-2 text-blue-500"></i>
                     <strong> </strong> {{ (user.branch_name ?? "Not Branch User") | titlecase }}
                 </p>
+                <div *ngIf="user. branch_from_representatives != null" class=" bg-green-200 text-green-700 px-4 py-2 rounded-full font-medium text-sm flex items-center">
+                        <i class="pi pi-building text-green-700"></i>
+                        <span class="ml-2">Branch Master</span>
+                    </div>
             </div>
 
             <!-- Show More Section -->
