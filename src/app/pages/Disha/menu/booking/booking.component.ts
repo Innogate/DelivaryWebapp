@@ -111,7 +111,7 @@ export class BookingComponent implements OnInit {
       // Billing section
       paid_type: "Prepaid", // payment type
       booking_address: ['UNSET'], // booking address
-      shipper_charges: [0], // shipper charges
+      shipper_charges: [5, Validators.min(5)], // shipper charges
       other_charges: [0], // other charges
       declared_value: [0],
       cgst: [cgst],
@@ -294,14 +294,7 @@ export class BookingComponent implements OnInit {
       { 
         consignee_name: event.value.consignee_name, 
         consignee_mobile: event.value.consignee_mobile,
-        destination_branch_id: event.value.destination_branch_id
       })
-
-      // patch destination city id
-      const destinationCity = this.cities.find(city => city.city_id === event.value.destination_city_id);
-      if (destinationCity) {
-        this.bookingForm.patchValue({ destination_city_id: destinationCity });
-      }
   }
 
   onConsignorSelect(event: any) {
@@ -310,15 +303,6 @@ export class BookingComponent implements OnInit {
     }
     this.bookingForm.patchValue({
       consignor_name: event.value.consignor_name,
-      consignor_mobile: event.value.consignor_mobile,
-      consignee_name: event.value.consignee_name, 
-      consignee_mobile: event.value.consignee_mobile,
-      destination_branch_id: event.value.destination_branch_id
     });
-    // patch destination city id
-    const destinationCity = this.cities.find(city => city.city_id === event.value.destination_city_id);
-    if (destinationCity) {
-      this.bookingForm.patchValue({ destination_city_id: destinationCity });
-    }
   }
 }

@@ -269,7 +269,7 @@
                 <label for="shipper" class="font-medium flex items-center">
                     <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
                 </label>
-                <input pInputText id="shipper" formControlName="shipper_charges" type="number" class="p-inputtext p-component" />
+                <input pInputText id="shipper" formControlName="shipper_charges" type="number" class="p-inputtext p-component" min="5" />
                 <small
                     *ngIf="bookingForm.controls['shipper_charges'].hasError('pattern') && bookingForm.controls['shipper_charges'].touched"
                     class="text-red-500">

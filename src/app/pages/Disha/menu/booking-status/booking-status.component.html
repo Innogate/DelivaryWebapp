@@ -18,7 +18,7 @@
                 <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
             </label> -->
             <p-autoComplete [(ngModel)]="selectedCity" [ngModelOptions]="{ standalone: true }"
-                [suggestions]="filteredCities" (completeMethod)="searchCity($event)" [field]="'city_name'"
+                [suggestions]="filteredCities" (completeMethod)="searchCity($event)" [field]="'city_name'" placeholder="Search City"
                 (onSelect)="onCitySelect($event)" (onSelect)="filterBookingList()" (input)="filterBookingList()">
             </p-autoComplete>
         </div>

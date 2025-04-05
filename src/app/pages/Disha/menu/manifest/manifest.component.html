@@ -2,17 +2,17 @@
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         Manifest Genaration</h2>
 </div> -->
-<div class="sticky top-0 bg-blue-300 z-10 shadow-md p-1" *ngIf="showManifests">
+<form class="sticky top-0 bg-blue-300 z-10 shadow-md p-1" *ngIf="showManifests" [formGroup]="manifestFilterForm">
     <div class="grid grid-cols-4 gap-4 items-center">
         <!-- Calendar Input (Fixed Styling) -->
         <div class="relative w-full">
-            <p-calendar [showIcon]="true" placeholder="Select Date">
+            <p-calendar placeholder="Select Date" formControlName="date" (onSelect)="filterManifest()">
             </p-calendar>
         </div>
 
         <!-- Branch Dropdown -->
         <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
-            formControlName="destination_id" placeholder="Select Branch" class="w-full">
+            formControlName="destination_branch_id" placeholder="Select Branch" class="w-full" (onChange)="filterManifest()">
         </p-dropdown>
 
         <!-- City Autocomplete -->
@@ -22,13 +22,13 @@
             </label> -->
             <p-autoComplete [(ngModel)]="selectedCity" [suggestions]="filteredCities"
                 (completeMethod)="searchCity($event)" optionLabel="city_name" placeholder="Search and Select a City"
-                (onSelect)="onCitySelect($event)" class="w-full">
+                (onSelect)="onCitySelect($event)" class="w-full" formControlName="city_id" (onSelect)="filterManifest()" (input)="filterManifest()">
             </p-autoComplete>
         </div>
 
 
     </div>
-</div>
+</form>
 
 
 <div *ngIf="!showManifests" class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full ">
@@ -185,7 +185,7 @@
 <!-- ALL MANIFEST -->
 <div *ngIf="showManifests"
     class="p-4 bg-sky-100 rounded-lg shadow-md space-y-4 m-0 scrollable-container h-full w-full ">
-    <div *ngFor="let manifest of allManifests"
+    <div *ngFor="let manifest of filteredBookingsInventory"
         class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
 
         <!-- Manifest Details -->
@@ -208,7 +208,7 @@
         </button>
         <!-- Print Button -->
         <button (click)="printManifest(manifest.manifest_id)"
-            class="mt-3 bg-green-600 text-white px-6 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-green-700 active:bg-green-800 transition-all">
+            class="mt-3 ml-2 bg-green-600 text-white px-6 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-green-700 active:bg-green-800 transition-all">
             <i class="pi pi-print mr-2"></i> Print
         </button>
         </div>
