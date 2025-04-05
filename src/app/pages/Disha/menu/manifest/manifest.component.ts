@@ -420,18 +420,14 @@ export class ManifestComponent {
 
     filterManifest() {
         const { date, city_id, destination_branch_id } = this.manifestFilterForm.value;
-
-        // If no filter is applied, show all data
         const isNoFilterApplied = !date && !city_id && !destination_branch_id;
         if (isNoFilterApplied) {
             this.filteredBookingsInventory = [...this.allManifests];
             return;
         }
-
         this.filteredBookingsInventory = this.allManifests?.filter(booking => {
             const bookingDate = new Date(booking.create_at).toLocaleDateString('en-CA');
             const selectedDate = date ? new Date(date).toLocaleDateString('en-CA') : null;
-
             return (
                 (selectedDate ? bookingDate === selectedDate : true) &&
                 (city_id.city_id ? booking.destination_city_id === +city_id.city_id : true) &&
