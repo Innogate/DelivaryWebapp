@@ -22,11 +22,13 @@
                 </div>
             </div>
 
+
+
             <!-- Name and Status Badge -->
             <div class="flex justify-between items-center mb-2">
                 <p class="text-gray-700 font-medium flex items-center">
                     <i class="pi pi-user mr-2 text-green-500"></i>
-                    <strong> </strong> {{ user.first_name }} {{ user.last_name }}
+                    <strong> </strong> {{( user.first_name) | titlecase }} {{ user.last_name | titlecase }}
                 </p>
                 <div [ngClass]="{
                 'bg-green-200 text-green-700': user.status,
@@ -36,6 +38,14 @@
                         [ngClass]="user.status ? 'pi-check-circle text-green-700' : 'pi-times-circle text-red-700'"></i>
                     <span class="ml-2">{{ user.status ? 'Active' : 'Inactive' }}</span>
                 </div>
+            </div>
+
+            <!-- Branch Name -->
+            <div class="flex justify-between items-center mb-2">
+                <p class="text-gray-700 font-medium flex items-center">
+                    <i class="pi pi-building  mr-2 text-blue-500"></i>
+                    <strong> </strong> {{ (user.branch_name ?? "Not Branch User") | titlecase }}
+                </p>
             </div>
 
             <!-- Show More Section -->
