@@ -66,6 +66,7 @@ export class ManifestComponent {
 
     selectedBookings: any[] = [];
     manifestsForm: FormGroup = new FormGroup({});
+    manifestFilterForm: FormGroup = new FormGroup({});
 
     //   inventory
     bookingsInventory: any[] = [];
@@ -106,6 +107,11 @@ export class ManifestComponent {
             transport_mode: ['', Validators.required]
         });
 
+        this.manifestFilterForm = this.fb.group({
+            city_id: [''],
+            destination_branch_id: [''],
+            date: [''],
+        })
     }
 
     ngOnInit(): void {
@@ -206,7 +212,7 @@ export class ManifestComponent {
             await firstValueFrom(this.manifestsService.gateAllBookings().pipe(
                 tap((res: any) => {
                     if (res?.body) {
-                      this.bookingsInventory = res.body;
+                        this.bookingsInventory = res.body;
                     }
                 })
             ));
@@ -217,10 +223,10 @@ export class ManifestComponent {
 
     filterBookings() {
         this.filteredBookingsInventory = this.bookingsInventory.filter(booking =>
-          booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-          (this.manifestsForm?.value.destination_id ? booking.destination_branch_id == this.manifestsForm.value.destination_id : true) &&
-          (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true) &&
-          (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
+            booking.slip_no.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
+            (this.manifestsForm?.value.destination_id ? booking.destination_branch_id == this.manifestsForm.value.destination_id : true) &&
+            (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true) &&
+            (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
         );
       }
 
@@ -278,6 +284,7 @@ export class ManifestComponent {
         this.manifestsForm?.patchValue({ destination_city_id: event.value.city_id });
         this.selectedCity = event.value;
     }
+
 
 
 
@@ -397,11 +404,35 @@ export class ManifestComponent {
     }
 
 
-    showManifest() {
+    async showManifest() {
         this.showManifests = !this.showManifests;
         if (this.showManifests) {
-            this.getAllManifests();
+            await this.getAllManifests();
+            this.filterManifest();
+
         }
+    }
+
+    filterManifest() {
+        const { date, city_id, destination_branch_id } = this.manifestFilterForm.value;
+
+        // If no filter is applied, show all data
+        const isNoFilterApplied = !date && !city_id && !destination_branch_id;
+        if (isNoFilterApplied) {
+            this.filteredBookingsInventory = [...this.allManifests];
+            return;
+        }
+
+        this.filteredBookingsInventory = this.allManifests?.filter(booking => {
+            const bookingDate = new Date(booking.create_at).toLocaleDateString('en-CA');
+            const selectedDate = date ? new Date(date).toLocaleDateString('en-CA') : null;
+
+            return (
+                (selectedDate ? bookingDate === selectedDate : true) &&
+                (city_id ? booking.destination_city_id === +city_id : true) &&
+                (destination_branch_id ? booking.destination_id === +destination_branch_id : true)
+            );
+        });
     }
 
     async downloadManifest(id: any) {
