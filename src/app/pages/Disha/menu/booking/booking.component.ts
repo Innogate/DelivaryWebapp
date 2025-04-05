@@ -248,11 +248,11 @@ export class BookingComponent implements OnInit {
       return;
     }
     const formValues = this.bookingForm.value;
-    const shipper = Number(formValues.shipper_charges) || 0;
+    const shipper = Number(formValues.shipper_charges) || 5;
     const other = Number(formValues.other_charges) || 0;
-    const cgst = Number(formValues.cgst) || 0;
-    const sgst = Number(formValues.sgst) || 0;
-    const igst = Number(formValues.igst) || 0;
+    const cgst = Number(formValues.cgst ?? 0);
+    const sgst = Number(formValues.sgst ?? 0);
+    const igst = Number(formValues.igst ?? 0);
     const amount = Number(formValues.amount) || 0;
     const subtotal = +(amount + shipper + other).toFixed(2);
     let gstAmount = 0;
