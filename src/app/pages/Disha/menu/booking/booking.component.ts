@@ -18,7 +18,17 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { GlobalStorageService } from '../../../../../services/global-storage.service';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import autoTable from 'jspdf-autotable';
 
+declare module 'jspdf' {
+  interface jsPDF {
+    lastAutoTable?: {
+      finalY?: number;
+    };
+  }
+}
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
@@ -301,8 +311,220 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm) {
       return;
     }
+    console.log(event);
     this.bookingForm.patchValue({
       consignor_name: event.value.consignor_name,
+      consignor_mobile: event.value.consignor_mobile,
     });
   }
+
+
+
+  generateBookingSlipPDF(): void {
+    const formValue = this.bookingForm.value;
+    const doc = new jsPDF();
+    let y = 10;
+  
+    // Header: Company Info
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('DISHA AIRWAYS ENTERPRISE', 70, y);
+    y += 7;
+  
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('H.O.: 164, M.G. Road, 1st Floor, Kolkata - 7', 10, y);
+    y += 5;
+    doc.text('B.O.: 15B, Kakkar Street, Gr. Floor, Kolkata - 7', 10, y);
+    y += 5;
+    doc.text('Phone: 033-40686001', 10, y);
+    y += 5;
+    doc.text('PAN: ADOPD0043R    GSTIN: 19ADOPD0043R1ZZ', 10, y);
+    y += 8;
+  
+    doc.setDrawColor(0);
+    doc.line(10, y, 200, y); // horizontal separator
+    y += 6;
+  
+    // Consignor and Consignee
+    doc.setFont('helvetica', 'bold');
+    doc.text('Consignor:', 10, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.consignor_name || '-', 35, y);
+  
+    doc.setFont('helvetica', 'bold');
+    doc.text('Consignee:', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.consignee_name || '-', 140, y);
+    y += 7;
+  
+    // Origin & Destination
+    doc.setFont('helvetica', 'bold');
+    doc.text('Origin:', 10, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Kolkata', 30, y); // or dynamic from form if needed
+  
+    doc.setFont('helvetica', 'bold');
+    doc.text('Destination:', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.destination_city_id || '-', 140, y);
+    y += 7;
+  
+    // Package Info
+    doc.setFont('helvetica', 'bold');
+    doc.text('No of Pkgs:', 10, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.package_count?.toString() || '-', 40, y);
+  
+    doc.setFont('helvetica', 'bold');
+    doc.text('Actual Weight:', 70, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.package_weight?.toString() || '-', 110, y);
+    y += 7;
+  
+    // Value and Charges
+    doc.setFont('helvetica', 'bold');
+    doc.text('Declared Value Rs:', 10, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.declared_value?.toString() || '-', 50, y);
+  
+    doc.setFont('helvetica', 'bold');
+    doc.text('Charges (Taxable):', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.shipper_charges?.toString() || '0.00', 160, y);
+    y += 7;
+  
+    // Tax Info
+    doc.setFont('helvetica', 'bold');
+    doc.text('IGST @18%:', 10, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.igst?.toString() || '-', 40, y);
+  
+    doc.setFont('helvetica', 'bold');
+    doc.text('SGST @9%:', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(formValue.sgst?.toString() || '-', 140, y);
+    y += 7;
+  
+    // Total Section
+    doc.setFont('helvetica', 'bold');
+    doc.text('TOTAL:', 10, y);
+    doc.setFontSize(12);
+    doc.text(`${formValue.total_value || '0.00'}`, 40, y);
+    y += 10;
+  
+    // Date & Signature
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, y);
+    doc.text('Signature:', 160, y);
+    doc.line(180, y + 1, 200, y + 1);
+    y += 15;
+  
+    // Save
+    doc.save(`BookingSlip_${formValue.slip_no || '000'}.pdf`);
+  }
+
+
+  
+  generateConsignmentNote() {
+    const doc = new jsPDF();
+
+    // Header
+    doc.setDrawColor(255, 0, 0); // red border
+    doc.setTextColor(255, 0, 0); // red text
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Disha AIRWAYS', 14, 15);
+    doc.setFontSize(12);
+    doc.text('ENTERPRISE', 14, 22);
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('H.O. : 164, M. G. Road, 1st Floor, Kolkata - 7', 14, 27);
+    doc.text('B.O. : 15B, Kalakar Street, Gr. Floor, Kolkata - 7', 14, 32);
+    doc.text('Phone : 033-40686091', 14, 37);
+    doc.text('PAN : ADOPD0043R  •  GSTIN : 19ADOPD0043R1Z7', 14, 42);
+
+    // Red box title
+    doc.setFillColor(255, 0, 0);
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.rect(140, 10, 60, 8, 'F');
+    doc.text('CONSIGNMENT NOTE', 145, 16);
+
+    // Origin/Destination
+    doc.setTextColor(0);
+    autoTable(doc, {
+      startY: 45,
+      theme: 'grid',
+      styles: { fontSize: 9 },
+      head: [['Origin', 'KOLKATA', 'No.', '4074']],
+      body: [['Destination', 'MUM', 'Date', '25/1/24']],
+      columnStyles: {
+        1: { halign: 'center', fontStyle: 'bold' },
+        3: { halign: 'center' },
+      },
+    });
+
+    // Consignor/Consignee section
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 2,
+      theme: 'grid',
+      styles: { fontSize: 9 },
+      head: [['Consignor', '', '']],
+      body: [
+        ['GST No.', 'Agarwal Handicraft', ''],
+        ['Consignee', '', ''],
+        ['GST No.', 'Fashion Zone', ''],
+      ],
+      columnStyles: { 1: { fontStyle: 'bold' } },
+    });
+
+    // Packages & charges section
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 2,
+      theme: 'grid',
+      styles: { fontSize: 9 },
+      body: [
+        ['No. of Pkgs.', '1', 'Declared Value Rs.', '11490'],
+        ['Actual Weight', '2.700', 'Weight Charges', ''],
+        ['Said to Contain', '', 'PAID / TO PAY', 'TO PAY'],
+        ['Rupees in word', '482', '', ''],
+      ],
+    });
+
+    // Charges summary section
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 2,
+      theme: 'grid',
+      styles: { fontSize: 9 },
+      body: [
+        ['Charges (Taxable Value)', '210.00'],
+        ['Other Charges', ''],
+        ['Shippers Charges', ''],
+        ['CGST @ 9%', '18.90'],
+        ['SGST @ 9%', '18.90'],
+        ['IGST @ 18%', ''],
+        ['TOTAL', '247.80'],
+      ],
+      columnStyles: { 1: { halign: 'right' } },
+    });
+
+    // Footer
+    const footerY = (doc as any).lastAutoTable.finalY + 10;
+    doc.setTextColor(255, 0, 0);
+    doc.setFontSize(10);
+    doc.text('ORIGINAL FOR RECIPIENT', 14, footerY);
+    doc.setTextColor(0);
+    doc.text('Signature', 170, footerY);
+
+    // Save PDF
+  // Auto print
+  doc.autoPrint();
+
+  // Open in new tab with print dialog
+  window.open(doc.output('bloburl'), '_blank');
+  }
+  
 }

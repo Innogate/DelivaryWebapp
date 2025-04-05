@@ -157,16 +157,23 @@ export class BookingStatusComponent implements OnInit {
 
 
   filterBookingList() {
-    const { bookingDate } = this.bookingStatusForm.value;
-    this.filteredBookingsInventory = this.bookingList?.filter(booking =>
-      (bookingDate
-        ? new Date(booking.created_at).toISOString().split('T')[0] === new Date(bookingDate).toISOString().split('T')[0]
-        : true) &&
-        (this.bookingStatusForm.value.destination_city_id ? booking.destination_city_id === this.bookingStatusForm.value.destination_city_id : true) &&
-        (this.bookingStatusForm.value.destination_id ? booking.destination_branch_id === this.bookingStatusForm.value.destination_id : true)
-
-    );
+    const { bookingDate, destination_city_id, destination_id } = this.bookingStatusForm.value;
+  
+    const selectedDate = bookingDate
+      ? new Date(bookingDate).toLocaleDateString('en-CA')
+      : null;
+  
+    this.filteredBookingsInventory = this.bookingList?.filter(booking => {
+      const bookingCreatedDate = new Date(booking.created_at).toLocaleDateString('en-CA');
+  
+      return (
+        (selectedDate ? bookingCreatedDate === selectedDate : true) &&
+        (destination_city_id ? booking.destination_city_id === +destination_city_id : true) &&
+        (destination_id ? booking.destination_branch_id === +destination_id : true)
+      );
+    });
   }
+  
   
   
   
