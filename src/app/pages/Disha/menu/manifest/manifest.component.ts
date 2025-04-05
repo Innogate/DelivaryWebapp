@@ -411,6 +411,7 @@ export class ManifestComponent {
 
     async showManifest() {
         this.showManifests = !this.showManifests;
+        this.manifestsForm.reset();
         if (this.showManifests) {
             await this.getAllManifests();
             this.filterManifest();
