@@ -43,7 +43,7 @@
             <div class="flex items-center space-x-2">
                 <i class="pi pi-building text-purple-500 text-xl"></i>
                 <p class="text-blue-800 font-semibold text-lg">
-                    {{ booking.booking_branch_name }}
+                    {{ booking.booking_branch_name | titlecase }}
                 </p>
             </div>
 
@@ -56,7 +56,7 @@
             <div class="flex items-center space-x-2">
                 <i class="pi pi-building text-green-500 text-xl"></i>
                 <p class="text-blue-600 font-bold text-lg">
-                    {{ booking.destination_branch_name }}
+                    {{ booking.destination_branch_name | titlecase }}
                 </p>
             </div>
         </div>
@@ -100,13 +100,13 @@
           <i class="pi pi-times-circle"></i>
           <span>Cancel Order</span>
         </button> -->
-                <button pButton *ngIf="booking.received_booking_status" (click)="forwardOrder(booking)"
-                    class="flex items-center gap-2 bg-blue-100 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
+                <button pButton  (click)="forwardOrder(booking)"
+                    class="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
                     <i class="pi pi-truck"></i>
                     <span>Forward Order</span>
                 </button>
 
-                <button pButton *ngIf="!booking.received_booking_status" (click)="outForDevilry(booking)"
+                <button pButton (click)="outForDevilry(booking)"
                     class="flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
                     <i class="pi pi-box"></i>
                     <span>Out for delivery</span>

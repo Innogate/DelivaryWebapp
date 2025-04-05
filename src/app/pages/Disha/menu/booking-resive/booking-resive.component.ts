@@ -141,7 +141,25 @@ export class BookingResiveComponent {
     this.alertService.error('It in Development');
   }
 
-  forwardOrder(booking: any) {
-    this.alertService.error('It in Development');
+  async forwardOrder(booking: any) {
+    const id = booking.booking_id
+    if (!id) {
+        return;
+    }
+    const ask = await this.alertService.confirm("You want to forward this order to next branch?");
+    if(ask == true){
+      await firstValueFrom(this.BookingresiveService.forward(id).pipe(
+        tap((response) => {
+          this.alertService.success(response.message);
+          if (this.bookingList) {
+            this.bookingList = this.bookingList.filter((book) => book.booking_id !== id); // Remove the deleted boo
+          }
+        },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        ))
+      )
+    }
   }
 }

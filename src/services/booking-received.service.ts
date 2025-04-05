@@ -16,4 +16,8 @@ export class BookingReceivedService {
   getResivedBookings(payload: any): Observable<any> {
     return this.apiService.post('/booking/received', payload);
   }
+
+  forward(bookingId: number): Observable<any> {
+    return this.apiService.post('/booking/forward', { booking_id: bookingId });
+  }
 }
