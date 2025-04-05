@@ -228,7 +228,7 @@ export class ManifestComponent {
             (this.selectedTransportMode ? booking.transport_mode == this.selectedTransportMode : true) &&
             (this.selectedCity ? this.selectedCity.city_id == booking.destination_city_id : true) // Corrected comparison
         );
-      }
+    }
 
 
 
@@ -327,6 +327,10 @@ export class ManifestComponent {
             return `${kg} KG ${gm} GM`;
         };
 
+        const transportMode = data.bookings[0]?.transport_mode;
+        const selectedMode = this.transportModes.find(mode => mode.value === transportMode);
+        const transportLabel = selectedMode ? selectedMode.label : transportMode;
+
         doc.setFillColor(255, 255, 255);
         doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
 
@@ -348,7 +352,8 @@ export class ManifestComponent {
         doc.setTextColor(255, 0, 0);
         doc.text('Manifest ID: ' + data.manifests_number, 150, 35);
         doc.text('Total shipment to dispatch: ' + data.bookings.length, 150, 42);
-        doc.text('Mode Of Transport: Air', 150, 49);
+        doc.text('Mode Of Transport: '+ transportLabel, 150, 49);
+        doc.text('Number of Bag: ' + data.bag_count, 150, 56);
 
         const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];
         const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignor_name: string; destination_city_name: any; }) => [
@@ -429,7 +434,7 @@ export class ManifestComponent {
 
             return (
                 (selectedDate ? bookingDate === selectedDate : true) &&
-                (city_id ? booking.destination_city_id === +city_id : true) &&
+                (city_id.city_id ? booking.destination_city_id === +city_id.city_id : true) &&
                 (destination_branch_id ? booking.destination_id === +destination_branch_id : true)
             );
         });
