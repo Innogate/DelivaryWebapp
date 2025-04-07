@@ -21,7 +21,7 @@ import { GlobalStorageService } from '../../../../../services/global-storage.ser
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import autoTable from 'jspdf-autotable';
-
+import QRCode from 'qrcode';
 declare module 'jspdf' {
   interface jsPDF {
     lastAutoTable?: {
@@ -33,7 +33,9 @@ declare module 'jspdf' {
   selector: 'app-booking',
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.scss'],
-  imports: [DropdownModule, SelectModule, AutoCompleteModule, RadioButtonModule, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule, DividerModule, CheckboxModule],
+  imports: [DropdownModule, SelectModule, AutoCompleteModule, RadioButtonModule,
+     ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule,
+      DividerModule, CheckboxModule],
   providers: [MessageService]
 })
 export class BookingComponent implements OnInit {
@@ -51,8 +53,12 @@ export class BookingComponent implements OnInit {
   selectedCity: any = null;
   amount: number = 0;
   branchInfo: any;
-
+  FormData: any;
+  responce: any;
   listOfConnersAndConsignees: any[] = [];
+  cgstAmount: number = 0;
+  sgstAmount: number = 0;
+  gstAmount: number = 0;
 
   constructor(
     private cityService: CityService,
@@ -63,7 +69,7 @@ export class BookingComponent implements OnInit {
     private fb: FormBuilder,
     private alertService: AlertService,
     private employeeService: EmployeesService,
-    private globalstore: GlobalStorageService
+    private globalstorageService: GlobalStorageService
   ) {
     this.createForm();
   }
@@ -73,7 +79,7 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm) {
       return;
     }
-    this.globalstore.set('PAGE_TITLE', "BOOKING");
+    this.globalstorageService.set('PAGE_TITLE', "BOOKING");
     this.createForm();
     this.loadTransportModes();
     this.gateAllBranch();
@@ -88,13 +94,13 @@ export class BookingComponent implements OnInit {
       this.calculateTotal();
     }, 0);
     this.gateAllcity();
-    this.branchInfo = this.globalstore.get('branchInfo');
+    this.branchInfo = this.globalstorageService.get('branchInfo');
     // this.onCheckboxChange(false);
   }
 
 
   createForm() {
-    this.branchInfo = this.globalstore.get('branchInfo');
+    this.branchInfo = this.globalstorageService.get('branchInfo');
     //  set default values
     const cgst = this.branchInfo.cgst ?? 0;
     const sgst = this.branchInfo.sgst ?? 0;
@@ -117,7 +123,6 @@ export class BookingComponent implements OnInit {
       destination_branch_id: [null, Validators.required], // destination branch
       transport_mode: [''], // transport mode
 
-
       // Billing section
       paid_type: "Prepaid", // payment type
       booking_address: ['UNSET'], // booking address
@@ -139,7 +144,7 @@ export class BookingComponent implements OnInit {
   }
 
   async gateAllcity() {
-    const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
+    const storedCities = this.globalstorageService.get<{ city_id: number; city_name: string }[]>('cities');
 
     if (storedCities) {
       this.cities = storedCities;
@@ -155,7 +160,7 @@ export class BookingComponent implements OnInit {
         }).pipe(
           tap((res) => {
             this.cities = Array.isArray(res.body) ? res.body : [];
-            this.globalstore.set('cities', this.cities, true);
+            this.globalstorageService.set('cities', this.cities, true);
           })
         )
       );
@@ -165,12 +170,19 @@ export class BookingComponent implements OnInit {
     }
     this.filteredCities = [];
   }
+
+
+
   searchCity(event: any) {
     const query = event.query.toLowerCase();
     this.filteredCities = this.cities.filter(city =>
       city.city_name.toLowerCase().includes(query)
     );
   }
+
+
+
+
 
   onCitySelect(event: any) {
     console.log('Selected City:', event);  // Debugging
@@ -179,6 +191,7 @@ export class BookingComponent implements OnInit {
       console.log('Selected City Name:', event.value.name);
     }
   }
+
 
 
 
@@ -196,11 +209,15 @@ export class BookingComponent implements OnInit {
       formData.destination_city_id = formData.destination_city_id.city_id;
     }
 
+    this.FormData = formData;
+
     await firstValueFrom(this.bookingService.addNewBooking(formData).pipe(
       tap(
         async (res) => {
           if (res.body) {
             await this.alertService.success(res.message);
+            this.responce = res.body;
+            this.generateBookingSlipPDF();
             this.createForm();
           }
         },
@@ -210,6 +227,10 @@ export class BookingComponent implements OnInit {
       )
     ))
   }
+
+
+
+
 
   async gateAllBranch() {
     const payload =
@@ -229,6 +250,10 @@ export class BookingComponent implements OnInit {
       )
     ))
   }
+
+
+
+
   loadTransportModes(): void {
     this.transportModes = [
       { label: 'Bus', value: 'B' },
@@ -242,6 +267,8 @@ export class BookingComponent implements OnInit {
   }
 
 
+
+
   calculateAmount() {
     if (!this.bookingForm) {
       return;
@@ -252,6 +279,10 @@ export class BookingComponent implements OnInit {
 
     this.bookingForm.patchValue({ total_value: amount, amount }, { emitEvent: false });
   }
+
+
+
+
 
   calculateTotal() {
     if (!this.bookingForm) {
@@ -265,19 +296,24 @@ export class BookingComponent implements OnInit {
     const igst = Number(formValues.igst ?? 0);
     const amount = Number(formValues.amount) || 0;
     const subtotal = +(amount + shipper + other).toFixed(2);
-    let gstAmount = 0;
     if (formValues.to_pay) {
-      gstAmount = +(subtotal * (igst / 100)).toFixed(2);
+      this.gstAmount = +(subtotal * (igst / 100)).toFixed(2);
     } else {
-      const cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
-      const sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
-      gstAmount = +(cgstAmount + sgstAmount).toFixed(2);
+      this.cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
+      this.sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
+      this.gstAmount = +(this.cgstAmount + this.sgstAmount).toFixed(2);
     }
 
-    const total_value = +(subtotal + gstAmount).toFixed(2);
+    const total_value = +(subtotal + this.gstAmount).toFixed(2);
 
     this.bookingForm.patchValue({ total_value }, { emitEvent: false });
   }
+
+
+
+
+
+
 
   async search($event: any) {
     const string = $event.query;
@@ -292,20 +328,30 @@ export class BookingComponent implements OnInit {
     ))
   }
 
+
   upperCase(event: any) {
     event.target.value = event.target.value.toUpperCase();
   }
+
+
+
 
   onConsigneeSelect(event: any) {
     if (!this.bookingForm) {
       return;
     }
     this.bookingForm.patchValue(
-      { 
-        consignee_name: event.value.consignee_name, 
+      {
+        consignee_name: event.value.consignee_name,
         consignee_mobile: event.value.consignee_mobile,
       })
   }
+
+
+
+
+
+
 
   onConsignorSelect(event: any) {
     if (!this.bookingForm) {
@@ -320,211 +366,199 @@ export class BookingComponent implements OnInit {
 
 
 
-  generateBookingSlipPDF(): void {
-    const formValue = this.bookingForm.value;
-    const doc = new jsPDF();
-    let y = 10;
-  
-    // Header: Company Info
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.text('DISHA AIRWAYS ENTERPRISE', 70, y);
-    y += 7;
-  
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('H.O.: 164, M.G. Road, 1st Floor, Kolkata - 7', 10, y);
-    y += 5;
-    doc.text('B.O.: 15B, Kakkar Street, Gr. Floor, Kolkata - 7', 10, y);
-    y += 5;
-    doc.text('Phone: 033-40686001', 10, y);
-    y += 5;
-    doc.text('PAN: ADOPD0043R    GSTIN: 19ADOPD0043R1ZZ', 10, y);
-    y += 8;
-  
-    doc.setDrawColor(0);
-    doc.line(10, y, 200, y); // horizontal separator
-    y += 6;
-  
-    // Consignor and Consignee
-    doc.setFont('helvetica', 'bold');
-    doc.text('Consignor:', 10, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.consignor_name || '-', 35, y);
-  
-    doc.setFont('helvetica', 'bold');
-    doc.text('Consignee:', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.consignee_name || '-', 140, y);
-    y += 7;
-  
-    // Origin & Destination
-    doc.setFont('helvetica', 'bold');
-    doc.text('Origin:', 10, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Kolkata', 30, y); // or dynamic from form if needed
-  
-    doc.setFont('helvetica', 'bold');
-    doc.text('Destination:', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.destination_city_id || '-', 140, y);
-    y += 7;
-  
-    // Package Info
-    doc.setFont('helvetica', 'bold');
-    doc.text('No of Pkgs:', 10, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.package_count?.toString() || '-', 40, y);
-  
-    doc.setFont('helvetica', 'bold');
-    doc.text('Actual Weight:', 70, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.package_weight?.toString() || '-', 110, y);
-    y += 7;
-  
-    // Value and Charges
-    doc.setFont('helvetica', 'bold');
-    doc.text('Declared Value Rs:', 10, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.declared_value?.toString() || '-', 50, y);
-  
-    doc.setFont('helvetica', 'bold');
-    doc.text('Charges (Taxable):', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.shipper_charges?.toString() || '0.00', 160, y);
-    y += 7;
-  
-    // Tax Info
-    doc.setFont('helvetica', 'bold');
-    doc.text('IGST @18%:', 10, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.igst?.toString() || '-', 40, y);
-  
-    doc.setFont('helvetica', 'bold');
-    doc.text('SGST @9%:', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(formValue.sgst?.toString() || '-', 140, y);
-    y += 7;
-  
-    // Total Section
-    doc.setFont('helvetica', 'bold');
-    doc.text('TOTAL:', 10, y);
-    doc.setFontSize(12);
-    doc.text(`${formValue.total_value || '0.00'}`, 40, y);
-    y += 10;
-  
-    // Date & Signature
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, y);
-    doc.text('Signature:', 160, y);
-    doc.line(180, y + 1, 200, y + 1);
-    y += 15;
-  
-    // Save
-    doc.save(`BookingSlip_${formValue.slip_no || '000'}.pdf`);
+
+
+
+  async generateBookingSlipPDF() {
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const positions = [5, 78, 151, 224]; // Row positions for 4 slips
+
+    for (const offsetY of positions) {
+      await this.drawTemplate(doc, 5, offsetY);
+    }
+
+    // Open in a new tab for print
+    doc.autoPrint();
+    window.open(doc.output('bloburl'), '_blank');
   }
 
 
-  
-  generateConsignmentNote() {
-    const doc = new jsPDF();
 
-    // Header
-    doc.setDrawColor(255, 0, 0); // red border
-    doc.setTextColor(255, 0, 0); // red text
-    doc.setFontSize(18);
+
+
+  async drawTemplate(doc: jsPDF, offsetX: number, offsetY: number) {
+    const w = 200;
+    const h = 68;
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    const paymentStatus = this.FormData.to_pay ? 'TO PAY' : 'PAID';
+
+    // Outer Border
+    doc.setDrawColor(0);
+    doc.rect(offsetX, offsetY, w, h);
+
+    // ---- HEADER ----
     doc.setFont('helvetica', 'bold');
-    doc.text('Disha AIRWAYS', 14, 15);
-    doc.setFontSize(12);
-    doc.text('ENTERPRISE', 14, 22);
-
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text('H.O. : 164, M. G. Road, 1st Floor, Kolkata - 7', 14, 27);
-    doc.text('B.O. : 15B, Kalakar Street, Gr. Floor, Kolkata - 7', 14, 32);
-    doc.text('Phone : 033-40686091', 14, 37);
-    doc.text('PAN : ADOPD0043R  •  GSTIN : 19ADOPD0043R1Z7', 14, 42);
-
-    // Red box title
-    doc.setFillColor(255, 0, 0);
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
-    doc.rect(140, 10, 60, 8, 'F');
-    doc.text('CONSIGNMENT NOTE', 145, 16);
-
-    // Origin/Destination
-    doc.setTextColor(0);
-    autoTable(doc, {
-      startY: 45,
-      theme: 'grid',
-      styles: { fontSize: 9 },
-      head: [['Origin', 'KOLKATA', 'No.', '4074']],
-      body: [['Destination', 'MUM', 'Date', '25/1/24']],
-      columnStyles: {
-        1: { halign: 'center', fontStyle: 'bold' },
-        3: { halign: 'center' },
-      },
-    });
-
-    // Consignor/Consignee section
-    autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY + 2,
-      theme: 'grid',
-      styles: { fontSize: 9 },
-      head: [['Consignor', '', '']],
-      body: [
-        ['GST No.', 'Agarwal Handicraft', ''],
-        ['Consignee', '', ''],
-        ['GST No.', 'Fashion Zone', ''],
-      ],
-      columnStyles: { 1: { fontStyle: 'bold' } },
-    });
-
-    // Packages & charges section
-    autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY + 2,
-      theme: 'grid',
-      styles: { fontSize: 9 },
-      body: [
-        ['No. of Pkgs.', '1', 'Declared Value Rs.', '11490'],
-        ['Actual Weight', '2.700', 'Weight Charges', ''],
-        ['Said to Contain', '', 'PAID / TO PAY', 'TO PAY'],
-        ['Rupees in word', '482', '', ''],
-      ],
-    });
-
-    // Charges summary section
-    autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY + 2,
-      theme: 'grid',
-      styles: { fontSize: 9 },
-      body: [
-        ['Charges (Taxable Value)', '210.00'],
-        ['Other Charges', ''],
-        ['Shippers Charges', ''],
-        ['CGST @ 9%', '18.90'],
-        ['SGST @ 9%', '18.90'],
-        ['IGST @ 18%', ''],
-        ['TOTAL', '247.80'],
-      ],
-      columnStyles: { 1: { halign: 'right' } },
-    });
-
-    // Footer
-    const footerY = (doc as any).lastAutoTable.finalY + 10;
     doc.setTextColor(255, 0, 0);
     doc.setFontSize(10);
-    doc.text('ORIGINAL FOR RECIPIENT', 14, footerY);
-    doc.setTextColor(0);
-    doc.text('Signature', 170, footerY);
+    doc.text('' + this.branchInfo.branch_name, offsetX + 2, offsetY + 6);
 
-    // Save PDF
-  // Auto print
-  doc.autoPrint();
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('ENTERPRISE', offsetX + 2, offsetY + 10);
+    doc.text('H.O. : 164, M. G. Road, 1st Floor, Kolkata - 7', offsetX + 2, offsetY + 14);
+    doc.text('B.O. : 15B, Kalakar Street, Gr. Floor, Kolkata - 7', offsetX + 2, offsetY + 18);
+    doc.text('Phone : 033-40686991', offsetX + 2, offsetY + 22);
+    doc.text('PAN : ADOPD0043R    •    GSTIN : 19ADOPD0043R1Z7', offsetX + 2, offsetY + 26);
 
-  // Open in new tab with print dialog
-  window.open(doc.output('bloburl'), '_blank');
+    // Consignor Block
+    doc.setFillColor(0, 180, 150);
+    doc.rect(offsetX, offsetY + 30, 60, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Consignor', offsetX + 2, offsetY + 33);
+
+    doc.setFontSize(7);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Name:', offsetX + 2, offsetY + 39);
+    doc.setFont('helvetica', 'bold');
+    doc.text('' + this.FormData.consignor_name, offsetX + 20, offsetY + 39);
+
+    doc.setFont('helvetica', 'normal');
+    doc.text('GST No.:', offsetX + 2, offsetY + 44);
+    doc.setFont('helvetica', 'bold');
+    doc.text('', offsetX + 20, offsetY + 44);
+
+    // Consignee Section
+    doc.setFillColor(0, 180, 150);
+    doc.rect(offsetX, offsetY + 47, 60, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Consignee', offsetX + 2, offsetY + 50);
+
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Name:', offsetX + 2, offsetY + 58);
+    doc.setFont('helvetica', 'bold');
+    doc.text('' + this.FormData.consignee_name, offsetX + 20, offsetY + 58);
+
+    doc.setFont('helvetica', 'normal');
+    doc.text('GST No.:', offsetX + 2, offsetY + 63);
+    doc.setFont('helvetica', 'bold');
+    doc.text('', offsetX + 20, offsetY + 63);
+
+    // Origin
+    doc.setFillColor(0, 180, 150);
+    doc.rect(offsetX + 80, offsetY + 6, 45, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text('Origin', offsetX + 97, offsetY + 9.5);
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(8);
+    doc.text('' + this.getCityName(this.branchInfo.city_id), offsetX + 95, offsetY + 15);
+
+    // Distinction
+    doc.setFillColor(0, 180, 150);
+    doc.rect(offsetX + 80, offsetY + 18, 45, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text('Distinction', offsetX + 94, offsetY + 21.5);
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(8);
+    doc.text('' + this.getCityName(this.FormData.destination_city_id), offsetX + 97, offsetY + 27);
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(7);
+    doc.text('No Of Pkgs.: ' + this.FormData.package_count, offsetX + 80, offsetY + 34);
+    doc.text('Declared Value Rs.: ' + this.FormData.declared_value, offsetX + 80, offsetY + 38);
+    doc.text('Actual Weight.: ' + this.FormData.package_weight, offsetX + 80, offsetY + 42);
+    doc.text('Weight Charges.: ' + this.FormData.package_value, offsetX + 80, offsetY + 46);
+    doc.text('Said To Contain.: ', offsetX + 80, offsetY + 50);
+    doc.text('PAID / TO PAY.: ' + paymentStatus, offsetX + 80, offsetY + 54);
+
+    // Consignment Note
+    doc.setFillColor(255, 0, 0);
+    doc.rect(offsetX + 150, offsetY + 6, 50, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text('CONSIGNMENT NOTE', offsetX + 152, offsetY + 9.5);
+
+    doc.setTextColor(0, 0, 0);
+    doc.text('' + this.responce, offsetX + 155, offsetY + 20);
+    doc.text('Date : ' + formattedDate, offsetX + 155, offsetY + 25);
+
+    // Charges Section
+    doc.setFontSize(7);
+    const chargesY = offsetY + 30;
+    const rightDetails = [
+      // 'Charges (Taxable Value)  210.00',
+      'Other Charges          - ' + this.FormData.other_charges,
+      'Shippers Charges       - ' + this.FormData.shipper_charges,
+      'CGST @  ' + this.FormData.cgst + '%            ' + this.cgstAmount,
+      'SGST @  ' + this.FormData.sgst + '%            ' + this.sgstAmount,
+      'IGST @  ' + this.FormData.igst + '%            ' + this.gstAmount,
+      'TOTAL                    ' + this.FormData.total_value,
+    ];
+
+    let cy = chargesY;
+    rightDetails.forEach((txt) => {
+      doc.text(txt, offsetX + 155, cy);
+      cy += 4;
+    });
+
+    // QR CODE
+    const qrData = await QRCode.toDataURL(this.responce, { margin: 1, width: 100 });
+    const qrX = offsetX + 125;
+    const qrY = offsetY + 40;
+    const qrSize = 18;
+
+    doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
+    doc.setFontSize(6);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Scan Slip No.', qrX, qrY + qrSize + 4);
+
+    // Signature
+    doc.setFontSize(7);
+    doc.text('Signature', offsetX + 180, offsetY + h - 2);
   }
-  
+
+
+  async qr() {
+    try {
+      const doc = new jsPDF(); // create jsPDF instance
+      const offsetX = 20;
+      const offsetY = 20;
+      const slip_no = '100'; // default slip number
+
+      console.log('QR button clicked');
+
+      const qrData = await QRCode.toDataURL(slip_no, { margin: 1, width: 100 });
+      const qrX = offsetX + 120;
+      const qrY = offsetY + 50;
+      const qrSize = 15;
+
+      doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
+      doc.setFontSize(6);
+      doc.text('Scan Slip No.', qrX, qrY + qrSize + 3);
+
+      doc.save('booking-slip.pdf'); // optional: save PDF
+    } catch (err) {
+      console.error('QR Code Error:', err);
+    }
+  }
+  getCityName(cityId: number): string {
+    const cities = this.globalstorageService.get('cities') as { city_id: number; city_name: string }[] || [];
+    const city = cities.find(city => city.city_id === cityId);
+    return city ? city.city_name : ''; // Return city name or empty string if not found
+  }
+
 }

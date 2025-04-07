@@ -131,7 +131,7 @@
                         <label class="ml-3">{{ booking.slip_no }}</label>
 
                         <!-- p-tag aligned to the right side of the flex container -->
-                        <p-tag *ngIf="booking.status === 5" value="Forward" class="ml-auto" />
+                        <p-tag *ngIf="booking.status == 5" value="Forward" class="ml-auto" />
                     </div>
                 </div>
 
@@ -173,7 +173,7 @@
                 class="p-3 border rounded-lg flex items-center shadow ml-auto">
                 <button pButton icon="pi pi-plus" severity="success" (click)="selectBooking(booking)"></button>
                 <label class="ml-3">{{ booking.slip_no }}</label>
-                <p-tag value="Forward" class="ml-5" />
+                <p-tag *ngIf="booking.status == 5" value="Forward" class="ml-auto" />
             </div>
         </div>
 
