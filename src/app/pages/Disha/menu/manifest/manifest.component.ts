@@ -245,6 +245,8 @@ export class ManifestComponent {
                 return false;
             }
 
+            console.log(this.filteredBookingsInventory)
+
             // For other statuses, apply all filters
             const isTransportMatched = this.selectedTransportMode ? booking.transport_mode === this.selectedTransportMode : true;
             const isBranchMatched = this.manifestsForm?.value.destination_id
