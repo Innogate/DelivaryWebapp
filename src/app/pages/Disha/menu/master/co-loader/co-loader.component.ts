@@ -47,7 +47,7 @@ export class CoLoaderComponent {
   ) {
     this.coloaderForm = this.fb.group({
       coloader_name: ['', Validators.required],
-      coloader_contuct: [''],
+      coloader_contact: [''],
       coloader_address: [''],
       coloader_postal_code: [''],
       coloader_email: [''],

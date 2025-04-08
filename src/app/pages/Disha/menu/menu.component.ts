@@ -128,6 +128,7 @@ export class MenuComponent {
       master: "/pages/master",
       manifest: "/pages/manifest",
       "booking-Received": "/pages/booking-Received",
+      delivery: "/pages/delivery",
     };
   
     const route = routes[card];

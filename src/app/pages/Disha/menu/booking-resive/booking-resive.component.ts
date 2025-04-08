@@ -137,8 +137,24 @@ export class BookingResiveComponent {
     this.isEditing = false;
   }
 
-  outForDevilry(booking: any) {
-    this.alertService.error('It in Development');
+  async outForDevilry(booking: any) {
+    console.log(booking);
+    const payload = {
+      booking_id: booking.booking_id,
+    }
+
+    try{
+     await firstValueFrom(this.BookingresiveService.outDelidery(payload).pipe(
+      tap((response) => {
+        this.alertService.success(response.message);
+      },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+     )))
+    }catch (error) {
+
+    }
   }
 
   async forwardOrder(booking: any) {
