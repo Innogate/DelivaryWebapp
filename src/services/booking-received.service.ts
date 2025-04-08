@@ -20,4 +20,10 @@ export class BookingReceivedService {
   forward(bookingId: number): Observable<any> {
     return this.apiService.post('/booking/forward', { booking_id: bookingId });
   }
+
+
+  outDelidery(payload: any): Observable<any> {
+    return this.apiService.post('/delivery/new/booking', payload);
+  }
+  
 }

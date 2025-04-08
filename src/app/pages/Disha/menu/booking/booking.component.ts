@@ -470,7 +470,7 @@ export class BookingComponent implements OnInit {
     doc.rect(offsetX + 80, offsetY + 18, 45, 5, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(8);
-    doc.text('Distinction', offsetX + 94, offsetY + 21.5);
+    doc.text('Destination', offsetX + 94, offsetY + 21.5);
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(8);

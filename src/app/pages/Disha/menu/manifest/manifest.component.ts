@@ -520,5 +520,4 @@ export class ManifestComponent {
         const branch = branches.find(branch => branch.branch_id === branchId);
         return branch ? branch.branch_name : 'Unknown Branch';
     }
-
 }
