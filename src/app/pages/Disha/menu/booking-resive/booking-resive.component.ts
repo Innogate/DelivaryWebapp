@@ -26,6 +26,9 @@ export class BookingResiveComponent {
   showAddState: boolean = false;
   stateId?: number;
   isEditing: boolean = false;
+
+
+
   bookingReceivedForm: FormGroup;
   constructor(
     private bookService: BookingService,
@@ -43,7 +46,7 @@ export class BookingResiveComponent {
 
   async ngOnInit() {
     this.storage.set('PAGE_TITLE', "BOOKING RECEIVED");
-    await this.getAllRelivedBookings();
+    await this.getAllResivedBookings();
   }
 
   transportModes = [
@@ -59,7 +62,7 @@ export class BookingResiveComponent {
   }
 
   // Gate all Bookings Recieved
-  async getAllRelivedBookings() {
+  async getAllResivedBookings() {
     try {
       const payload = {
         fields: [],
@@ -84,6 +87,7 @@ export class BookingResiveComponent {
     }
   }
 
+
   // Accept Booking
   async acceptBooking() {
     if (this.bookingReceivedForm.invalid) {
@@ -96,7 +100,7 @@ export class BookingResiveComponent {
       }
       await firstValueFrom(this.BookingresiveService.addNewBookingReceived(payload).pipe(
         tap(
-          (res) => {
+          async (res) => {
             if (res) {
               Swal.fire({
                 title: 'Success',
@@ -105,9 +109,11 @@ export class BookingResiveComponent {
                 timer: 800, // Auto close after 1 second
                 showConfirmButton: false
               });
-              this.getAllRelivedBookings();
-              this.bookingReceivedForm.reset();
               this.bookingList = [];
+              if (this.bookingList === null || this.bookingList.length === 0) {
+                await this.getAllResivedBookings();
+                this.bookingReceivedForm.reset();
+              }
             }
           },
           (error) => {
@@ -129,7 +135,7 @@ export class BookingResiveComponent {
   async onScroll(event: any): Promise<void> {
     const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
     if (bottom) {
-      await this.getAllRelivedBookings();
+      await this.getAllResivedBookings();
     }
   }
   toggleAddState() {
@@ -143,32 +149,33 @@ export class BookingResiveComponent {
       booking_id: booking.booking_id,
     }
 
-    try{
-     await firstValueFrom(this.BookingresiveService.outDelidery(payload).pipe(
-      tap((response) => {
-        this.alertService.success(response.message);
-      },
-        (error) => {
-          this.alertService.error(error.error.message);
-        }
-     )))
-    }catch (error) {
-
+    try {
+      await firstValueFrom(this.BookingresiveService.outDelidery(payload).pipe(
+        tap((response) => {
+          this.alertService.success(response.message);
+          this.getAllResivedBookings();
+        },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        )))
+    } catch (error: any) {
+      this.alertService.error(error?.error?.message || 'An error occurred while accepting booking.');
     }
   }
 
   async forwardOrder(booking: any) {
     const id = booking.booking_id
     if (!id) {
-        return;
+      return;
     }
     const ask = await this.alertService.confirm("You want to forward this order to next branch?");
-    if(ask == true){
+    if (ask == true) {
       await firstValueFrom(this.BookingresiveService.forward(id).pipe(
         tap((response) => {
           this.alertService.success(response.message);
           if (this.bookingList) {
-            this.bookingList = this.bookingList.filter((book) => book.booking_id !== id); // Remove the deleted boo
+            this.bookingList = this.bookingList.filter((book) => book.booking_id !== id);
           }
         },
           (error) => {

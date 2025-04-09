@@ -136,8 +136,9 @@ export class DeliveryComponent {
         tap(
           async (res) => {
             if (res) {
-             await this.alertService.success(res.message);
-              this.getAllBookings();
+            this.selectedBookingsInventory = [];
+            await this.alertService.success(res.message);
+            this.getAllBookings();
             }
           },
           (error) => {
@@ -220,4 +221,6 @@ export class DeliveryComponent {
       city.city_name?.toLowerCase().includes(query)
     );
   }
+
+  
 }

@@ -282,7 +282,6 @@ export class ManifestComponent {
                     (res) => {
                         if (res.body) {
                             this.alertService.success(res.message);
-                            this.manifestsForm.reset();
                             this.selectedBookingsInventory = [];
                             this.getAllBookings();
                         }
