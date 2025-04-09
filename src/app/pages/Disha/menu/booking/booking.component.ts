@@ -81,7 +81,6 @@ export class BookingComponent implements OnInit {
       return;
     }
     this.globalstorageService.set('PAGE_TITLE', "BOOKING");
-    this.createForm();
     this.loadTransportModes();
     this.gateAllBranch();
     this.bookingForm.valueChanges.subscribe(() => {
@@ -219,7 +218,6 @@ export class BookingComponent implements OnInit {
             await this.alertService.success(res.message);
             this.responce = res.body;
             this.generateBookingSlipPDF();
-            this.calculateTotal();
             this.createForm();
           }
         },
@@ -291,6 +289,7 @@ export class BookingComponent implements OnInit {
       return;
     }
     const formValues = this.bookingForm.value;
+    console.log(formValues.shipper_charges);
     const shipper = Number(formValues.shipper_charges) || 5;
     const other = Number(formValues.other_charges) || 0;
     const cgst = Number(formValues.cgst ?? 0);

@@ -91,7 +91,6 @@ export class BranchComponent implements OnInit {
     this.fetchBranches();
     this.loadStates();
     this.gateAllcity();
-    this.gateAllUser();
   }
   ngOnInit(): void {
     this.globalstore.set('PAGE_TITLE', "BRANCH");
@@ -114,21 +113,33 @@ export class BranchComponent implements OnInit {
   }
 
 
-  async gateAllUser() {
+  async gateAllUser(data: any) {
     const payload = {
       "fields": [],
       "max": 10,
       "current": 0
     }
 
+    const storedUsers = this.globalstore.get('userInfo') as { user_id: number };
+
     await firstValueFrom(this.userService.getAllUsers(payload).pipe(
       tap(
         (res) => {
           if (res.body) {
-            this.user = res.body.map((branch: any) => ({
-                ...branch,
-                fullName: `${branch.first_name} ${branch.last_name}`
-              }));
+            if (data === 'update') {
+              this.user = res.body.filter((branch: any) => branch.user_id !== storedUsers.user_id)
+                .map((branch: any) => ({
+                  ...branch,
+                  fullName: `${branch.first_name} ${branch.last_name}`
+                }));
+            } else {
+              this.user = res.body.filter((branch: any) => branch.branch_name === null && branch.user_id !== storedUsers.user_id)
+                .map((branch: any) => ({
+                  ...branch,
+                  fullName: `${branch.first_name} ${branch.last_name}`
+                }));
+            }
+
           }
         },
         (error) => {
@@ -189,20 +200,16 @@ export class BranchComponent implements OnInit {
 
 
   searchCity(event: any) {
-    const query = event?.query?.toLowerCase() || ''; 
-    console.log(query)
+    const query = event?.query?.toLowerCase() || '';
 
 
     this.filteredCities = this.cities.filter(city =>
-      city.city_name?.toLowerCase().includes(query) 
+      city.city_name?.toLowerCase().includes(query)
     );
-    console.log(this.filteredCities)
   }
 
 
-  onCitySelect(event: any) {
-    console.log('Selected City:', event);
-  }
+
 
 
 
@@ -229,14 +236,16 @@ export class BranchComponent implements OnInit {
   }
 
   viewBranch(branch: any) {
-    console.log(branch);
     this.isEditing = true;
     if (branch) {
       this.showAddState = true;
       this.branchForm.patchValue(branch);
+      this.branchForm.patchValue({
+        representative_id: branch.user_id
+      })
       // pach city name \
       const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
-      this.city_update=  storedCities?.find((city) => city.city_id === branch.city_id);
+      this.city_update = storedCities?.find((city) => city.city_id === branch.city_id);
       this.branchForm.patchValue({ city_id: this.city_update.city_name });
     }
   }
@@ -250,19 +259,19 @@ export class BranchComponent implements OnInit {
       if (branchData.city_id && typeof branchData.city_id === 'object') {
         branchData.city_id = branchData.city_id.city_id;
       }
-  
+
       const payload = {
-        updates: branchData, 
+        updates: branchData,
         conditions: `branches.branch_id=${this.branchForm.value.branch_id}`,
       };
-  
+
       try {
         await firstValueFrom(
           this.branchService.updateBranch(payload).pipe(
             tap((res) => {
               this.alertService.success(res.message);
               this.fetchBranches();
-              this.toggleAddState(); 
+              this.toggleAddState();
             })
           )
         );
@@ -273,7 +282,7 @@ export class BranchComponent implements OnInit {
       this.alertService.error('Please fill in all required fields correctly.');
     }
   }
-  
+
 
   setAliseName() {
     this.branchForm.patchValue({
@@ -306,10 +315,10 @@ export class BranchComponent implements OnInit {
   async addNewBranch() {
     if (this.branchForm.valid) {
       try {
-        let data = { ...this.branchForm.value};
-      if (data.city_id && typeof data.city_id === 'object') {
-        data.city_id = data.city_id.city_id;
-    }
+        let data = { ...this.branchForm.value };
+        if (data.city_id && typeof data.city_id === 'object') {
+          data.city_id = data.city_id.city_id;
+        }
         const response = await firstValueFrom(
           this.branchService.addNewBranch(data).pipe(
             tap((res) => {
@@ -323,14 +332,12 @@ export class BranchComponent implements OnInit {
         );
       } catch (error: any) {
         // Catch any errors and display a user-friendly message
-        console.log(error)
         const errorMessage = error.error.message || 'An error occurred while creating the branch.';
         this.alertService.error(errorMessage);
         console.error('Error adding branch:', error);
       }
     } else {
       // If the form is invalid, show relevant errors
-      console.log('Invalid Form Data:');
       this.alertService.error('Please fill in all the required fields correctly.');
     }
   }
