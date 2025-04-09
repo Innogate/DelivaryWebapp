@@ -16,5 +16,14 @@ export class deliveryService {
   fetchDelivery(): Observable<any> {
     return this.apiService.get('/delivery/new/list');
   }
+
+
+  fetchDeliveryInPod(payload: any): Observable<any> {
+    return this.apiService.post('/delivery', payload);
+  }
+
+  uploadPod(data: any): Observable<any> {
+    return this.apiService.post('/pods',  data);
+  }
   
 }

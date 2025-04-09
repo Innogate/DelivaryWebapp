@@ -20,6 +20,7 @@ import { BookingSlipComponent } from './Disha/menu/master/booking-slip/booking-s
 import { MasterComponent } from './Disha/menu/master/master.component';
 import { BookingResiveComponent } from './Disha/menu/booking-resive/booking-resive.component';
 import { DeliveryComponent } from './Disha/menu/delivery/delivery.component';
+import { PodUploadComponent } from './Disha/menu/pod-upload/pod-upload.component';
 export default [
     {path: 'documentation', component: Documentation },
     {path: 'scan', component: MenuComponent },
@@ -36,6 +37,7 @@ export default [
     {path: 'co-loader', component: CoLoaderComponent, canActivate: [AuthGuard]},
     {path: 'manifest', component: ManifestComponent, canActivate: [AuthGuard]},
     {path: 'delivery', component: DeliveryComponent, canActivate: [AuthGuard]},
+    {path: 'pod-upload', component: PodUploadComponent, canActivate: [AuthGuard]},
     {path: 'booking-slip', component: BookingSlipComponent, canActivate: [AuthGuard]},
     {path: 'branch', component: BranchComponent, canActivate: [AuthGuard]},
     {path: 'master', component: MasterComponent, canActivate: [AuthGuard]},
