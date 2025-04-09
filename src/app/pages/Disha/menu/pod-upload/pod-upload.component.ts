@@ -163,7 +163,7 @@ export class PodUploadComponent {
             await firstValueFrom(this.deliveryService.uploadPod(formData).pipe(
                 tap(
                     (res) => {
-                        if (res.body) {
+                        if (res) {
                             this.alertService.success(res.message);
                             this.PodForm.reset();
                             this.fileName = '';
