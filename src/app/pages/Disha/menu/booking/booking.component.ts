@@ -219,6 +219,7 @@ export class BookingComponent implements OnInit {
             await this.alertService.success(res.message);
             this.responce = res.body;
             this.generateBookingSlipPDF();
+            this.calculateTotal();
             this.createForm();
           }
         },
