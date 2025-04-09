@@ -59,6 +59,7 @@ export class BookingComponent implements OnInit {
   cgstAmount: number = 0;
   sgstAmount: number = 0;
   gstAmount: number = 0;
+  igstAmount: number = 0;
 
   constructor(
     private cityService: CityService,
@@ -297,7 +298,7 @@ export class BookingComponent implements OnInit {
     const amount = Number(formValues.amount) || 0;
     const subtotal = +(amount + shipper + other).toFixed(2);
     if (formValues.to_pay) {
-      this.gstAmount = +(subtotal * (igst / 100)).toFixed(2);
+      this.gstAmount=this.igstAmount = +(subtotal * (igst / 100)).toFixed(2);
     } else {
       this.cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
       this.sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
@@ -474,7 +475,7 @@ export class BookingComponent implements OnInit {
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(8);
-    doc.text('' + this.getCityName(this.FormData.destination_city_id), offsetX + 97, offsetY + 27);
+    doc.text('' + this.getCityName(this.FormData.destination_city_id), offsetX + 95, offsetY + 27);
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(7);
@@ -505,7 +506,7 @@ export class BookingComponent implements OnInit {
       'Shippers Charges       - ' + this.FormData.shipper_charges,
       'CGST @  ' + this.FormData.cgst + '%            ' + this.cgstAmount,
       'SGST @  ' + this.FormData.sgst + '%            ' + this.sgstAmount,
-      'IGST @  ' + this.FormData.igst + '%            ' + this.gstAmount,
+      'IGST @  ' + this.FormData.igst + '%            ' + this.igstAmount,
       'TOTAL                    ' + this.FormData.total_value,
     ];
 

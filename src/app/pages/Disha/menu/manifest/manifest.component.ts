@@ -452,20 +452,26 @@ export class ManifestComponent {
     filterManifest() {
         const { date, city_id, destination_branch_id } = this.manifestFilterForm.value;
         const isNoFilterApplied = !date && !city_id && !destination_branch_id;
+    
         if (isNoFilterApplied) {
             this.filteredBookingsInventory = [...this.allManifests];
             return;
         }
+    
+        const cityIdValue = city_id?.city_id || city_id;
+        const destBranchIdValue = destination_branch_id?.destination_id || destination_branch_id;
+        const formatDate = (d: Date) => d.toLocaleDateString('en-CA'); // gives YYYY-MM-DD in local timezone
+        const selectedDate = date ? formatDate(new Date(date)) : null;    
         this.filteredBookingsInventory = this.allManifests?.filter(booking => {
-            const bookingDate = new Date(booking.create_at).toLocaleDateString('en-CA');
-            const selectedDate = date ? new Date(date).toLocaleDateString('en-CA') : null;
+            const bookingDate = booking.create_at?.split(' ')[0];
             return (
                 (selectedDate ? bookingDate === selectedDate : true) &&
-                (city_id.city_id ? booking.destination_city_id === +city_id.city_id : true) &&
-                (destination_branch_id ? booking.destination_id === +destination_branch_id : true)
+                (cityIdValue ? booking.destination_city_id === +cityIdValue : true) &&
+                (destBranchIdValue ? booking.destination_id === +destBranchIdValue : true)
             );
         });
-    }
+        }
+    
 
     async downloadManifest(id: any) {
         const payload: any = {

@@ -129,6 +129,7 @@ export class MenuComponent {
       manifest: "/pages/manifest",
       "booking-Received": "/pages/booking-Received",
       delivery: "/pages/delivery",
+      "pod-upload": "/pages/pod-upload"
     };
   
     const route = routes[card];
