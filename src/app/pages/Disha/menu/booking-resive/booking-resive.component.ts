@@ -105,9 +105,9 @@ export class BookingResiveComponent {
                 timer: 800, // Auto close after 1 second
                 showConfirmButton: false
               });
+              this.getAllRelivedBookings();
               this.bookingReceivedForm.reset();
               this.bookingList = [];
-              this.getAllRelivedBookings();
             }
           },
           (error) => {

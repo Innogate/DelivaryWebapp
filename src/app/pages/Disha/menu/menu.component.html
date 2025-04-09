@@ -48,7 +48,17 @@
                 <p class="text-lg font-semibold text-center">Manifest</p>
             </p-card>
 
-            <p-card 
+
+            <p-card *ngIf="hasPageAccess(12)"
+            class="p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer transform hover:scale-110 transition-all duration-300"
+            [ngClass]="{'bg-[#4A90E2] text-white shadow-xl scale-105': selectedCard === 'delivery', 'bg-white text-blue-700 hover:bg-blue-100': selectedCard !== 'delivery'}"
+            (click)="selectCard('delivery')">
+            <i class="pi pi-building text-3xl mb-2"></i>
+            <p class="text-lg font-semibold text-center">Delivery</p>
+        </p-card>
+
+
+            <p-card  *ngIf="hasPageAccess(13)"
                 class="p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer transform hover:scale-110 transition-all duration-300"
                 [ngClass]="{'bg-[#4A90E2] text-white shadow-xl scale-105': selectedCard === 'pod-upload', 'bg-white text-blue-700 hover:bg-blue-100': selectedCard !== 'pod-upload'}"
                 (click)="selectCard('pod-upload')">
@@ -57,21 +67,14 @@
             </p-card>
 
 
+         
+
             <p-card
                 class="p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer transform hover:scale-110 transition-all duration-300"
                 [ngClass]="{'bg-[#4A90E2] text-white shadow-xl scale-105': selectedCard === 'master', 'bg-white text-blue-700 hover:bg-blue-100': selectedCard !== 'master'}"
                 (click)="selectCard('master')">
                 <i class="pi pi-building text-3xl mb-2"></i>
                 <p class="text-lg font-semibold text-center">Master</p>
-            </p-card>
-
-
-            <p-card *ngIf="hasPageAccess(12)"
-                class="p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer transform hover:scale-110 transition-all duration-300"
-                [ngClass]="{'bg-[#4A90E2] text-white shadow-xl scale-105': selectedCard === 'delivery', 'bg-white text-blue-700 hover:bg-blue-100': selectedCard !== 'delivery'}"
-                (click)="selectCard('delivery')">
-                <i class="pi pi-building text-3xl mb-2"></i>
-                <p class="text-lg font-semibold text-center">Delivery</p>
             </p-card>
 
 

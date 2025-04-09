@@ -474,7 +474,7 @@ export class BookingComponent implements OnInit {
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(8);
-    doc.text('' + this.getCityName(this.FormData.destination_city_id), offsetX + 97, offsetY + 27);
+    doc.text('' + this.getCityName(this.FormData.destination_city_id), offsetX + 95, offsetY + 27);
 
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(7);
