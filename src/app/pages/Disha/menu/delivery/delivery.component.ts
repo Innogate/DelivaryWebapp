@@ -33,17 +33,18 @@ export class DeliveryComponent {
     private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
     private deliveryService: deliveryService,) {
     this.deliveryForm = this.fb.group({
-      city_id: [''],
+      city_id: [],
       employee_id: [''],
     });
   }
 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.globalstorageService.set('PAGE_TITLE', "DELIVERY");
     this.gateAllcity();
     this.gateAllEmployee();
-    this.getAllBookings();
+    await this.getAllBookings();
+    this.filterDelivery();
   }
 
 
@@ -133,10 +134,9 @@ export class DeliveryComponent {
       }
       await firstValueFrom(this.deliveryService.addNewDelivery(payload).pipe(
         tap(
-          (res) => {
+          async (res) => {
             if (res) {
-              this.alertService.success(res.message);
-              this.selectedBookingsInventory = [];
+             await this.alertService.success(res.message);
               this.getAllBookings();
             }
           },
@@ -149,6 +149,29 @@ export class DeliveryComponent {
       this.alertService.error(error?.error?.message || 'An error occurred while adding delivery.');
     }
   }
+
+
+
+  // felterBookings() {
+  //   if (this.deliveryForm.value.city_id) {
+  //     this.filteredBookingsInventory = this.bookingsInventory.filter(booking => booking.city_id === this.selectedCity.city_id);
+  //   } else {
+  //     this.filteredBookingsInventory = this.bookingsInventory;
+  //   }
+  // }
+
+
+  filterDelivery() {
+    const { city_id } = this.deliveryForm.value;
+  
+    if (!city_id || city_id === '') {
+      this.filteredBookingsInventory = [...this.bookingsInventory];
+      return;
+    }
+  
+    this.filteredBookingsInventory = this.bookingsInventory.filter(item => item.destination_city_id === city_id);
+  }
+  
 
 
 
@@ -183,14 +206,14 @@ export class DeliveryComponent {
 
 
   onCitySelect(event: any) {
-    this.deliveryForm?.patchValue({ destination_city_id: event.value.city_id });
+    this.deliveryForm?.patchValue({ city_id: event.value.city_id });
     this.selectedCity = event.value;
-  }
+}
 
 
   searchCity(event: any) {
     const query = event?.query?.toLowerCase() || '';
-    console.log(query)
+    (query)
 
 
     this.filteredCities = this.cities.filter(city =>

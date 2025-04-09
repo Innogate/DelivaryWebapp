@@ -31,7 +31,7 @@ export class PodUploadComponent {
     blobUrl: string | null = null;
     base64File: string | null = null; // This will store the Base64 string of the file.
     file_type: string = '';
-
+    filteredPodInventory: any[] = [];
     constructor(private fb: FormBuilder, private globalstorageService: GlobalStorageService,
         private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
         private deliveryService: deliveryService,) {
@@ -41,11 +41,12 @@ export class PodUploadComponent {
         });
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.globalstorageService.set('PAGE_TITLE', "Pod Upload");
         this.gateAllcity();
         this.gateAllEmployee();
-        this.gateAllBookingPod();
+       await this.gateAllBookingPod();
+       this.filteredpod();
     }
 
     async gateAllcity() {
@@ -198,4 +199,23 @@ export class PodUploadComponent {
             city.city_name?.toLowerCase().includes(query)
         );
     }
+
+
+
+    filteredpod() {
+        const { city_id, employee_id } = this.PodForm.value;
+      
+        if ((!city_id || city_id === '') && (!employee_id || employee_id === '')) {
+          this.filteredPodInventory = [...this.PodList];
+          return;
+        }
+
+      console.log(this.PodList);
+        this.filteredPodInventory = this.PodList.filter(item => {
+          const cityMatch = city_id ? item.destination_city_id === city_id : true;
+          const employeeMatch = employee_id ? item.employee_id === employee_id : true;
+          return cityMatch && employeeMatch;
+        });
+      }
+      
 }
