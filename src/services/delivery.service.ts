@@ -23,7 +23,7 @@ export class deliveryService {
   }
 
   uploadPod(data: any): Observable<any> {
-    return this.apiService.post('/pods',  data);
+    return this.apiService.post('/pods/new',  data);
   }
-  
+
 }
