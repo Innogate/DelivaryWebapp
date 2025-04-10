@@ -1,8 +1,21 @@
-<div class="sticky top-0 bg-blue-300 z-10 shadow-md" *ngIf="!showAddState;
-">
-    <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
-        User Master</h2>
+<div class="sticky top-0 bg-blue-300 z-10 shadow-md" *ngIf="!showAddState">
+    <div class="flex items-center justify-between px-4 py-2 border-b border-gray-300">
+        <h2 class="text-2xl font-bold text-gray-800 m-0">User Master</h2>
+
+        <div class="space-x-2">
+            <button class="px-4 py-1 rounded-lg font-medium bg-green-600 text-white hover:bg-green-700 transition"
+                [class.bg-green-800]="userStatus === 'active'" (click)="setUserStatus('active')">
+                Active Users
+            </button>
+
+            <button class="px-4 py-1 rounded-lg font-medium bg-red-600 text-white hover:bg-red-700 transition"
+                [class.bg-red-800]="userStatus === 'inactive'" (click)="setUserStatus('inactive')">
+                Inactive Users
+            </button>
+        </div>
+    </div>
 </div>
+
 <div class="p-4 bg-slate-100  rounded-lg shadow-md  m-0 scrollable-container h-full">
 
     <div *ngIf="userList" class="flex flex-col bg-slate-100 py-2 min-h-screen">
@@ -46,10 +59,11 @@
                     <i class="pi pi-building  mr-2 text-blue-500"></i>
                     <strong> </strong> {{ (user.branch_name ?? "Not Branch User") | titlecase }}
                 </p>
-                <div *ngIf="user. branch_from_representatives != null" class=" bg-green-200 text-green-700 px-4 py-2 rounded-full font-medium text-sm flex items-center">
-                        <i class="pi pi-building text-green-700"></i>
-                        <span class="ml-2">Branch Master</span>
-                    </div>
+                <div *ngIf="user. branch_from_representatives != null"
+                    class=" bg-green-200 text-green-700 px-4 py-2 rounded-full font-medium text-sm flex items-center">
+                    <i class="pi pi-building text-green-700"></i>
+                    <span class="ml-2">Branch Master</span>
+                </div>
             </div>
 
             <!-- Show More Section -->
@@ -85,11 +99,17 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-between mt-3">
-                    <button
+                    <button *ngIf="userStatus === 'active'"
                         class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all"
                         (click)="deleteUser(user)">
-                        <i class="pi pi-ban mr-2"></i> Disable
+                        <i class="pi pi-ban mr-2"></i> Inactive
                     </button>
+                    <button *ngIf="userStatus === 'inactive'" 
+                        class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-all hover:bg-green-800"
+                        (click)="activeUser(user)">
+                        <i class="pi pi-check mr-2"></i> Active
+                    </button>
+
                     <button (click)="grandUser(user)"
                         class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all">
                         <i class="pi pi-key mr-2"></i> Grand
@@ -206,7 +226,7 @@
                 <div class="flex flex-col flex-1 mt-2">
                     <div class="flex items-center">
                         <label class="text-gray-700 font-medium">Date of Birth</label>
-                    </div> <p-datepicker [showIcon]="true" [showButtonBar]="true"
+                    </div> <p-datepicker [showIcon]="true" [showButtonBar]="true" [dateFormat]="'yy-mm-dd'"
                         formControlName="birth_date"></p-datepicker>
                 </div>
 

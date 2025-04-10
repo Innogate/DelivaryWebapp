@@ -31,13 +31,17 @@ export class UserComponent {
   isEditing: boolean = false;
   userId?: number;
 
+  userStatus: 'active' | 'inactive' = 'active';
+
+
+
   constructor(
     private alertService: AlertService,
     private userService: UserService,
     private fb: FormBuilder,
     private router: Router,
     private storage: GlobalStorageService
-) {
+  ) {
     this.addUserForm = this.fb.group({
       full_name: ['', Validators.required],  // Single input field
       first_name: [''],
@@ -95,8 +99,22 @@ export class UserComponent {
 
   // create a new user
   async addUser() {
+    const formValue = this.addUserForm.value;
+
+    function formatDateToYMD(date: Date): string {
+      const year = date.getFullYear();
+      const month = (`0${date.getMonth() + 1}`).slice(-2); // months are 0-indexed
+      const day = (`0${date.getDate()}`).slice(-2);
+      return `${year}-${month}-${day}`;
+    }
+
+    const payload = {
+      ...formValue,
+      birth_date: formValue.birth_date ? formatDateToYMD(new Date(formValue.birth_date)) : null,
+    };
+
     if (this.addUserForm.valid) {
-      await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
+      await firstValueFrom(this.userService.addNewUser(payload).pipe(
         tap(
           (res) => {
             if (res.body) {
@@ -160,6 +178,12 @@ export class UserComponent {
   }
 
   async updateUser() {
+    function formatDateToYMD(date: Date): string {
+      const year = date.getFullYear();
+      const month = (`0${date.getMonth() + 1}`).slice(-2);
+      const day = (`0${date.getDate()}`).slice(-2);
+      return `${year}-${month}-${day}`;
+    }
     if (this.addUserForm.valid) {
       const fullName = this.addUserForm.value.full_name.trim();
       const nameParts = fullName.split(/\s+/);
@@ -168,13 +192,13 @@ export class UserComponent {
           "first_name": nameParts[0] || '',
           "last_name": nameParts.slice(1).join(' ') || '',
           "email": this.addUserForm.value.email,
-          "birth_date": this.addUserForm.value.birth_date.toISOString(),
+          "birth_date": this.addUserForm.value.birth_date ? formatDateToYMD(new Date(this.addUserForm.value.birth_date)) : null,
           "gender": this.addUserForm.value.gender,
           "password": this.addUserForm.value.password,
           "mobile": this.addUserForm.value.mobile,
           "address": this.addUserForm.value.address
         },
-        conditions: "user_id="+this.userId,
+        conditions: "user_id=" + this.userId,
       };
 
       await firstValueFrom(this.userService.updateUser(payload).pipe(
@@ -191,6 +215,82 @@ export class UserComponent {
       ))
     }
   }
+
+
+  setUserStatus(status: 'active' | 'inactive') {
+    this.userStatus = status;
+    if(status === 'active') {
+      this.gateAllUser();
+    } else if(status === 'inactive') {
+     this.gateDeletedAllUser();
+    }
+  }
+  
+
+
+
+  // gate all deleted user
+  async gateDeletedAllUser() {
+    const payload = {
+      fields: [],
+      max: 100,
+      current: 0
+    }
+    await firstValueFrom(this.userService.gateAllDeletedUsers(payload).pipe(
+      tap(
+        (res) => {
+          if (res.body) {
+            if (res.body) {
+              this.userList = res.body;
+            }
+          }
+        },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+
+  async activeUser(data: any) {
+    const payload = {
+      updates: {
+        "status": 1
+      },
+      conditions: "user_id=" + data.user_id,
+    };
+    await firstValueFrom(this.userService.updateUser(payload).pipe(
+      tap((response) => {
+        this.alertService.success(response.message);
+        this.gateAllUser();
+        this.showAddState = false;
+      },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+
+    console.log(data);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

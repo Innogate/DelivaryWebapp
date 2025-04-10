@@ -34,11 +34,11 @@ export class EmployComponent implements OnInit {
   filterType: string = 'all'; // Default filter
 
   constructor(
-    private EmployeeService: EmployeesService, 
-    private branchService: BranchService, 
+    private EmployeeService: EmployeesService,
+    private branchService: BranchService,
     private datePipe: DatePipe,
-    private alertService: AlertService, 
-    private userService: UserService, 
+    private alertService: AlertService,
+    private userService: UserService,
     private fb: FormBuilder,
     private storage: GlobalStorageService
   ) {
@@ -98,8 +98,8 @@ export class EmployComponent implements OnInit {
             this.userList = res.body;
           }
           this.employeeName = this.userList?.map(user => ({
-            label: `${user.first_name} ${user.last_name.trim()}`, 
-            value: user.id 
+            label: `${user.first_name} ${user.last_name.trim()}`,
+            value: user.id
           }));
         },
         (error) => {
@@ -146,7 +146,7 @@ export class EmployComponent implements OnInit {
   async onSave() {
     let formData = { ...this.employeeForm.value };
     if (formData.joining_date) {
-      formData.joining_date = this.datePipe.transform(formData.joining_date, 'dd-MM-yyyy');
+      formData.joining_date = this.datePipe.transform(formData.joining_date, 'yyyy-MM-dd');
     }
 
     console.log(formData); // Verify the formatted date
@@ -173,12 +173,14 @@ export class EmployComponent implements OnInit {
 
 
   async deleteEmployee(employee: any) {
-    if (employee.id) {
-      const confirmation = this.alertService.confirm("You want to delete this Employee. ");
+
+    console.log(employee)
+    if (employee.employee_id) {
+      const confirmation = this.alertService.confirm("You want to Inactive this Employee. ");
       if (await confirmation === false) {
         return;
       } else {
-        await firstValueFrom(this.EmployeeService.deleteEmployee(employee.id).pipe(
+        await firstValueFrom(this.EmployeeService.deleteEmployee(employee.employee_id).pipe(
           tap((response) => {
             this.alertService.success(response.message);
             this.gateAllEmployee();
@@ -195,7 +197,7 @@ export class EmployComponent implements OnInit {
   viewEmployee(employee: any) {
     this.isEditing = true;
     this.showAddState = true;
-    
+
     this.employeeForm.patchValue({
       employee_name: employee.employee_name,
       address: employee.address,
@@ -205,7 +207,7 @@ export class EmployComponent implements OnInit {
       designation: employee.designation,
       employee_id: employee.employee_id
     });
-    
+
   }
 
 
@@ -219,10 +221,9 @@ export class EmployComponent implements OnInit {
         "joining_date": this.datePipe.transform(this.employeeForm.controls['joining_date'].value, 'yyyy-MM-dd'),
         "designation": this.employeeForm.controls['designation'].value,
       },
-      conditions: {
-        "user_id": this.employeeForm.controls['employee_id'].value
-      }
-    }
+      conditions: `employee_id=${this.employeeForm.controls['employee_id'].value}`
+    };
+    
     if (this.employeeForm.valid) {
       await firstValueFrom(this.EmployeeService.updateEmployee(payload).pipe(
         tap(response => {
@@ -237,6 +238,35 @@ export class EmployComponent implements OnInit {
     }
 
   }
+
+
+
+
+
+  async activeUser(data: any) {
+
+    const payload = {
+      updates: {
+        status: 1
+      },
+      conditions: `employee_id=${data.employee_id}`
+    };
+    
+    if (data.employee_id) {
+      await firstValueFrom(this.EmployeeService.updateEmployee(payload).pipe(
+        tap(response => {
+          this.alertService.success(response.message);
+          this.gateAllEmployee();
+        }),
+        catchError(error => {
+          this.alertService.error(error?.error?.message);
+          return EMPTY;
+        })
+      ))
+    }
+
+  }
+
 
 
 
