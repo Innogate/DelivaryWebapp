@@ -182,6 +182,7 @@ export class UserComponent {
             if (this.addUserForm.value.birth_date != null) {
                 const formValue = this.addUserForm.value;
                 const formattedBirthDate = this.formatDate(formValue.birth_date);
+                this.addUserForm.patchValue({ birth_date: formattedBirthDate });
             }
             const fullName = this.addUserForm.value.full_name.trim();
             const nameParts = fullName.split(/\s+/);
@@ -190,7 +191,7 @@ export class UserComponent {
                     "first_name": nameParts[0] || '',
                     "last_name": nameParts.slice(1).join(' ') || '',
                     "email": this.addUserForm.value.email,
-                    "birth_date": formattedBirthDate,
+                    "birth_date": this.addUserForm.value.birth_date,
                     "gender": this.addUserForm.value.gender,
                     "password": this.addUserForm.value.password,
                     "mobile": this.addUserForm.value.mobile,
