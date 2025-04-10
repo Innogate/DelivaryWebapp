@@ -22,8 +22,8 @@ export class StateComponent {
   isEditing: boolean = false;
 
   constructor(
-    private service: StateService, 
-    private fb: FormBuilder, 
+    private service: StateService,
+    private fb: FormBuilder,
     private alertservice: AlertService,
     private storage: GlobalStorageService
   ) {
@@ -116,11 +116,10 @@ export class StateComponent {
     if (this.stateId && this.stateForm.valid) {
       const payload: any = {
         updates: {
-          "states.name": this.stateForm.get('stateName')?.value,
+          "state_name": this.stateForm.get('stateName')?.value,
         },
-        conditions: {
-          "states.id": this.stateId
-        }
+        conditions: "state_id="+this.stateId
+
       };
 
       firstValueFrom(
