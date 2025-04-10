@@ -104,7 +104,7 @@
                         (click)="deleteUser(user)">
                         <i class="pi pi-ban mr-2"></i> Inactive
                     </button>
-                    <button *ngIf="userStatus === 'inactive'" 
+                    <button *ngIf="userStatus === 'inactive'"
                         class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium flex items-center transition-all hover:bg-green-800"
                         (click)="activeUser(user)">
                         <i class="pi pi-check mr-2"></i> Active
@@ -226,7 +226,7 @@
                 <div class="flex flex-col flex-1 mt-2">
                     <div class="flex items-center">
                         <label class="text-gray-700 font-medium">Date of Birth</label>
-                    </div> <p-datepicker [showIcon]="true" [showButtonBar]="true" [dateFormat]="'yy-mm-dd'"
+                    </div> <p-datepicker [showIcon]="true" [showButtonBar]="true" dateFormat="yy-mm-dd"
                         formControlName="birth_date"></p-datepicker>
                 </div>
 

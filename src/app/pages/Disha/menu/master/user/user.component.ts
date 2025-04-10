@@ -114,7 +114,10 @@ export class UserComponent {
     };
 
     if (this.addUserForm.valid) {
-      await firstValueFrom(this.userService.addNewUser(payload).pipe(
+        const formValue = this.addUserForm.value;
+        const formattedBirthDate = this.formatDate(formValue.birth_date);
+        this.addUserForm.patchValue({ birth_date: formattedBirthDate });
+      await firstValueFrom(this.userService.addNewUser(this.addUserForm.value).pipe(
         tap(
           (res) => {
             if (res.body) {
@@ -185,6 +188,9 @@ export class UserComponent {
       return `${year}-${month}-${day}`;
     }
     if (this.addUserForm.valid) {
+        const formValue = this.addUserForm.value;
+        const formattedBirthDate = this.formatDate(formValue.birth_date);
+
       const fullName = this.addUserForm.value.full_name.trim();
       const nameParts = fullName.split(/\s+/);
       const payload = {
@@ -192,7 +198,7 @@ export class UserComponent {
           "first_name": nameParts[0] || '',
           "last_name": nameParts.slice(1).join(' ') || '',
           "email": this.addUserForm.value.email,
-          "birth_date": this.addUserForm.value.birth_date ? formatDateToYMD(new Date(this.addUserForm.value.birth_date)) : null,
+          "birth_date": formattedBirthDate,
           "gender": this.addUserForm.value.gender,
           "password": this.addUserForm.value.password,
           "mobile": this.addUserForm.value.mobile,
@@ -225,7 +231,7 @@ export class UserComponent {
      this.gateDeletedAllUser();
     }
   }
-  
+
 
 
 
@@ -330,4 +336,12 @@ export class UserComponent {
   grandUser(user: any) {
     this.router.navigate(["/pages/access/" + user.user_id]);
   }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
+
 }
