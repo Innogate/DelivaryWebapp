@@ -26,4 +26,9 @@ export class deliveryService {
     return this.apiService.post('/pods/new',  data);
   }
 
+
+  fetchAllUplodedpod(): Observable<any> {
+    return this.apiService.post('/pods', { });
+  }
+
 }

@@ -11,10 +11,11 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'app-pod-upload',
-    imports: [DropdownModule, CommonModule, AutoCompleteModule, FormsModule, TagModule, ButtonModule, ReactiveFormsModule],
+    imports: [DropdownModule, CommonModule, AutoCompleteModule, FormsModule, TagModule, ButtonModule, ReactiveFormsModule, CardModule],
     templateUrl: './pod-upload.component.html',
     styleUrl: './pod-upload.component.scss'
 })
@@ -32,6 +33,10 @@ export class PodUploadComponent {
     base64File: string | null = null; // This will store the Base64 string of the file.
     file_type: string = '';
     filteredPodInventory: any[] = [];
+    uplodedListImage: any[] = [];
+    showPod: boolean = false;
+
+
     constructor(private fb: FormBuilder, private globalstorageService: GlobalStorageService,
         private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
         private deliveryService: deliveryService,) {
@@ -45,8 +50,8 @@ export class PodUploadComponent {
         this.globalstorageService.set('PAGE_TITLE', "Pod Upload");
         this.gateAllcity();
         this.gateAllEmployee();
-       await this.gateAllBookingPod();
-       this.filteredpod();
+        await this.gateAllBookingPod();
+        this.filteredpod();
     }
 
     async gateAllcity() {
@@ -66,8 +71,7 @@ export class PodUploadComponent {
                 tap(
                     (res) => {
                         if (res.body) {
-                            this.cities = res.body;
-                            this.globalstorageService.set('cities', this.cities, true);
+                            this.uplodedListImage = res.body;
                         }
                     }
                 )
@@ -204,18 +208,69 @@ export class PodUploadComponent {
 
     filteredpod() {
         const { city_id, employee_id } = this.PodForm.value;
-      
+
         if ((!city_id || city_id === '') && (!employee_id || employee_id === '')) {
-          this.filteredPodInventory = [...this.PodList];
-          return;
+            this.filteredPodInventory = [...this.PodList];
+            return;
         }
 
-      console.log(this.PodList);
+        console.log(this.PodList);
         this.filteredPodInventory = this.PodList.filter(item => {
-          const cityMatch = city_id ? item.destination_city_id === city_id : true;
-          const employeeMatch = employee_id ? item.employee_id === employee_id : true;
-          return cityMatch && employeeMatch;
+            const cityMatch = city_id ? item.destination_city_id === city_id : true;
+            const employeeMatch = employee_id ? item.employee_id === employee_id : true;
+            return cityMatch && employeeMatch;
         });
+    }
+
+    showPodList(data: string){
+        if (data === 'all') {
+        this.showPod = true;
+        this.fetchAllUplodedpod();
+        } else {
+        this.showPod = false;
+        }
+    }
+
+
+    async fetchAllUplodedpod() {
+        try {
+          const response = await firstValueFrom(
+            this.deliveryService.fetchAllUplodedpod().pipe(
+              tap(
+                (res) => {
+                  if (res.body) {
+                    this.uplodedListImage = res.body.map((pod: any) => {
+                      let podData = pod.pod_data || '';
+                      const mimeType = pod.data_formate || 'image/jpeg';
+      
+                      // If malformed prefix like "dataimage/jpegbase64,...", clean it
+                      if (/^dataimage\/(jpeg|png)base64,?/i.test(podData)) {
+                        podData = podData.replace(/^dataimage\/(jpeg|png)base64,?/i, '');
+                        podData = `data:${mimeType};base64,${podData}`;
+                      }
+      
+                      return {
+                        ...pod,
+                        pod_data: podData
+                      };
+                    });
+                  }
+                },
+                (error) => {
+                  this.alertService.error(
+                    error?.error?.message || 'An error occurred while fetching PODs.'
+                  );
+                }
+              )
+            )
+          );
+      
+          console.log(this.uplodedListImage);
+        } catch (err) {
+          this.alertService.error('Failed to fetch uploaded PODs.');
+          console.error(err);
+        }
       }
       
+
 }
