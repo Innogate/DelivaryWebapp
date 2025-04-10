@@ -83,16 +83,6 @@ export class BookingComponent implements OnInit {
     this.globalstorageService.set('PAGE_TITLE', "BOOKING");
     this.loadTransportModes();
     this.gateAllBranch();
-    this.bookingForm.valueChanges.subscribe(() => {
-      this.calculateTotal();
-    });
-    setTimeout(() => {
-      if (!this.bookingForm) {
-        return;
-      }
-      this.bookingForm.patchValue({ to_pay: false }, { emitEvent: false });
-      this.calculateTotal();
-    }, 0);
     this.gateAllcity();
     this.branchInfo = this.globalstorageService.get('branchInfo');
     // this.onCheckboxChange(false);
@@ -289,13 +279,37 @@ export class BookingComponent implements OnInit {
       return;
     }
     const formValues = this.bookingForm.value;
-    console.log(formValues.shipper_charges);
-    const shipper = Number(formValues.shipper_charges) || 5;
-    const other = Number(formValues.other_charges) || 0;
-    const cgst = Number(formValues.cgst ?? 0);
-    const sgst = Number(formValues.sgst ?? 0);
-    const igst = Number(formValues.igst ?? 0);
-    const amount = Number(formValues.amount) || 0;
+    let shipper = 0;
+
+    if (Number(formValues.shipper_charges) >= 0) {
+      shipper = Number(formValues.shipper_charges);
+    }
+
+    let other = 0;
+    if (Number(formValues.other_charges) >= 0) {
+      other = Number(formValues.other_charges);
+    }
+
+    let cgst = 0;
+    if (Number(formValues.cgst) >= 0) {
+      cgst = Number(formValues.cgst);
+    }
+
+    let sgst = 0;
+    if (Number(formValues.sgst) >= 0) {
+      sgst = Number(formValues.sgst);
+    }
+
+    let igst = 0;
+    if (Number(formValues.igst) >= 0) {
+      igst = Number(formValues.igst);
+    }
+
+    let amount = 0;
+    if (Number(formValues.amount) >= 0) {
+      amount = Number(formValues.amount);
+    }
+
     const subtotal = +(amount + shipper + other).toFixed(2);
     if (formValues.to_pay) {
       this.gstAmount=this.igstAmount = +(subtotal * (igst / 100)).toFixed(2);
@@ -311,7 +325,11 @@ export class BookingComponent implements OnInit {
   }
 
 
-
+  onCalculate(){
+    this.bookingForm.patchValue({ to_pay: false }, { emitEvent: false });
+    this.calculateAmount();
+    this.calculateTotal();
+  }
 
 
 

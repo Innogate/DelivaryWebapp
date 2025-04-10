@@ -1,4 +1,4 @@
-<div class="sticky top-0 bg-blue-300 z-10 shadow-md">
+ <div class="sticky top-0 bg-blue-300 z-10 shadow-md">
     <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
         Booking</h2>
 </div>
@@ -10,12 +10,12 @@
 
             <div class="flex flex-col">
                 <label for="slipNo" class="font-medium flex items-center">
-                    <i class="pi pi-file text-blue-600 mr-2"></i>  
+                    <i class="pi pi-file text-blue-600 mr-2"></i>
                     <span [ngClass]="{'text-blue-600': branchInfo?.branch_short_name, 'text-gray-400': !branchInfo?.branch_short_name}">
                       ({{ branchInfo?.branch_short_name }})
-                    </span> 
+                    </span>
                     Slip No <span class="text-red-500">*</span>
-                    
+
                 </label>
                 <input pInputText id="slipNo" formControlName="slip_no" type="number" class="p-inputtext p-component" />
             </div>
@@ -25,10 +25,10 @@
                     <i class="pi pi-user text-green-600 mr-2"></i> Consignor <span class="text-red-500">*</span>
                 </label>
 
-                <p-autocomplete 
+                <p-autocomplete
                     id="consignor"
                     formControlName="consignor_name"
-                     [suggestions]="listOfConnersAndConsignees" 
+                     [suggestions]="listOfConnersAndConsignees"
                      (completeMethod)="search($event)"
                      [inputStyle]="{'text-transform': 'uppercase'}"
                      field="consignor_name"
@@ -54,11 +54,11 @@
                 <label for="consignorMobile" class="font-medium flex items-center">
                     <i class="pi pi-phone text-purple-600 mr-2"></i> Consignor Mobile
                 </label>
-                <p-autocomplete 
+                <p-autocomplete
                     id="consignorMobile"
                     inputMode="numeric"
                     formControlName="consignor_mobile"
-                     [suggestions]="listOfConnersAndConsignees" 
+                     [suggestions]="listOfConnersAndConsignees"
                      (completeMethod)="search($event)"
                      field="consignor_mobile"
                      (onSelect)="onConsignorSelect($event)"
@@ -80,15 +80,15 @@
                     <i class="pi pi-user text-red-600 mr-2"></i> Consignee <span class="text-red-500">*</span>
                 </label>
 
-                <p-autocomplete 
+                <p-autocomplete
                 formControlName="consignee_name"
-                 [suggestions]="listOfConnersAndConsignees" 
+                 [suggestions]="listOfConnersAndConsignees"
                  (completeMethod)="search($event)"
                  [inputStyle]="{'text-transform': 'uppercase'}"
                  field="consignee_name"
                  (onSelect)="onConsigneeSelect($event)"
                 />
-                
+
                 <small
                     *ngIf="bookingForm.controls['consignee_name'].hasError('required') && bookingForm.controls['consignee_name'].touched"
                     class="text-red-500">
@@ -110,10 +110,10 @@
                     <i class="pi pi-phone text-yellow-600 mr-2"></i> Consignee Mobile
                 </label>
 
-                <p-autocomplete 
+                <p-autocomplete
                     inputMode="numeric"
                     formControlName="consignee_mobile"
-                     [suggestions]="listOfConnersAndConsignees" 
+                     [suggestions]="listOfConnersAndConsignees"
                      (completeMethod)="search($event)"
                      field="consignee_mobile"
                      (onSelect)="onConsigneeSelect($event)"
@@ -259,7 +259,7 @@
                 <label for="charges" class="font-medium flex items-center">
                     Amount <span class="text-red-500">*</span>
                 </label>
-                <input pInputText type="number" formControlName="amount" class="p-inputtext p-component" />
+                <input pInputText type="number" formControlName="amount" class="p-inputtext p-component"  (input)="onCalculate()"/>
             </div>
         </div>
 
@@ -269,7 +269,7 @@
                 <label for="shipper" class="font-medium flex items-center">
                     <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
                 </label>
-                <input pInputText id="shipper" formControlName="shipper_charges" type="number" class="p-inputtext p-component" min="5" />
+                <input pInputText id="shipper" formControlName="shipper_charges" type="number" class="p-inputtext p-component" min="5" (input)="onCalculate()" />
                 <small
                     *ngIf="bookingForm.controls['shipper_charges'].hasError('pattern') && bookingForm.controls['shipper_charges'].touched"
                     class="text-red-500">
@@ -281,7 +281,7 @@
                 <label for="other_charges" class="font-medium flex items-center">
                     <i class="pi pi-file text-gray-600 mr-2"></i> Other
                 </label>
-                <input pInputText formControlName="other_charges" type="number" class="p-inputtext p-component" />
+                <input pInputText formControlName="other_charges" type="number" class="p-inputtext p-component"  (input)="onCalculate()"/>
                 <small
                     *ngIf="bookingForm.controls['other_charges'].hasError('pattern') && bookingForm.controls['other_charges'].touched"
                     class="text-red-500">
@@ -293,7 +293,7 @@
                     Declared Value
                 </label>
                 <input pInputText id="declaredValue" formControlName="declared_value" type="number"
-                    class="p-inputtext p-component" />
+                    class="p-inputtext p-component"  (input)="onCalculate()" />
                 <small
                     *ngIf="bookingForm.controls['declared_value'].hasError('pattern') && bookingForm.controls['declared_value'].touched"
                     class="text-red-500">
@@ -308,7 +308,7 @@
                 <label for="cgst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-red-600 mr-2"></i> CGST
                 </label>
-                <input pInputText id="cgst" formControlName="cgst" type="number" class="p-inputtext p-component"/>
+                <input pInputText id="cgst" formControlName="cgst" type="number" class="p-inputtext p-component"  (input)="onCalculate()"/>
                 <small *ngIf="bookingForm.controls['cgst'].hasError('required') && bookingForm.controls['cgst'].touched"
                     class="text-red-500">
                     CGST is required.
@@ -322,7 +322,7 @@
                 <label for="sgst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-yellow-600 mr-2"></i> SGST
                 </label>
-                <input pInputText id="sgst" formControlName="sgst" type="number" class="p-inputtext p-component" />
+                <input pInputText id="sgst" formControlName="sgst" type="number" class="p-inputtext p-component"  (input)="onCalculate()"/>
                 <small *ngIf="bookingForm.controls['sgst'].hasError('required') && bookingForm.controls['sgst'].touched"
                     class="text-red-500">
                     SGST is required.
@@ -336,7 +336,7 @@
                 <label for="igst" class="font-medium flex items-center">
                     <i class="pi pi-percentage text-green-600 mr-2"></i> IGST
                 </label>
-                <input pInputText id="igst" formControlName="igst" type="number" class="p-inputtext p-component"/>
+                <input pInputText id="igst" formControlName="igst" type="number" class="p-inputtext p-component"  (input)="onCalculate()"/>
                 <small *ngIf="bookingForm.controls['igst'].hasError('required') && bookingForm.controls['igst'].touched"
                     class="text-red-500">
                     IGST is required.
@@ -384,5 +384,5 @@
                 Save
             </button>
         </div>
-    </form>    
+    </form>
 </div>
