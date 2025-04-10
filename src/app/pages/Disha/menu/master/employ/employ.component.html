@@ -1,28 +1,27 @@
 <div class="sticky top-0 bg-blue-300 z-10 shadow-md" *ngIf="!showAddState">
-    <h2 class="text-2xl font-bold m-0 py-1 px-4  text-gray-800 text-left border-b border-gray-300">
-        Employee Master</h2>
+    <div class="flex items-center justify-between px-4 py-2 border-b border-gray-300">
+        <h2 class="text-2xl font-bold text-gray-800 m-0">Employee Master</h2>
+
+        <div class="space-x-2">
+            <button class="px-4 py-1 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition"
+                (click)="setFilter('all')">
+                All
+            </button>
+
+            <button class="px-4 py-1 rounded-lg font-medium bg-green-600 text-white hover:bg-green-700 transition"
+                (click)="setFilter('active')">
+                Active
+            </button>
+
+            <button class="px-4 py-1 rounded-lg font-medium bg-red-600 text-white hover:bg-red-700 transition"
+                (click)="setFilter('inactive')">
+                Inactive
+            </button>
+        </div>
+    </div>
 </div>
-<!--
-<div class="flex justify-center space-x-4 p-4">
-    <button (click)="setFilter('all')"
-        [ngClass]="filterType === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'"
-        class="px-4 py-2 rounded-lg">
-        All Users
-    </button>
-    <button (click)="setFilter('active')"
-        [ngClass]="filterType === 'active' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'"
-        class="px-4 py-2 rounded-lg">
-        Active Users
-    </button>
-    <button (click)="setFilter('inactive')"
-        [ngClass]="filterType === 'inactive' ? 'bg-red-500 text-white' : 'bg-gray-300 text-gray-700'"
-        class="px-4 py-2 rounded-lg">
-        Inactive Users
-    </button>
-</div> -->
 
 <div class="p-4 bg-slate-100  rounded-lg shadow-md  m-0 scrollable-container h-full">
-
     <!-- State List -->
     <div *ngIf="filteredEmployees" class="flex flex-col bg-slate-100 py-2 min-h-screen">
         <div *ngFor="let employee of filteredEmployees"
@@ -80,7 +79,7 @@
                 </p> -->
                 <p class="text-gray-700 flex items-center">
                     <i class="pi pi-calendar mr-2 text-yellow-500"></i>
-                    <strong>Join Date:</strong> {{ employee.joining_date | date: 'dd-MM-yyyy' }}
+                    <strong>Join Date:</strong> {{ employee.joining_date | date: 'yyyy-MM-dd' }}
                 </p>
                 <p class="text-gray-700 flex items-center">
                     <i class="pi pi-map-marker mr-2 text-red-500"></i>
@@ -97,11 +96,18 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-between mt-3">
-                    <button
+                    <button *ngIf="employee.status == 1"
                         class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all"
                         (click)="deleteEmployee(employee)">
-                        <i class="pi pi-ban mr-2"></i> Disable
+                        <i class="pi pi-ban mr-2"></i> Inactive
                     </button>
+                    <button *ngIf="employee.status == 0"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary  transition-all"
+                        (click)="activeUser(employee)">
+                        <i class="pi pi-check mr-2"></i> Active
+                    </button>
+
+
                     <button
                         class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium flex items-center hover:bg-primary transition-all"
                         (click)="viewEmployee(employee)">
@@ -200,7 +206,7 @@
 
                 <div class="flex flex-col mt-2 gap-1">
                     <label>Aadhar No</label>
-                    <input pInputText id="age1" type="text" formControlName="aadhar_no" />
+                    <input pInputText id="age1" type="number" formControlName="aadhar_no" />
                 </div>
 
 
@@ -213,7 +219,7 @@
                 <div class="flex items-center gap-4 mt-2">
                     <div class="flex flex-col mt-2 gap-1">
                         <label>Join date</label>
-                        <p-datepicker [showIcon]="true" [showButtonBar]="true"
+                        <p-datepicker [showIcon]="true" [showButtonBar]="true" [dateFormat]="'yy-mm-dd'"
                             formControlName="joining_date"></p-datepicker>
                     </div>
                     <!--

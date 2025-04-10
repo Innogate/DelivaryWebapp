@@ -37,6 +37,8 @@ export class CoLoaderComponent {
   filteredCities: any[] = [];
   selectedCity: any = null;
   coloaderList: any[] = [];
+  coloaderStatus: 'active' | 'inactive' = 'active';
+  coloaderId: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -95,12 +97,12 @@ export class CoLoaderComponent {
 
   // Filter city suggestions based on user input
   searchCity(event: any) {
-    const query = event?.query?.toLowerCase() || ''; 
+    const query = event?.query?.toLowerCase() || '';
     console.log(query)
 
 
     this.filteredCities = this.cities.filter(city =>
-      city.city_name?.toLowerCase().includes(query) 
+      city.city_name?.toLowerCase().includes(query)
     );
     console.log(this.filteredCities)
   }
@@ -115,16 +117,16 @@ export class CoLoaderComponent {
   // Add new coloader
   async addColoader() {
     let formData = { ...this.coloaderForm.value };
-      if (formData.coloader_city && typeof formData.coloader_city === 'object') {
+    if (formData.coloader_city && typeof formData.coloader_city === 'object') {
       formData.coloader_city = formData.coloader_city.city_id;
     }
-    if( this.coloaderForm.valid){
+    if (this.coloaderForm.valid) {
       console.log("clearing coloader");
       await firstValueFrom(this.coloaderService.addNewColoader(formData).pipe(
         tap((response) => {
-            this.alertService.success(response.message);
-            this.coloaderForm.reset();
-            this.gateAllColoaders();
+          this.alertService.success(response.message);
+          this.coloaderForm.reset();
+          this.gateAllColoaders();
         },
           (error) => {
             this.alertService.error(error.error.message);
@@ -138,9 +140,9 @@ export class CoLoaderComponent {
   // gate all coloaders
   async gateAllColoaders() {
     const payload = {
-      "fields" : [],
-      "max" : 12,
-      "current" : 0
+      "fields": [],
+      "max": 12,
+      "current": 0
     }
     await firstValueFrom(this.coloaderService.fetchColoader(payload).pipe(
       tap(
@@ -158,6 +160,90 @@ export class CoLoaderComponent {
 
 
 
+  viewcoloader(coloader: any) {
+    this.showAddState = true;
+
+    console.log(coloader);
+    this.coloaderForm.patchValue({
+      coloader_name: coloader.coloader_name,
+      coloader_contact: coloader.coloader_contuct,
+      coloader_address: coloader.coloader_address,
+      coloader_postal_code: coloader.coloader_postal_code,
+      coloader_email: coloader.coloader_email,
+    });
+    this.coloaderId = coloader.coloader_id;
+    const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
+    const city_update = storedCities?.find((city) => city.city_id == coloader.coloader_city);
+    if (city_update) {
+      this.coloaderForm.patchValue({ coloader_city: city_update?.city_name });
+    }
+    this.isEditing = true;
+  }
+
+
+
+  // Update coloader
+  updateColoader() {
+    const formData = { ...this.coloaderForm.value };
+    const storedCities = this.globalstore.get<{ city_id: number; city_name: string }[]>('cities');
+    if (formData.coloader_city) {
+      const selectedCity = storedCities?.find(city => city.city_name == formData.coloader_city);
+      formData.coloader_city = selectedCity?.city_id;
+    }
+    if (this.coloaderForm.valid) {
+      const payload = {
+        updates: formData,
+        conditions: "coloader_id=" + this.coloaderId,
+      };
+      console.log(payload);
+      firstValueFrom(this.coloaderService.updateColoader(payload).pipe(
+        tap((response) => {
+          this.alertService.success(response.message);
+          this.coloaderForm.reset();
+          this.gateAllColoaders();
+        },
+          (error) => {
+            this.alertService.error(error.error.message);
+          }
+        )
+      ))
+    }
+
+  }
+
+
+  async deletecoloader(coloader: any) {
+    const payload = {
+      coloader_id: coloader.coloader_id
+    }
+    await firstValueFrom(this.coloaderService.deleteColoader(payload).pipe(
+      tap((response) => {
+        this.alertService.success(response.message);
+        this.gateAllColoaders();
+      },
+        (error) => {
+          this.alertService.error(error.error.message);
+        }
+      )
+    ))
+  }
+
+  setUserStatus(status: 'active' | 'inactive') {
+    this.coloaderStatus = status;
+    if (status === 'active') {
+      this.gateAllColoaders();
+    } else if (status === 'inactive') {
+
+    }
+  }
+
+
+
+  activecoloader(event: any) {
+    console.log(event);
+  }
+
+
   toggleAddState() {
     this.showAddState = !this.showAddState;
     this.isEditing = false;
@@ -173,4 +259,10 @@ export class CoLoaderComponent {
       this.showAddState = false;
     }
   }
+
+  // Assuming you have an array of coloaders
+  toggleShowMore(coloader: any): void {
+    coloader.showMore = !coloader.showMore;
+  }
+
 }

@@ -30,4 +30,8 @@ export class UserService {
     return this.apiService.get('/master/users/myInfo');
   }
 
+  gateAllDeletedUsers(payload: any): Observable<any> {
+    return this.apiService.post('/master/users/deleted', payload);
+  }
+
 }
