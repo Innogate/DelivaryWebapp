@@ -16,7 +16,7 @@ import { DatePicker, DatePickerModule } from 'primeng/datepicker';
 @Component({
   selector: 'app-booking-status',
   standalone: true,
-  imports: [CommonModule, AutoCompleteModule, DropdownModule, CalendarModule,FormsModule,ReactiveFormsModule, DatePickerModule],
+  imports: [CommonModule, AutoCompleteModule, DropdownModule, CalendarModule, FormsModule, ReactiveFormsModule, DatePickerModule],
   templateUrl: './booking-status.component.html',
   styleUrls: ['./booking-status.component.scss']
 })
@@ -69,6 +69,7 @@ export class BookingStatusComponent implements OnInit {
             if (res?.body && Array.isArray(res.body)) {
               this.current = res.body.length;
               this.bookingList = this.bookingList ? [...this.bookingList, ...res.body] : res.body;
+              this.filterBookingList();
             }
           },
           (error) => {
@@ -133,15 +134,23 @@ export class BookingStatusComponent implements OnInit {
   }
 
   onCitySelect(event: any) {
-    console.log(event.value);
-    this.bookingStatusForm?.patchValue({ destination_city_id: event.value.city_id });
-    this.selectedCity = event.value;
+    if (event.value) {
+      console.log(event.value);
+      this.bookingStatusForm?.patchValue({ destination_city_id: event.value.city_id });
+      this.selectedCity = event.value;
+      if (event.value.destination_city_id == '', event.value.destination_city_id == undefined) {
+        this.filterBookingList();
+
+      }
+    }
+
+    this.filterBookingList();
   }
 
   searchCity(event: any) {
     const query = event?.query?.toLowerCase() || '';
     console.log(query)
-
+    this.filterBookingList();
 
     this.filteredCities = this.cities.filter(city =>
       city.city_name?.toLowerCase().includes(query)
@@ -154,18 +163,25 @@ export class BookingStatusComponent implements OnInit {
     return city ? city.city_name : ''; // Return city name or empty string if not found
   }
 
+  onCityInputChange(value: any) {
+    if (!value || typeof value === 'string') {
+      this.bookingStatusForm.patchValue({ destination_city_id: null });
+    }
+    this.filterBookingList();
+  }
 
 
   filterBookingList() {
     const { bookingDate, destination_city_id, destination_id } = this.bookingStatusForm.value;
-  
+    console.log('Filter values:', { bookingDate, destination_city_id, destination_id });
+
     const selectedDate = bookingDate
       ? new Date(bookingDate).toLocaleDateString('en-CA')
       : null;
-  
+
     this.filteredBookingsInventory = this.bookingList?.filter(booking => {
       const bookingCreatedDate = new Date(booking.created_at).toLocaleDateString('en-CA');
-  
+
       return (
         (selectedDate ? bookingCreatedDate === selectedDate : true) &&
         (destination_city_id ? booking.destination_city_id === +destination_city_id : true) &&
@@ -173,10 +189,11 @@ export class BookingStatusComponent implements OnInit {
       );
     });
   }
-  
-  
-  
-  
+
+
+
+
+
   transportModes = [
     { label: 'Bus', value: 'B' },
     { label: 'Train', value: 'T' },

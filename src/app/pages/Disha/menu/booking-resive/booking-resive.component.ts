@@ -22,7 +22,7 @@ export class BookingResiveComponent {
 
   bookingList?: any[];
   current = 0;
-  max = 10;
+  max = 10000;
   showAddState: boolean = false;
   stateId?: number;
   isEditing: boolean = false;
@@ -67,7 +67,7 @@ export class BookingResiveComponent {
       const payload = {
         fields: [],
         max: this.max,
-        current: this.current
+        current: 0
       }
       await firstValueFrom(this.BookingresiveService.getResivedBookings(payload).pipe(
         tap(
@@ -125,35 +125,21 @@ export class BookingResiveComponent {
     }
   }
 
-  getCityName(cityId: number): string {
-    const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || [];
-    console.log(cities)
-    const city = cities.find(city => city.city_id === cityId);
-    return city ? city.city_name : 'Unknown City';
-  }
 
-  async onScroll(event: any): Promise<void> {
-    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
-    if (bottom) {
-      await this.getAllResivedBookings();
-    }
-  }
-  toggleAddState() {
-    this.showAddState = !this.showAddState;
-    this.isEditing = false;
-  }
 
   async outForDevilry(booking: any) {
-    console.log(booking);
     const payload = {
       booking_id: booking.booking_id,
     }
-
     try {
       await firstValueFrom(this.BookingresiveService.outDelidery(payload).pipe(
-        tap((response) => {
+        tap(async (response) => {
           this.alertService.success(response.message);
-          this.getAllResivedBookings();
+          this.bookingList = [];
+          if (this.bookingList === null || this.bookingList.length === 0) {
+            await this.getAllResivedBookings();
+            this.bookingReceivedForm.reset();
+          }
         },
           (error) => {
             this.alertService.error(error.error.message);
@@ -164,6 +150,9 @@ export class BookingResiveComponent {
     }
   }
 
+
+
+
   async forwardOrder(booking: any) {
     const id = booking.booking_id
     if (!id) {
@@ -172,11 +161,13 @@ export class BookingResiveComponent {
     const ask = await this.alertService.confirm("You want to forward this order to next branch?");
     if (ask == true) {
       await firstValueFrom(this.BookingresiveService.forward(id).pipe(
-        tap((response) => {
+        tap(async (response) => {
           this.alertService.success(response.message);
-          if (this.bookingList) {
-            this.bookingList = this.bookingList.filter((book) => book.booking_id !== id);
-          }
+          this.bookingList = [];
+              if (this.bookingList === null || this.bookingList.length === 0) {
+                await this.getAllResivedBookings();
+                this.bookingReceivedForm.reset();
+              }
         },
           (error) => {
             this.alertService.error(error.error.message);
@@ -185,4 +176,28 @@ export class BookingResiveComponent {
       )
     }
   }
+
+
+
+  async onScroll(event: any): Promise<void> {
+    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
+    if (bottom) {
+      await this.getAllResivedBookings();
+    }
+  }
+
+
+  toggleAddState() {
+    this.showAddState = !this.showAddState;
+    this.isEditing = false;
+  }
+
+
+  getCityName(cityId: number): string {
+    const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || [];
+    console.log(cities)
+    const city = cities.find(city => city.city_id === cityId);
+    return city ? city.city_name : 'Unknown City';
+  }
+
 }

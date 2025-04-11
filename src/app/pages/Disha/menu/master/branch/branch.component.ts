@@ -69,7 +69,7 @@ export class BranchComponent implements OnInit {
     this.branchForm = this.fb.group({
       branch_id: [],
       branch_name: ['', [Validators.required, Validators.minLength(3)]],
-      branch_short_name: [''],
+      branch_short_name: ['', Validators.required],
       alias_name: ['', [Validators.minLength(3)]],
       representative_id: ['', Validators.required],  // ! add it
       address: ['', [Validators.minLength(3)]],
@@ -341,4 +341,22 @@ export class BranchComponent implements OnInit {
       this.alertService.error('Please fill in all the required fields correctly.');
     }
   }
+
+
+
+
+  onManifestInput(event: any): void {
+    const input = event.target.value;
+    const sanitized = input.replace(/[^a-zA-Z0-9]/g, ''); // Remove special characters
+  
+    // Check if input is only numbers
+    if (/^\d+$/.test(sanitized)) {
+      const shortName = this.branchForm.get('branch_short_name')?.value || '';
+      this.branchForm.get('manifest_sires')?.setValue(shortName + sanitized, { emitEvent: false });
+    } else {
+      this.branchForm.get('manifest_sires')?.setValue(sanitized, { emitEvent: false });
+    }
+  }
+  
+  
 }
