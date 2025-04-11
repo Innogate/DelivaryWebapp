@@ -79,12 +79,33 @@
             </div>
 
             <!-- Destination Branch Name Section -->
-            <div class="flex items-center space-x-2">
-                <i class="pi pi-building text-green-500 text-xl"></i>
-                <p class="text-blue-600 font-bold text-lg">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <!-- Branch Info -->
+                <div class="flex items-center space-x-2">
+                  <i class="pi pi-building text-green-500 text-xl"></i>
+                  <p class="text-blue-600 font-bold text-lg">
                     {{ booking.destination_branch_name }}
-                </p>
-            </div>
+                  </p>
+                </div>
+              
+                <!-- Print and Download Buttons -->
+                <div class="flex gap-3">
+                  <!-- Print Button -->
+                  <button pButton (click)="printBookingSlip(booking)"
+                    class="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-gray-700 active:bg-gray-800 transition-all">
+                    <i class="pi pi-print"></i>
+                    <span>Print</span>
+                  </button>
+              
+                  <!-- Download Button -->
+                  <button pButton (click)="generateBookingSlipPDF(booking,'download')"
+                    class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
+                    <i class="pi pi-download"></i>
+                    <span>Download</span>
+                  </button>
+                </div>
+              </div>
+              
         </div>
 
         <!-- Additional Details -->
@@ -120,11 +141,20 @@
             </p>
 
             <div class="flex flex-col md:flex-row gap-2 mt-2">
+                <!-- Cancel Button -->
                 <button pButton *ngIf="booking.status == 0" (click)="cancelOder(booking.booking_id)"
-                    class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-red-700 active:bg-red-800 transition-all">
-                    <i class="pi pi-times-circle"></i>
-                    <span>Cancel Order</span>
+                  class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-red-700 active:bg-red-800 transition-all">
+                  <i class="pi pi-times-circle"></i>
+                  <span>Cancel</span>
                 </button>
+              
+                <!-- Edit Button -->
+                <button pButton *ngIf="booking.status == 0"  (click)="editBooking(booking)"
+                  class="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-yellow-600 active:bg-yellow-700 transition-all">
+                  <i class="pi pi-pencil"></i>
+                  <span>Edit</span>
+                </button>
+              
 
                 <button pButton *ngIf="booking.status >= 1 && booking.status < 3"
                     class="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-green-700 active:bg-green-800 transition-all">
