@@ -1,6 +1,7 @@
 <div *ngIf="bookingList"
     class="flex flex-col bg-gradient-to-br from-blue-100 to-blue-50 py-3 min-h-screen overflow-auto pb-[500px]"
-    style="max-height: 100vh;" (scroll)="onScroll($event)">
+    style="max-height: 100vh;" >  
+    <!-- (scroll)="onScroll($event)" -->
     <div *ngFor="let booking of bookingList"
         class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
         <!-- Slip Details -->
@@ -38,8 +39,8 @@
             </div>
         </div>
 
-        <div class="flex flex-col items-left space-y-2">
-            <!-- Branch Name Section -->
+        <div class="flex flex-col items-start space-y-2 w-full">
+            <!-- Booking Branch -->
             <div class="flex items-center space-x-2">
                 <i class="pi pi-building text-purple-500 text-xl"></i>
                 <p class="text-blue-800 font-semibold text-lg">
@@ -52,14 +53,33 @@
                 <i class="pi pi-arrow-down text-gray-400 text-xl"></i>
             </div>
 
-            <!-- Destination Branch Name Section -->
-            <div class="flex items-center space-x-2">
-                <i class="pi pi-building text-green-500 text-xl"></i>
-                <p class="text-blue-600 font-bold text-lg">
-                    {{ booking.received_branch_name | titlecase }}
-                </p>
+            <!-- Received Branch with Action Buttons -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center w-full">
+                <!-- Left: Received Branch Info -->
+                <div class="flex items-center space-x-2">
+                    <i class="pi pi-building text-green-500 text-xl"></i>
+                    <p class="text-blue-600 font-bold text-lg">
+                        {{ booking.received_branch_name | titlecase }}
+                    </p>
+                </div>
+
+                <!-- Right: Action Buttons -->
+                <div class="flex mt-2 md:mt-0 gap-2">
+                    <button pButton (click)="forwardOrder(booking)"
+                        class="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-red-600 active:bg-red-700 transition-all">
+                        <i class="pi pi-truck"></i>
+                        <span>Forward Order</span>
+                    </button>
+
+                    <button pButton (click)="outForDevilry(booking)"
+                        class="flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-sky-700 active:bg-sky-800 transition-all">
+                        <i class="pi pi-box"></i>
+                        <span>Out for Delivery</span>
+                    </button>
+                </div>
             </div>
         </div>
+
 
 
         <!-- Additional Details -->
@@ -93,28 +113,7 @@
                 <i class="pi pi-percentage mr-2 text-indigo-500"></i>
                 <strong>GST:</strong> {{ booking.cgst }}% + {{ booking.sgst }}% + {{ booking.igst }}%
             </p>
-
-            <div class="flex flex-col md:flex-row gap-2 mt-2">
-                <!-- <button pButton *ngIf="booking.status <= 2 && booking.status != 0"
-          class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-red-700 active:bg-red-800 transition-all">
-          <i class="pi pi-times-circle"></i>
-          <span>Cancel Order</span>
-        </button> -->
-                <button pButton  (click)="forwardOrder(booking)"
-                    class="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
-                    <i class="pi pi-truck"></i>
-                    <span>Forward Order</span>
-                </button>
-
-                <button pButton (click)="outForDevilry(booking)"
-                    class="flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-blue-700 active:bg-blue-800 transition-all">
-                    <i class="pi pi-box"></i>
-                    <span>Out for delivery</span>
-                </button>
-            </div>
-
         </div>
-
         <!-- Show More / Less Button -->
         <button (click)="booking.showMore = !booking.showMore"
             class="w-full bg-blue-600 text-white px-4 py-2 mt-3 rounded-lg text-center font-medium shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all">

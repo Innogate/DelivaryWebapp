@@ -157,7 +157,8 @@
 
                 <!-- Alias Name 2 -->
                 <div class="flex flex-col w-1/2">
-                    <label class="text-gray-700 font-medium">Short Name</label>
+                    <label class="text-gray-700 font-medium">Short Name  <span class="text-red-500 ml-1">*</span></label>
+                   
                     <span
                         class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-purple-400">
                         <i class="pi pi-tag text-purple-500 mr-2"></i>
@@ -197,9 +198,8 @@
 
             <div class="flex flex-row gap-4 w-full mt-2">
                 <div class="w-1/2">
-                    <div class="flex items-center">
-                        <label class="text-gray-700 font-medium">Contact No</label>
-                    </div>
+                    <label class="text-gray-700 font-medium mb-2">Contact No </label>
+
                     <span
                         class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
                         <i class="pi pi-phone text-green-500 mr-2"></i>
@@ -210,13 +210,11 @@
 
 
                 <div class="w-1/2">
-                    <div class="flex items-center">
-                        <label class="text-gray-700 font-medium">sart manifest No. </label>
-                    </div>
+                    <label class="text-gray-700 font-medium mb-2">Manifest Starting No.<span class="text-red-500 ml-1">*</span></label>
                     <span
                         class="flex items-center border border-gray-300 rounded-lg shadow-sm p-2 transition-all bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
                         <i class="pi pi-lock text-red-500 mr-2"></i>
-                        <input formControlName="manifest_sires" type="text" pInputText placeholder="Enter manifest No"
+                        <input formControlName="manifest_sires" type="text" pInputText placeholder="Enter manifest No"  (input)="onManifestInput($event)"
                             class="w-full bg-transparent focus:outline-none" />
                     </span>
                 </div>

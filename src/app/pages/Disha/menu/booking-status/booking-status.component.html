@@ -1,28 +1,24 @@
 <form class="sticky top-0 bg-blue-300 z-10 shadow-md p-1" [formGroup]="bookingStatusForm">
-    <div class="grid grid-cols-4 gap-4 items-center">
-        <!-- Calendar Input (Fixed Styling) -->
-        <div class="relative w-full">
-            <p-datepicker formControlName="bookingDate"  placeholder="Select Date"  (onSelect)="filterBookingList()">
+    <div class="grid grid-cols-3 items-center gap-1">
+            <p-datepicker formControlName="bookingDate" placeholder="Select Date" (onSelect)="filterBookingList()"   inputStyleClass="w-full sm:w-64 md:w-80 lg:w-96">
             </p-datepicker>
-        </div>
-
         <!-- Branch Dropdown -->
-        <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
+        <!-- <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"  [showClear]="true"
             (onChange)="filterBookingList()" formControlName="destination_id" placeholder="Select Branch"
             class="w-full">
+        </p-dropdown> -->
+        <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
+            formControlName="destination_id" placeholder="Select Branch" class="w-full" [showClear]="true"
+            (onChange)="filterBookingList()">
         </p-dropdown>
 
-        <!-- City Autocomplete -->
-        <div class="w-full">
-            <!-- <label for="cities" class="font-medium flex items-center">
-                <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
-            </label> -->
-            <p-autoComplete [(ngModel)]="selectedCity" [ngModelOptions]="{ standalone: true }"
-                [suggestions]="filteredCities" (completeMethod)="searchCity($event)" [field]="'city_name'" placeholder="Search City"
-                (onSelect)="onCitySelect($event)" (onSelect)="filterBookingList()" (input)="filterBookingList()">
-            </p-autoComplete>
-        </div>
 
+        <!-- City Autocomplete -->
+        <p-autoComplete [(ngModel)]="selectedCity" [ngModelOptions]="{ standalone: true }"
+            [suggestions]="filteredCities" (completeMethod)="searchCity($event)" [field]="'city_name'"
+            placeholder="Search City" (onSelect)="onCitySelect($event)" (ngModelChange)="onCityInputChange($event)"
+            inputStyleClass="w-full">
+        </p-autoComplete>
 
     </div>
 </form>

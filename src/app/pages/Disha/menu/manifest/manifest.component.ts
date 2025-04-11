@@ -385,11 +385,11 @@ export class ManifestComponent {
         doc.text('Number of Bag: ' + data.bag_count, 150, 56);
 
         const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];
-        const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignor_name: string; destination_city_name: any; }) => [
+        const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignee_name: string; destination_city_name: any; }) => [
             b.slip_no.toString(),
             b.package_count.toString(),
             formatWeight(parseInt(b.package_weight)),
-            b.consignor_name.toUpperCase(),
+            b.consignee_name.toUpperCase(),
             b.destination_city_name,
             ''
         ]);
