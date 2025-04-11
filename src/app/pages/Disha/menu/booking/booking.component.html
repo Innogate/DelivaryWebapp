@@ -188,7 +188,7 @@
 
             <!-- Checkbox (50% width) -->
             <div class="flex-1 flex items-center justify-center">
-                <p-checkbox inputId="toPayCheckbox"   binary="true" name="toPay" formControlName="to_pay" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="toPayCheckbox"   binary="true" name="toPay" formControlName="to_pay" value="Cheese" (onChange)="calculateTotal()"></p-checkbox>
                 <label for="toPayCheckbox" class="ml-2"> To Pay </label>
             </div>
         </div>
