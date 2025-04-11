@@ -225,7 +225,7 @@
                 <label for="weight" class="font-medium flex items-center">
                     <i class="pi pi-weight text-gray-600 mr-2"></i> Weight <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="weight" formControlName="package_weight" placeholder="KG" type="number" (input)="calculateAmount()"
+                <input pInputText id="weight" formControlName="package_weight" placeholder="KG" type="number" (input)="onCalculate()"
                     class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['package_weight'].hasError('required') && bookingForm.controls['package_weight'].touched"
@@ -242,7 +242,7 @@
                 <label for="charges" class="font-medium flex items-center">
                     Charges/KG <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="charges" formControlName="package_value" type="number" class="p-inputtext p-component" (input)="calculateAmount()"/>
+                <input pInputText id="charges" formControlName="package_value" type="number" class="p-inputtext p-component" (input)="onCalculate()"/>
                 <small
                     *ngIf="bookingForm.controls['package_value'].hasError('required') && bookingForm.controls['package_contents'].touched"
                     class="text-red-500">
@@ -371,7 +371,7 @@
             <!-- Account Yes/No Radio Buttons -->
             <div class="flex-1 flex items-center justify-center">
                 <label class="font-medium p-4">On Account:</label>
-                <p-checkbox inputId="onAccountCheckbox" name="onAccount" binary="true"  formControlName="on_account" value="Cheese"></p-checkbox>
+                <p-checkbox inputId="onAccountCheckbox" name="onAccount" binary="true"  formControlName="on_account" value="Cheese" (onChange)="calculateTotal()"></p-checkbox>
             </div>
         </div>
 

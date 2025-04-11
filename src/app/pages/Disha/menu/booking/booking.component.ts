@@ -131,6 +131,7 @@ export class BookingComponent implements OnInit {
       // extra fields
       xp_branch_id: null,
     });
+    this.bookingForm.patchValue({ to_pay: false }, { emitEvent: false });
   }
 
   async gateAllcity() {
@@ -326,7 +327,6 @@ export class BookingComponent implements OnInit {
 
 
   onCalculate(){
-    this.bookingForm.patchValue({ to_pay: false }, { emitEvent: false });
     this.calculateAmount();
     this.calculateTotal();
   }
