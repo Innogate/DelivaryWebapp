@@ -34,8 +34,8 @@ declare module 'jspdf' {
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.scss'],
   imports: [DropdownModule, SelectModule, AutoCompleteModule, RadioButtonModule,
-     ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule,
-      DividerModule, CheckboxModule],
+    ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule, CommonModule,
+    DividerModule, CheckboxModule],
   providers: [MessageService]
 })
 export class BookingComponent implements OnInit {
@@ -61,6 +61,8 @@ export class BookingComponent implements OnInit {
   gstAmount: number = 0;
   igstAmount: number = 0;
 
+  booking?: null;
+
   constructor(
     private cityService: CityService,
     private stateService: StateService,
@@ -80,6 +82,15 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm) {
       return;
     }
+
+
+    this.booking = history.state.booking;
+
+    if(this.booking != null || undefined){
+      this.viewBooking();
+    }
+
+
     this.globalstorageService.set('PAGE_TITLE', "BOOKING");
     this.loadTransportModes();
     this.gateAllBranch();
@@ -219,10 +230,6 @@ export class BookingComponent implements OnInit {
     ))
   }
 
-
-
-
-
   async gateAllBranch() {
     const payload =
     {
@@ -240,6 +247,16 @@ export class BookingComponent implements OnInit {
         }
       )
     ))
+  }
+
+
+  viewBooking() {
+    if (this.booking) {
+      console.log(this.booking);
+      this.bookingForm.patchValue(this.booking);
+    } else {
+      console.warn('Booking data is missing.');
+    }
   }
 
 
@@ -313,7 +330,7 @@ export class BookingComponent implements OnInit {
 
     const subtotal = +(amount + shipper + other).toFixed(2);
     if (formValues.to_pay) {
-      this.gstAmount=this.igstAmount = +(subtotal * (igst / 100)).toFixed(2);
+      this.gstAmount = this.igstAmount = +(subtotal * (igst / 100)).toFixed(2);
     } else {
       this.cgstAmount = +(subtotal * (cgst / 100)).toFixed(2);
       this.sgstAmount = +(subtotal * (sgst / 100)).toFixed(2);
