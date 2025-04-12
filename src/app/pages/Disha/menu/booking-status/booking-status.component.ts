@@ -38,6 +38,9 @@ export class BookingStatusComponent implements OnInit {
   cgstAmount: number = 0;
   sgstAmount: number = 0;
   igstAmount: number = 0;
+  stateName: string = '';
+
+
 
   constructor(
     private bookService: BookingService,
@@ -48,7 +51,8 @@ export class BookingStatusComponent implements OnInit {
     private globalStorage: GlobalStorageService,
     private cityService: CityService,
     private globalstorageService: GlobalStorageService,
-    private router: Router
+    private router: Router,
+    private stateService: StateService
   ) {
     this.bookingStatusForm = this.fb.group({
       bookingDate: [''],
@@ -65,7 +69,7 @@ export class BookingStatusComponent implements OnInit {
     this.gateAllcity();
     this.filterBookingList()
     this.branchInfo = this.globalstorageService.get('branchInfo');
-
+    await this.getStatebyId(this.branchInfo.state_id)
   }
 
   async getAllBooking() {
@@ -268,7 +272,7 @@ export class BookingStatusComponent implements OnInit {
 
   async generateBookingSlipPDF(data: any, option: 'print' | 'download'): Promise<void> {
     const doc = new jsPDF('p', 'mm', 'a4');
-    const positions = [5, 78, 151, 224];
+    const positions = [5];
   
     for (const offsetY of positions) {
       await this.drawTemplate(doc, 5, offsetY, data);
@@ -344,10 +348,13 @@ export class BookingStatusComponent implements OnInit {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
     doc.text('ENTERPRISE', offsetX + 2, offsetY + 10);
-    doc.text(''+data.address, offsetX + 2, offsetY + 14);
-    doc.text('City'+this.getCityName(data.city_id), offsetX + 2, offsetY + 18);
-    doc.text('Phone : '+data.contact_no, offsetX + 2, offsetY + 22);
-    doc.text(`PAN : ${data.udyam_no || '-'}   •   GSTIN : ${data.gst_no || '-'}`, offsetX + 2, offsetY + 26);
+    doc.text(''+this.branchInfo.address, offsetX + 2, offsetY + 14);
+    doc.text(
+      'City: ' + this.getCityName(this.branchInfo.city_id) + ', State: ' + this.stateName,
+      offsetX + 2,
+      offsetY + 18
+    );    doc.text('Phone : '+this.branchInfo.contact_no, offsetX + 2, offsetY + 22);
+    doc.text(`PAN : ${this.branchInfo.udyam_no || '-'}   •   GSTIN : ${this.branchInfo.gst_no || '-'}`, offsetX + 2, offsetY + 26);
 
     // Consignor Block
     doc.setFillColor(0, 180, 150);
@@ -501,7 +508,27 @@ export class BookingStatusComponent implements OnInit {
   
     const result = (baseAmount * gst) / 100;
   
-    return result;
+    return parseFloat(result.toFixed(2)); ;
+  }
+
+  async getStatebyId(data: any){
+    if(data){
+      const payload = {
+        state_id: data
+      }
+      await firstValueFrom(this.stateService.getStateById(payload).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.stateName = res.body.state_name;
+            }
+          },
+          (error) => {
+            this.alertService.error(error?.error?.message || 'An error occurred while fetching states.');
+          }
+        )
+      ))
+    }
   }
   
   

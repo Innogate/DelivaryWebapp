@@ -62,7 +62,7 @@ export class BookingComponent implements OnInit {
   igstAmount: number = 0;
 
   booking?: null;
-
+  stateName: string = '';
   constructor(
     private cityService: CityService,
     private stateService: StateService,
@@ -96,7 +96,7 @@ export class BookingComponent implements OnInit {
     this.gateAllBranch();
     this.gateAllcity();
     this.branchInfo = this.globalstorageService.get('branchInfo');
-    // this.onCheckboxChange(false);
+    await this.getStatebyId(this.branchInfo.state_id)
   }
 
 
@@ -137,7 +137,7 @@ export class BookingComponent implements OnInit {
 
       to_pay: ['0'],
       on_account: ['0'],
-      amount: [],
+      package_amount: [],
 
       // extra fields
       xp_branch_id: null,
@@ -283,9 +283,9 @@ export class BookingComponent implements OnInit {
     }
     const weight = Number(this.bookingForm.get('package_weight')?.value) || 0;
     const charges = Number(this.bookingForm.get('package_value')?.value) || 0;
-    const amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
+    const package_amount = weight > 0 && charges > 0 ? +(weight * charges).toFixed(2) : 0;
 
-    this.bookingForm.patchValue({ total_value: amount, amount }, { emitEvent: false });
+    this.bookingForm.patchValue({ total_value: package_amount, package_amount }, { emitEvent: false });
   }
 
 
@@ -324,8 +324,8 @@ export class BookingComponent implements OnInit {
     }
 
     let amount = 0;
-    if (Number(formValues.amount) >= 0) {
-      amount = Number(formValues.amount);
+    if (Number(formValues.package_amount) >= 0) {
+      amount = Number(formValues.package_amount);
     }
 
     const subtotal = +(amount + shipper + other).toFixed(2);
@@ -353,6 +353,7 @@ export class BookingComponent implements OnInit {
 
   async search($event: any) {
     const string = $event.query;
+    console.log(string);
     await firstValueFrom(this.bookingService.searchConsignee(string).pipe(
       tap(
         (res) => {
@@ -407,7 +408,7 @@ export class BookingComponent implements OnInit {
 
   async generateBookingSlipPDF() {
     const doc = new jsPDF('p', 'mm', 'a4');
-    const positions = [5, 78, 151, 224]; // Row positions for 4 slips
+    const positions = [5]; // Row positions for 4 slips
 
     for (const offsetY of positions) {
       await this.drawTemplate(doc, 5, offsetY);
@@ -445,10 +446,14 @@ export class BookingComponent implements OnInit {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
     doc.text('ENTERPRISE', offsetX + 2, offsetY + 10);
-    doc.text('H.O. : 164, M. G. Road, 1st Floor, Kolkata - 7', offsetX + 2, offsetY + 14);
-    doc.text('B.O. : 15B, Kalakar Street, Gr. Floor, Kolkata - 7', offsetX + 2, offsetY + 18);
-    doc.text('Phone : 033-40686991', offsetX + 2, offsetY + 22);
-    doc.text('PAN : ADOPD0043R    •    GSTIN : 19ADOPD0043R1Z7', offsetX + 2, offsetY + 26);
+    doc.text(''+this.branchInfo.address, offsetX + 2, offsetY + 14);
+    doc.text(
+      'City: ' + this.getCityName(this.branchInfo.city_id) + ', State: ' + this.stateName,
+      offsetX + 2,
+      offsetY + 18
+    );    doc.text('Phone : '+this.branchInfo.contact_no, offsetX + 2, offsetY + 22);
+    doc.text(`PAN : ${this.branchInfo.udyam_no || '-'}   •   GSTIN : ${this.branchInfo.gst_no || '-'}`, offsetX + 2, offsetY + 26);
+
 
     // Consignor Block
     doc.setFillColor(0, 180, 150);
@@ -591,10 +596,32 @@ export class BookingComponent implements OnInit {
       console.error('QR Code Error:', err);
     }
   }
+
+
   getCityName(cityId: number): string {
     const cities = this.globalstorageService.get('cities') as { city_id: number; city_name: string }[] || [];
     const city = cities.find(city => city.city_id === cityId);
     return city ? city.city_name : ''; // Return city name or empty string if not found
   }
 
+
+  async getStatebyId(data: any){
+    if(data){
+      const payload = {
+        state_id: data
+      }
+      await firstValueFrom(this.stateService.getStateById(payload).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.stateName = res.body.state_name;
+            }
+          },
+          (error) => {
+            this.alertService.error(error?.error?.message || 'An error occurred while fetching states.');
+          }
+        )
+      ))
+    }
+  }
 }
