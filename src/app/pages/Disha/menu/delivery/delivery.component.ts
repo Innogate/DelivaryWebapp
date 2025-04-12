@@ -27,7 +27,7 @@ export class DeliveryComponent {
   selectedBookingsInventory: any[] = [];
   filteredBookingsInventory: any[] = [];
   bookingsInventory: any[] = [];
-
+  city_id = 0;
 
   constructor(private fb: FormBuilder, private globalstorageService: GlobalStorageService,
     private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
@@ -128,10 +128,13 @@ export class DeliveryComponent {
     const selectedBookingIds = this.selectedBookingsInventory.map(booking => booking.booking_id);
 
     try {
+      
       const payload = {
         employee_id: this.deliveryForm.value.employee_id,
-        booking_lists: selectedBookingIds
+        booking_lists: selectedBookingIds,
+        city_id: this.city_id
       }
+
       await firstValueFrom(this.deliveryService.addNewDelivery(payload).pipe(
         tap(
           async (res) => {
@@ -145,7 +148,8 @@ export class DeliveryComponent {
             this.alertService.error(error?.error?.message || 'An error occurred while adding delivery.');
           }
         )
-      ))
+      ));
+
     } catch (error: any) {
       this.alertService.error(error?.error?.message || 'An error occurred while adding delivery.');
     }
@@ -164,13 +168,13 @@ export class DeliveryComponent {
 
   filterDelivery() {
     const { city_id } = this.deliveryForm.value;
-  
     if (!city_id || city_id === '') {
       this.filteredBookingsInventory = [...this.bookingsInventory];
       return;
     }
   
     this.filteredBookingsInventory = this.bookingsInventory.filter(item => item.destination_city_id === city_id);
+    this.city_id = city_id
   }
   
 
