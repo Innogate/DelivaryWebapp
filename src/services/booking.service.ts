@@ -47,4 +47,9 @@ export class BookingService {
     return this.apiService.post('/booking/cancel', { booking_id: id });
   }
 
+  updateBooking(payload: any): Observable<any> {
+    return this.apiService.post('/bookings/update', payload);
+  }
+  
+
 }
