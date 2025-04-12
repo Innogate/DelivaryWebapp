@@ -22,6 +22,7 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import autoTable from 'jspdf-autotable';
 import QRCode from 'qrcode';
+import { Router } from '@angular/router';
 declare module 'jspdf' {
   interface jsPDF {
     lastAutoTable?: {
@@ -60,9 +61,10 @@ export class BookingComponent implements OnInit {
   sgstAmount: number = 0;
   gstAmount: number = 0;
   igstAmount: number = 0;
-
-  booking?: null;
+  bookingEdit: boolean = false;
+  booking?: any;
   stateName: string = '';
+
   constructor(
     private cityService: CityService,
     private stateService: StateService,
@@ -72,7 +74,8 @@ export class BookingComponent implements OnInit {
     private fb: FormBuilder,
     private alertService: AlertService,
     private employeeService: EmployeesService,
-    private globalstorageService: GlobalStorageService
+    private globalstorageService: GlobalStorageService,
+    private router: Router
   ) {
     this.createForm();
   }
@@ -86,8 +89,9 @@ export class BookingComponent implements OnInit {
 
     this.booking = history.state.booking;
 
-    if(this.booking != null || undefined){
+    if (this.booking != null || undefined) {
       this.viewBooking();
+      this.bookingEdit = true;
     }
 
 
@@ -253,13 +257,66 @@ export class BookingComponent implements OnInit {
   viewBooking() {
     if (this.booking) {
       console.log(this.booking);
-      this.bookingForm.patchValue(this.booking);
+      // Find the city object from the ID
+      const cities = this.globalstorageService.get('cities') as { city_id: number; city_name: string }[] || [];
+      const selectedCity = cities.find(
+        city => city.city_id === this.booking.destination_city_id
+      );
+
+      // Extract the numeric part from slip_no (e.g., "Dk-22" -> 22)
+      // const slipNoNumber = this.booking.slip_no ? this.booking.slip_no.split('-')[1] : null;
+
+      // Patch the booking object but override destination_city_id with the full city object
+      this.bookingForm.patchValue({
+        ...this.booking,
+        // slip_no: slipNoNumber,
+        destination_city_id: selectedCity || null,
+        on_account: this.booking.on_account === "1" ? true : false,
+        to_pay: this.booking.to_pay === "1" ? true : false,
+      });
+
     } else {
       console.warn('Booking data is missing.');
     }
   }
 
 
+
+
+
+  async UpdateBooking() {
+    const formValue = { ...this.bookingForm.value };
+
+    const updates = {
+      ...formValue,
+      destination_city_id: formValue.destination_city_id?.city_id ?? null,
+      on_account: formValue.on_account ? '1' : '0',
+      to_pay: formValue.to_pay ? '1' : '0',
+    };
+
+    const payload = {
+      updates,
+      conditions: `booking_id=${this.booking.booking_id}`
+    };
+
+    console.log(payload);
+
+    await firstValueFrom(this.bookingService.updateBooking(payload).pipe(
+      tap(
+        async (res) => {
+          if (res.status == 200) {
+            await this.alertService.success(res.message);
+
+            this.router.navigate(['/pages/booking-status']);
+          }
+        },
+        error => {
+          this.alertService.error(error.error.message);
+        }
+      )
+
+    ))
+  }
 
 
   loadTransportModes(): void {
@@ -343,7 +400,7 @@ export class BookingComponent implements OnInit {
   }
 
 
-  onCalculate(){
+  onCalculate() {
     this.calculateAmount();
     this.calculateTotal();
   }
@@ -446,12 +503,12 @@ export class BookingComponent implements OnInit {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
     doc.text('ENTERPRISE', offsetX + 2, offsetY + 10);
-    doc.text(''+this.branchInfo.address, offsetX + 2, offsetY + 14);
+    doc.text('' + this.branchInfo.address, offsetX + 2, offsetY + 14);
     doc.text(
       'City: ' + this.getCityName(this.branchInfo.city_id) + ', State: ' + this.stateName,
       offsetX + 2,
       offsetY + 18
-    );    doc.text('Phone : '+this.branchInfo.contact_no, offsetX + 2, offsetY + 22);
+    ); doc.text('Phone : ' + this.branchInfo.contact_no, offsetX + 2, offsetY + 22);
     doc.text(`PAN : ${this.branchInfo.udyam_no || '-'}   •   GSTIN : ${this.branchInfo.gst_no || '-'}`, offsetX + 2, offsetY + 26);
 
 
@@ -605,8 +662,8 @@ export class BookingComponent implements OnInit {
   }
 
 
-  async getStatebyId(data: any){
-    if(data){
+  async getStatebyId(data: any) {
+    if (data) {
       const payload = {
         state_id: data
       }

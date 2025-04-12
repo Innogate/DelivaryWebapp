@@ -25,5 +25,4 @@ export class BookingReceivedService {
   outDelidery(payload: any): Observable<any> {
     return this.apiService.post('/delivery/new/booking', payload);
   }
-  
 }
