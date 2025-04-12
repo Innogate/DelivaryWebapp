@@ -1,0 +1,32 @@
+<div class="flex flex-col items-start space-y-3">
+    <!-- Upload Button -->
+    <label
+      class="group relative bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 ease-in-out cursor-pointer inline-flex items-center overflow-hidden"
+    >
+      <i class="pi pi-upload mr-3 text-white group-hover:animate-pulse"></i>
+      <span class="relative z-10">Upload Image</span>
+      <input
+        type="file"
+        accept="image/png, image/jpeg, image/jpg, image/gif"
+        class="hidden"
+        (change)="onFileSelected($event)"
+      />
+    </label>
+
+    <button
+                        class="mt-3 ml-2 bg-yellow-600 text-white px-6 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-yellow-700 active:bg-yellow-800 transition-all"
+                        (click)="onSave()">
+                        <i class="pi pi-save mr-2"></i> Save
+                    </button>
+  
+    <!-- Image Preview -->
+    <div *ngIf="base64File">
+      <p class="text-sm text-gray-600">Selected Image Preview:</p>
+      <img
+        [src]="base64File"
+        alt="Selected Image"
+        class="max-w-full md:w-72 rounded-lg border shadow-md"
+      />
+    </div>
+  </div>
+  
