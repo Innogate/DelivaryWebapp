@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-pod-upload',
@@ -38,7 +39,7 @@ export class PodUploadComponent {
 
 
     constructor(private fb: FormBuilder, private globalstorageService: GlobalStorageService,
-        private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
+        private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,private router: Router,
         private deliveryService: deliveryService,) {
         this.PodForm = this.fb.group({
             city_id: [''],
@@ -222,55 +223,62 @@ export class PodUploadComponent {
         });
     }
 
-    showPodList(data: string){
+    showPodList(data: string) {
         if (data === 'all') {
-        this.showPod = true;
-        this.fetchAllUplodedpod();
+            this.showPod = true;
+            this.fetchAllUplodedpod();
         } else {
-        this.showPod = false;
+            this.showPod = false;
         }
     }
 
 
     async fetchAllUplodedpod() {
         try {
-          const response = await firstValueFrom(
-            this.deliveryService.fetchAllUplodedpod().pipe(
-              tap(
-                (res) => {
-                  if (res.body) {
-                    this.uplodedListImage = res.body.map((pod: any) => {
-                      let podData = pod.pod_data || '';
-                      const mimeType = pod.data_formate || 'image/jpeg';
-      
-                      // If malformed prefix like "dataimage/jpegbase64,...", clean it
-                      if (/^dataimage\/(jpeg|png)base64,?/i.test(podData)) {
-                        podData = podData.replace(/^dataimage\/(jpeg|png)base64,?/i, '');
-                        podData = `data:${mimeType};base64,${podData}`;
-                      }
-      
-                      return {
-                        ...pod,
-                        pod_data: podData
-                      };
-                    });
-                  }
-                },
-                (error) => {
-                  this.alertService.error(
-                    error?.error?.message || 'An error occurred while fetching PODs.'
-                  );
-                }
-              )
-            )
-          );
-      
-          console.log(this.uplodedListImage);
+            const response = await firstValueFrom(
+                this.deliveryService.fetchAllUplodedpod().pipe(
+                    tap(
+                        (res) => {
+                            if (res.body) {
+                                this.uplodedListImage = res.body.map((pod: any) => {
+                                    let podData = pod.pod_data || '';
+                                    const mimeType = pod.data_formate || 'image/jpeg';
+
+                                    // If malformed prefix like "dataimage/jpegbase64,...", clean it
+                                    if (/^dataimage\/(jpeg|png)base64,?/i.test(podData)) {
+                                        podData = podData.replace(/^dataimage\/(jpeg|png)base64,?/i, '');
+                                        podData = `data:${mimeType};base64,${podData}`;
+                                    }
+
+                                    return {
+                                        ...pod,
+                                        pod_data: podData
+                                    };
+                                });
+                            }
+                        },
+                        (error) => {
+                            this.alertService.error(
+                                error?.error?.message || 'An error occurred while fetching PODs.'
+                            );
+                        }
+                    )
+                )
+            );
+
+            console.log(this.uplodedListImage);
         } catch (err) {
-          this.alertService.error('Failed to fetch uploaded PODs.');
-          console.error(err);
+            this.alertService.error('Failed to fetch uploaded PODs.');
+            console.error(err);
         }
-      }
-      
+    }
+
+
+    viewPod(pod: any) {
+        console.log(pod);
+
+        this.router.navigate(['/pages/viewpod', pod.booking_id]);
+    }
+
 
 }

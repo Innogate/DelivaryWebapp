@@ -31,4 +31,8 @@ export class deliveryService {
     return this.apiService.post('/pods', { });
   }
 
+  podById(id: any): Observable<any> {
+    return this.apiService.post('/pods/byId', id);
+  }
+
 }
