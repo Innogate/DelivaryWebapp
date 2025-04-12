@@ -345,16 +345,26 @@ export class ManifestComponent {
         }).replace(',', '');
 
         const formatWeight = (weight: any) => {
+            console.log('Weight:', weight);
             if (typeof weight === "string") {
                 weight = parseFloat(weight.replace(/[^\d.]/g, ""));
             }
-            if (typeof weight === "number") {
+        
+            if (isNaN(weight) || weight === 0) {
+                return '0 KG 0 GM';
+            }
+        
+            // Convert from KG to grams only if it's a float (i.e., <1000)
+            if (weight < 1000) {
                 weight = weight * 1000;
             }
-            let kg = Math.floor(weight / 1000);
-            let gm = Math.round(weight % 1000);
+        
+            const kg = Math.floor(weight / 1000);
+            const gm = Math.round(weight % 1000);
+        
             return `${kg} KG ${gm} GM`;
         };
+        
 
         const transportMode = data.bookings[0]?.transport_mode;
         const selectedMode = this.transportModes.find(mode => mode.value === transportMode);
@@ -383,16 +393,37 @@ export class ManifestComponent {
         doc.text('Total shipment to dispatch: ' + data.bookings.length, 150, 42);
         doc.text('Mode Of Transport: ' + transportLabel, 150, 49);
         doc.text('Number of Bag: ' + data.bag_count, 150, 56);
-
         const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];
-        const tableRows = data.bookings.map((b: { slip_no: { toString: () => any; }; package_count: { toString: () => any; }; package_weight: string; consignee_name: string; destination_city_name: any; }) => [
+
+        const tableRows = data.bookings.map((
+          b: {
+            slip_no: { toString: () => any };
+            package_count: { toString: () => any };
+            package_weight: any;
+            consignee_name: string;
+            destination_city_name: any;
+            to_pay: any;
+            total_value: any;
+          }
+        ) => {
+          // Set amount if to_pay is truthy and not 0
+          if (b.to_pay && b.to_pay !== 0) {
+            b.total_value = b.total_value;
+          }
+        
+          const toPayValue = b.to_pay ? (b.total_value?.toString() || '') : '';
+          console.log('To Pay Value:', b.package_weight);
+        
+          return [
             b.slip_no.toString(),
             b.package_count.toString(),
-            formatWeight(parseInt(b.package_weight)),
+            formatWeight(parseFloat(b.package_weight)),
             b.consignee_name.toUpperCase(),
             b.destination_city_name,
-            ''
-        ]);
+            toPayValue
+          ];
+        });
+        
 
         autoTable(doc, {
             startY: 65,

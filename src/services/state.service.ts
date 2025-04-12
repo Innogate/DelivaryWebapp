@@ -13,7 +13,7 @@ export class StateService {
     return this.apiService.post('/master/states',  payload);
   }
 
-  getStateById(payload: payload): Observable<any> {
+  getStateById(payload: any): Observable<any> {
     return this.apiService.post('/master/states/byId', payload);
   }
 
