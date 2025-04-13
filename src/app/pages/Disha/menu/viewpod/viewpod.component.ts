@@ -114,10 +114,6 @@ export class ViewpodComponent {
                 (res) => {
                     if (res) {
                         this.alertService.success(res.message);
-                        // this.PodForm.reset();
-                        this.fileName = '';
-                        this.imageBlob = null;
-                        this.base64File = null; // Reset Base64 string after successful upload
                     }
                 },
                 (error) => {
