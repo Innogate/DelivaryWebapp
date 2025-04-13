@@ -1,18 +1,6 @@
 <div class="sticky top-0 bg-blue-300 z-10 shadow-md">
     <div class="flex items-center justify-between px-4 py-2 border-b border-gray-300">
         <h2 class="text-2xl font-bold text-gray-800 m-0">Pod Upload</h2>
-
-        <div class="space-x-2">
-            <button class="px-4 py-1 rounded-lg font-medium bg-yellow-600 text-white hover:bg-yellow-700 transition"
-            (click)="showPodList('')" >
-             Pod
-         </button>
-
-            <button class="px-4 py-1 rounded-lg font-medium bg-green-600 text-white hover:bg-green-700 transition"
-                (click)="showPodList('all')">
-                All Uploded Pod
-            </button> 
-        </div>
     </div>
 </div>
 
@@ -57,7 +45,7 @@
         </div>
 
         <!-- Scrollable Pod List Section -->
-        <div class="overflow-y-auto max-h-[500px] pr-2"> <!-- 👈 Make this scrollable only -->
+        <div class="overflow-y-auto max-h-[500px] pr-2"> 
             <div *ngFor="let PodList of filteredPodInventory"
                 class="bg-white p-5 mb-4 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-transform transform hover:scale-105">
 
@@ -73,25 +61,11 @@
                 </div>
 
                 <div class="gap-2">
-                    <!-- Upload Image Button -->
-                    <!-- <label
-                        class="mt-3 bg-green-600 text-white px-4 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-green-700 active:bg-green-800 transition-all cursor-pointer inline-flex items-center">
-                        <i class="pi pi-upload mr-2"></i> Upload Image
-                        <input type="file" accept="image/png, image/jpeg, image/jpg, image/gif" class="hidden"
-                            (change)="onFileSelected($event)" />
-                    </label> -->
                     <button
                     class="mt-3 ml-2 bg-yellow-600 text-white px-6 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-yellow-700 active:bg-yellow-800 transition-all"
                     (click)="viewPod(PodList)">
                     <i class="pi pi-save mr-2"></i> Upload Pod
                 </button>
-
-                    <!-- Save Button -->
-                    <button
-                        class="mt-3 ml-2 bg-yellow-600 text-white px-6 py-2 rounded-lg text-center font-medium shadow-lg hover:bg-yellow-700 active:bg-yellow-800 transition-all"
-                        (click)="onSave()">
-                        <i class="pi pi-save mr-2"></i> Save
-                    </button>
                 </div>
 
                 <p *ngIf="PodList.fileName" class="mt-2 text-sm text-gray-700">

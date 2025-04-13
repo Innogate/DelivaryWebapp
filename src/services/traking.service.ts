@@ -35,4 +35,8 @@ export class TrakingService {
     return this.apiService.post('/track/update', payload);
   }
 
+  trakingBooking(payload: any): Observable<any> {
+    return this.apiService.post('/api/status/booking', payload);
+  }
+
 }

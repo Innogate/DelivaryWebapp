@@ -22,6 +22,7 @@ import { BookingResiveComponent } from './Disha/menu/booking-resive/booking-resi
 import { DeliveryComponent } from './Disha/menu/delivery/delivery.component';
 import { PodUploadComponent } from './Disha/menu/pod-upload/pod-upload.component';
 import { ViewpodComponent } from './Disha/menu/viewpod/viewpod.component';
+import { TrackingComponent } from './Disha/menu/tracking/tracking.component';
 export default [
     {path: 'documentation', component: Documentation },
     {path: 'scan', component: MenuComponent },
@@ -43,6 +44,7 @@ export default [
     {path: 'branch', component: BranchComponent, canActivate: [AuthGuard]},
     {path: 'master', component: MasterComponent, canActivate: [AuthGuard]},
     { path: 'viewpod/:id', component: ViewpodComponent, canActivate: [AuthGuard] },
+    {path: 'traking/:id', component: TrackingComponent},
     {path: 'access/:userId', component: AccessComponent},
     {path: '**', redirectTo: '/notfound' }
 ] as Routes;
