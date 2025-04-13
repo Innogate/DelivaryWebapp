@@ -39,21 +39,8 @@ export class ViewpodComponent {
           tap(
             (res) => {
               if (res.body) {
-                this.uplodedListImage = res.body.map((pod: any) => {
-                  let podData = pod.pod_data || '';
-                  const mimeType = pod.data_formate || 'image/jpeg';
-
-                  // If malformed prefix like "dataimage/jpegbase64,...", clean it
-                  if (/^dataimage\/(jpeg|png)base64,?/i.test(podData)) {
-                    podData = podData.replace(/^dataimage\/(jpeg|png)base64,?/i, '');
-                    podData = `data:${mimeType};base64,${podData}`;
-                  }
-
-                  return {
-                    ...pod,
-                    pod_data: podData
-                  };
-                });
+                console.log(res.body);
+                this.base64File = res.body.pod_data;
               }
             },
             (error) => {
@@ -65,7 +52,7 @@ export class ViewpodComponent {
         )
       );
 
-      console.log(this.uplodedListImage);
+      console.log(this.base64File);
     } catch (err) {
       this.alertService.error('Failed to fetch uploaded PODs.');
       console.error(err);
