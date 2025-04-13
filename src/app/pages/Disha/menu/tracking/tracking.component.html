@@ -17,6 +17,13 @@
   <!-- Tracking View -->
   <div *ngIf="isView" class="overflow-y-auto">
     <!-- Tracking Card Container -->
+     <!-- Back Button -->
+    <div class="mb-6 mt-4 text-center">
+      <button pButton label=" Track another package" class="text-sm text-blue-500"
+        (click)="isView = false; timelineSteps = []">
+      </button>
+    </div>
+
     <div class="max-w-2xl mx-auto p-6 bg-white shadow-xl rounded-3xl">
       <!-- Header -->
       <div class="mb-6 border-b pb-4">
@@ -67,14 +74,6 @@
           </ng-container>
         </div>
       </div>
-    </div>
-
-    <!-- Back Button -->
-    <div class="mt-6 text-right">
-      <button class="text-sm text-blue-500 hover:underline hover:text-blue-700 transition-all"
-        (click)="isView = false; timelineSteps = []">
-        ← Track another package
-      </button>
     </div>
   </div>
 </div>

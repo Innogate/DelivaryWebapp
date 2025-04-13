@@ -11,6 +11,7 @@ import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
 import { TrakingService } from '../../../../../services/traking.service';
 import { AlertService } from '../../../../../services/alert.service';
 import { ActivatedRoute } from '@angular/router';
+import { IconFieldModule } from 'primeng/iconfield';
 
 @Component({
   selector: 'app-tracking',
@@ -23,7 +24,9 @@ import { ActivatedRoute } from '@angular/router';
     TimelineModule,
     ReactiveFormsModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    ButtonModule,
+    IconFieldModule
   ],
   templateUrl: './tracking.component.html',
   styleUrl: './tracking.component.scss'

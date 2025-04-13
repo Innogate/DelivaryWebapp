@@ -129,7 +129,8 @@ export class MenuComponent {
       manifest: "/pages/manifest",
       "booking-Received": "/pages/booking-Received",
       delivery: "/pages/delivery",
-      "pod-upload": "/pages/pod-upload"
+      "pod-upload": "/pages/pod-upload",
+      'tracking': '/pages/tracking'
     };
   
     const route = routes[card];
