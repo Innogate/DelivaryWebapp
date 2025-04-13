@@ -131,7 +131,7 @@ export class UserComponent {
     // Delete User
     async deleteUser(data: any) {
         if (data) {
-            const confirmation = this.alertService.confirm("You want to delete this User ? ");
+            const confirmation = this.alertService.confirm("You want to Inactive this User ? ");
             if (await confirmation === false) {
                 return;
             } else {

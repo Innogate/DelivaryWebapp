@@ -13,16 +13,16 @@ import { AlertService } from '../../../../services/alert.service';
 import { GlobalStorageService } from '../../../../services/global-storage.service';
 
 @Component({
-  selector: 'app-access',
-  imports: [
-    TableModule,
-    BadgeModule,
-    CommonModule,
-    InputTextModule,
-    ToggleButtonModule,
-    FormsModule],
-  templateUrl: './access.component.html',
-  styleUrls: ['./access.component.scss']
+    selector: 'app-access',
+    imports: [
+        TableModule,
+        BadgeModule,
+        CommonModule,
+        InputTextModule,
+        ToggleButtonModule,
+        FormsModule],
+    templateUrl: './access.component.html',
+    styleUrls: ['./access.component.scss']
 })
 export class AccessComponent implements OnInit {
     pages: any[] = [];
@@ -36,11 +36,14 @@ export class AccessComponent implements OnInit {
         permission_code: ['0', '0', '0', '0', '0'],  // Default permission codes (Read, Write, Update, Delete, Admin)
     };
 
-    constructor (
+    myAccess: any;
+
+    constructor(
         private route: ActivatedRoute,
         private service: PagesService,
         private alert: AlertService,
-        private storage: GlobalStorageService
+        private storage: GlobalStorageService,
+        private pagesService: PagesService
     ) { }
 
     ngOnInit() {
@@ -48,6 +51,7 @@ export class AccessComponent implements OnInit {
         this.userId = this.route.snapshot.paramMap.get('userId');
         this.getAllPageList();
         this.getUserAccess(this.userId);
+        this.gateMyAccess();
     }
 
     async getAllPageList() {
@@ -107,13 +111,13 @@ export class AccessComponent implements OnInit {
     async updatePermissionCode(access: any) {
         const updatedPermissionCode = access.permission_code.map((val: boolean) => (val ? '1' : '0')).join('');
         // console.log(access);  // This should log the correct '1'/'0' string for save
-      await firstValueFrom(this.service.updateAccess(access.user_id, updatedPermissionCode, access.page_id).pipe(
-        tap((res) => {
-          if (res.message) {
-            this.alert.success('Permission code updated successfully');
-          }
-        })
-      ))
+        await firstValueFrom(this.service.updateAccess(access.user_id, updatedPermissionCode, access.page_id).pipe(
+            tap((res) => {
+                if (res.message) {
+                    this.alert.success('Permission code updated successfully');
+                }
+            })
+        ))
     }
 
     togglePermission(index: number, access: any) {
@@ -133,5 +137,13 @@ export class AccessComponent implements OnInit {
 
     disableAccess(access: any) {
         // Disable access logic
+    }
+
+    async gateMyAccess() {
+        await firstValueFrom(this.pagesService.getMyAccess().pipe(
+            tap((res:any) => {
+               this.myAccess = res.body;
+            })
+        ))
     }
 }

@@ -255,16 +255,23 @@ export class BookingStatusComponent implements OnInit {
   }
 
   async cancelOder(bookingId: number) {
-    await firstValueFrom(this.bookService.cancelBooking(bookingId).pipe(
-      tap(
-        (res) => {
-          if (res?.body) {
-            this.alertService.success(res.body.message);
-            this.bookingList = this.bookingList?.filter(booking => booking?.booking_id !== bookingId);
-          }
-        }
-      )
-    ))
+    if(bookingId){
+      const status = this.alertService.confirm("Cancle this Booking");
+      if(await status == true){
+        await firstValueFrom(this.bookService.cancelBooking(bookingId).pipe(
+          tap(
+            (res) => {
+              if (res?.body) {
+                this.alertService.success(res.body.message);
+                this.bookingList = this.bookingList?.filter(booking => booking?.booking_id !== bookingId);
+                this.filterBookingList();
+              }
+            }
+          )
+        ))
+      }
+      
+    }
   }
 
 
