@@ -66,38 +66,33 @@ export class TrackingComponent implements OnInit {
           const statusList = response.body.status;
           this.booking = response.body.booking;
           this.timelineSteps = []; // Clear previous results
+          this.isView = true;
+          if (statusList && statusList.length != 0) {
+            // Initial booking step
+           
+            // Intermediate steps
+            statusList.forEach((step: any, index: number) => {
+              this.timelineSteps.push({
+                // `Arrived at ${step.destination_branch_name}`
+                title: step.source_branch_name != null ? `Arrived at ${step.source_branch_name}` : `Oder just placed please wait`,
+                date: step.arrived_at,
+                status: 'completed'
+              });
 
-          // Initial booking step
-          const bookingStep = statusList[0];
-          this.timelineSteps.push({
-            title: `Package Booked at ${bookingStep.source_branch_name}`,
-            date: this.booking.booking_date,
-            status: 'completed'
-          });
-
-          // Intermediate steps
-          statusList.forEach((step: any, index: number) => {
+              this.timelineSteps.push({
+                title: step.destination_branch_name != null ? `Departed from ${step.destination_branch_name}` : step.received == 1 ? `Completed Delivery` : `Wait for Completed Delivery`,
+                date: step.departed_at,
+                status: step.received == 0 ? 'in-progress' : 'completed'
+              });
+            });
+          }
+          else {
             this.timelineSteps.push({
-              title: `Departed from ${step.source_branch_name}`,
-              date: step.departed_at,
+              title: `Oder just placed please wait`,
+              date: new Date(),
               status: 'completed'
             });
-
-            this.timelineSteps.push({
-              title: `Arrived at ${step.destination_branch_name}`,
-              date: step.arrived_at,
-              status: index === statusList.length - 1 ? 'in-progress' : 'completed'
-            });
-          });
-
-          // Final delivery step (optional - update with real delivery status if available)
-          this.timelineSteps.push({
-            title: 'Delivered to Consignee',
-            date: null,
-            status: 'pending'
-          });
-
-          this.isView = true;
+          }
         }),
         catchError(error => {
           this.alertService.error(error?.error?.message || 'Something went wrong');
