@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { firstValueFrom, tap } from 'rxjs';
@@ -11,6 +11,8 @@ import { AlertService } from '../../../../../services/alert.service';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { deliveryService } from '../../../../../services/delivery.service';
+import autoTable from 'jspdf-autotable';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-delivery',
@@ -33,8 +35,8 @@ export class DeliveryComponent {
     private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
     private deliveryService: deliveryService,) {
     this.deliveryForm = this.fb.group({
-      city_id: [],
-      employee_id: [''],
+      city_id: [''],
+      employee_id: ['', Validators.required],
     });
   }
 
@@ -124,6 +126,9 @@ export class DeliveryComponent {
       this.alertService.error('Please select booking');
       return;
     }
+    if(!this.deliveryForm.valid){
+      return;
+    }
 
     const selectedBookingIds = this.selectedBookingsInventory.map(booking => booking.booking_id);
 
@@ -131,17 +136,18 @@ export class DeliveryComponent {
       
       const payload = {
         employee_id: this.deliveryForm.value.employee_id,
+        city_id: this.deliveryForm.value.city_id.city_id,
         booking_lists: selectedBookingIds,
-        city_id: this.city_id
       }
 
       await firstValueFrom(this.deliveryService.addNewDelivery(payload).pipe(
         tap(
           async (res) => {
             if (res) {
-            this.selectedBookingsInventory = [];
-            await this.alertService.success(res.message);
-            this.getAllBookings();
+              this.selectedBookingsInventory = [];
+              await this.generatePDF();
+              await this.alertService.success(res.message);
+              this.getAllBookings();
             }
           },
           (error) => {
@@ -172,11 +178,11 @@ export class DeliveryComponent {
       this.filteredBookingsInventory = [...this.bookingsInventory];
       return;
     }
-  
+
     this.filteredBookingsInventory = this.bookingsInventory.filter(item => item.destination_city_id === city_id);
     this.city_id = city_id
   }
-  
+
 
 
 
@@ -213,7 +219,7 @@ export class DeliveryComponent {
   onCitySelect(event: any) {
     this.deliveryForm?.patchValue({ city_id: event.value.city_id });
     this.selectedCity = event.value;
-}
+  }
 
 
   searchCity(event: any) {
@@ -226,5 +232,105 @@ export class DeliveryComponent {
     );
   }
 
-  
+
+
+  generatePDF(isPrint = true) {
+    const doc = new jsPDF();
+    const formattedDate = new Date().toLocaleString('en-GB', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }).replace(',', '');
+
+    // White Background
+    doc.setFillColor(255, 255, 255);
+    doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+
+    // Header Bar
+    doc.setFillColor(0, 51, 102);
+    doc.rect(0, 10, doc.internal.pageSize.width, 15, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Delivery List', 105, 20, { align: 'center' });
+
+    // Info Section
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Employee Name: ' + (this.getEmployeeNameById(this.deliveryForm.value.employee_id) || 'N/A'), 20, 35);
+    doc.text('Generated on: ' + formattedDate, 20, 42);
+
+    // Define new table headers
+    const tableColumn = ['Slip No.', 'Consignee', 'Consignee Mobile', 'Consignor', 'Consignor Mobile', 'No. of Packages', 'City'];
+
+    // Construct table rows with the updated fields
+    const tableRows = this.selectedBookingsInventory.map((b: any) => {
+      return [
+        b.slip_no?.toString() || '',
+        b.consignee_name?.toUpperCase() || '',
+        b.consignee_mobile || '',
+        b.consignor_name?.toUpperCase() || '',
+        b.consignor_mobile || '',
+        b.package_count?.toString() || '',
+        this.getCityName(b.destination_city_id || '')
+      ];
+    });
+
+    autoTable(doc, {
+      startY: 50,
+      head: [tableColumn],
+      body: tableRows,
+      theme: 'grid',
+      styles: {
+        fontSize: 10,
+        cellPadding: 3,
+        halign: 'center',
+        textColor: [0, 0, 0],
+      },
+      headStyles: {
+        fillColor: [0, 102, 204],
+        textColor: [255, 255, 255],
+        fontSize: 11
+      },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
+      columnStyles: {
+        0: { halign: 'center', textColor: [0, 0, 255] },
+        1: { halign: 'left' },
+        2: { halign: 'center' },
+        3: { halign: 'center' },
+        4: { halign: 'center' },
+        5: { halign: 'center', textColor: [0, 128, 0] }
+      }
+    });
+
+    // Footer
+    doc.setFillColor(0, 51, 102);
+    doc.rect(0, doc.internal.pageSize.height - 15, doc.internal.pageSize.width, 15, 'F');
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(255, 255, 255);
+    doc.text('This is a system-generated delivery list. No signature required.', 20, doc.internal.pageSize.height - 7);
+
+    if (isPrint) {
+      doc.autoPrint();
+      window.open(doc.output('bloburl'), '_blank');
+    } else {
+      doc.save(('Delivery') + '_List_Report.pdf');
+    }
+  }
+
+
+  getCityName(cityId: number): string {
+    const cities = this.globalstorageService.get('cities') as { city_id: number; city_name: string }[] || [];
+    const city = cities.find(city => city.city_id === cityId);
+    return city ? city.city_name : ''; // Return city name or empty string if not found
+  }
+
+  getEmployeeNameById(id: number): string {
+    const employee = this.EmployeeList.find(emp => emp.employee_id === id);
+    return employee ? employee.employee_name : 'Unknown';
+  }
+
+
 }
