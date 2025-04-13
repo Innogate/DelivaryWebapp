@@ -23,7 +23,7 @@ import { Router } from '@angular/router';
 export class PodUploadComponent {
     filteredCities: any[] = [];
     cities: any[] = [];
-    PodForm: FormGroup;
+    PodForm: FormGroup; 
     selectedCity: any = null;
     EmployeeList: any[] = [];
     PodList: any[] = [];
@@ -215,9 +215,9 @@ export class PodUploadComponent {
             return;
         }
 
-        console.log(this.PodList);
+        console.log("city","employe",city_id, employee_id);
         this.filteredPodInventory = this.PodList.filter(item => {
-            const cityMatch = city_id ? item.destination_city_id === city_id : true;
+            const cityMatch = city_id ? item.city_id === city_id.city_id : true;
             const employeeMatch = employee_id ? item.employee_id === employee_id : true;
             return cityMatch && employeeMatch;
         });

@@ -35,7 +35,7 @@ export class DeliveryComponent {
     private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,
     private deliveryService: deliveryService,) {
     this.deliveryForm = this.fb.group({
-      city_id: [''],
+      city_id: ['', Validators.required],
       employee_id: ['', Validators.required],
     });
   }
@@ -144,9 +144,9 @@ export class DeliveryComponent {
         tap(
           async (res) => {
             if (res) {
-              this.selectedBookingsInventory = [];
               await this.generatePDF();
               await this.alertService.success(res.message);
+              this.selectedBookingsInventory = [];
               this.getAllBookings();
             }
           },
