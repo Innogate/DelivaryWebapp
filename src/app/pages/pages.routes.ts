@@ -44,7 +44,7 @@ export default [
     {path: 'branch', component: BranchComponent, canActivate: [AuthGuard]},
     {path: 'master', component: MasterComponent, canActivate: [AuthGuard]},
     { path: 'viewpod/:id', component: ViewpodComponent, canActivate: [AuthGuard] },
-    {path: 'traking/:id', component: TrackingComponent},
+    {path: 'tracking', component: TrackingComponent},
     {path: 'access/:userId', component: AccessComponent},
     {path: '**', redirectTo: '/notfound' }
 ] as Routes;

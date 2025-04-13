@@ -1,57 +1,80 @@
-<div class="max-w-3xl mx-auto  p-8 bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 ">
-  <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">📦 Tracking Slip: {{ booking.slip_no }}</h2>
+<div class="w-full h-full overflow-auto">
+  <!-- Input Section -->
+  <div *ngIf="!isView" class="max-w-xl mx-auto p-8 bg-white rounded-2xl shadow-lg mt-10">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">📦 Track Your Package</h2>
 
-  <!-- Package Details -->
-  <div
-    class="text-sm text-gray-800 mb-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-    <div>
-      <span class="font-semibold text-gray-700">Consignor:</span>
-      <span class="ml-1 text-gray-900">{{ booking.consignor_name }}</span>
-    </div>
-    <div>
-      <span class="font-semibold text-gray-700">Consignee:</span>
-      <span class="ml-1 text-gray-900">{{ booking.consignee_name }}</span>
-    </div>
-    <div>
-      <span class="font-semibold text-gray-700">Package:</span>
-      <span class="ml-1 text-gray-900">{{ booking.package_count }} items, {{ booking.package_weight }} kg</span>
-    </div>
-    <!-- <div>
-      <span class="font-semibold text-gray-700">Value:</span>
-      <span class="ml-1 text-gray-900">₹{{ booking.total_value }}</span>
-    </div> -->
+    <form [formGroup]="search" (ngSubmit)="searchPackage()">
+      <input type="text" pInputText formControlName="slip_no" placeholder="Enter Slip No."
+        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none transition-all" />
+
+      <button type="submit" [disabled]="search.invalid"
+        class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg w-full shadow-md mt-4 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+        Search
+      </button>
+    </form>
   </div>
 
-  <!-- Timeline View -->
-  <div class="p-4 bg-slate-100 rounded-lg shadow-md m-0 overflow-y-auto max-h-[500px]">
-    <div class="relative border-l-4 border-gradient-to-b from-blue-200 via-gray-300 to-gray-300 ml-6">
-      <div *ngFor="let step of timelineSteps" class="mb-10 relative group">
-        <!-- Status Icon -->
-        <div
-          class="w-10 h-10 absolute -left-5 top-0 rounded-full border-2 shadow-md flex items-center justify-center text-white text-base transition-all duration-300 ring-2 ring-white"
-          [ngClass]="{
-            'bg-blue-500 border-blue-600': step.status === 'completed',
-            'bg-yellow-400 border-yellow-500': step.status === 'in-progress',
-            'bg-gray-300 border-gray-400': step.status === 'pending'
-          }">
-          <ng-container [ngSwitch]="step.status">
-            <i *ngSwitchCase="'completed'" class="pi pi-check text-white"></i>
-            <i *ngSwitchCase="'in-progress'" class="pi pi-spinner animate-spin text-white"></i>
-            <i *ngSwitchCase="'pending'" class="pi pi-box text-white"></i>
-          </ng-container>
+  <!-- Tracking View -->
+  <div *ngIf="isView" class="overflow-y-auto">
+    <!-- Tracking Card Container -->
+    <div class="max-w-2xl mx-auto p-6 bg-white shadow-xl rounded-3xl">
+      <!-- Header -->
+      <div class="mb-6 border-b pb-4">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+          <i class="pi pi-box text-blue-500 mr-2"></i>
+          Tracking Slip: {{ booking.slip_no }}
+        </h2>
+        <div class="text-sm mt-2 text-gray-600">
+          <p><strong>Consignor:</strong> {{ booking.consignor_name }}</p>
+          <p><strong>Consignee:</strong> {{ booking.consignee_name }}</p>
+          <p><strong>Package:</strong> {{ booking.package_count}} item, {{ booking.package_weight}} kg</p>
         </div>
-  
-        <!-- Timeline Content -->
-        <div class="ml-8 bg-gray-50 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-all duration-200">
-          <div class="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">
-            {{ step.title }}
-          </div>
-          <div class="text-sm text-gray-500 mt-1 italic">
-            {{ step.date ? (step.date | date: 'medium') : '—' }}
-          </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative">
+        <div *ngFor="let step of timelineSteps; let i = index">
+          <ng-container *ngIf="step.status !== 'pending'">
+            <div class="relative pb-12">
+              <!-- Line to next -->
+              <span *ngIf="i !== timelineSteps.length - 1 && timelineSteps[i + 1].status !== 'pending'"
+                class="absolute top-0 left-4 h-full w-0.5" [ngClass]="{
+              'bg-green-400': timelineSteps[i + 1].status === 'completed',
+              'bg-yellow-400': timelineSteps[i + 1].status === 'in-progress'
+            }"></span>
+
+              <!-- Dot -->
+              <div
+                class="relative z-10 h-8 w-8 rounded-full bg-white border-4 flex items-center justify-center shadow-md"
+                [ngClass]="{
+              'border-green-500': step.status === 'completed',
+              'border-yellow-500': step.status === 'in-progress'
+            }">
+                <i class="text-base" [ngClass]="{
+                'pi pi-check text-green-500': step.status === 'completed',
+                'pi pi-spinner text-yellow-500 animate-spin': step.status === 'in-progress'
+              }"></i>
+              </div>
+
+              <!-- Step content -->
+              <div class="ml-12 bg-gray-50 p-4 rounded-xl shadow hover:shadow-md transition-all">
+                <h4 class="text-sm font-semibold text-gray-800">{{ step.title }}</h4>
+                <p class="text-xs text-gray-500 italic mt-1" *ngIf="step.date">
+                  {{ step.date | date: 'medium' }}
+                </p>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
+
+    <!-- Back Button -->
+    <div class="mt-6 text-right">
+      <button class="text-sm text-blue-500 hover:underline hover:text-blue-700 transition-all"
+        (click)="isView = false; timelineSteps = []">
+        ← Track another package
+      </button>
+    </div>
   </div>
-  
 </div>
