@@ -1,5 +1,5 @@
 export default {
     production: true,
-//    apiUrl: 'http://18.217.159.77'
+//    apiUrl: 'https://dishaairways.in/control'
    apiUrl: 'http://localhost:8000'
 }
