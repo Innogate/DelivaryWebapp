@@ -90,7 +90,7 @@ export class CoLoaderComponent {
         )
       ))
     } catch (error) {
-      console.error('Error fetching cities:', error);
+      this.alertService.error('Error fetching cities:');
     }
   }
 
@@ -98,13 +98,11 @@ export class CoLoaderComponent {
   // Filter city suggestions based on user input
   searchCity(event: any) {
     const query = event?.query?.toLowerCase() || '';
-    console.log(query)
 
 
     this.filteredCities = this.cities.filter(city =>
       city.city_name?.toLowerCase().includes(query)
     );
-    console.log(this.filteredCities)
   }
 
 
@@ -121,7 +119,6 @@ export class CoLoaderComponent {
       formData.coloader_city = formData.coloader_city.city_id;
     }
     if (this.coloaderForm.valid) {
-      console.log("clearing coloader");
       await firstValueFrom(this.coloaderService.addNewColoader(formData).pipe(
         tap((response) => {
           this.alertService.success(response.message);
@@ -141,7 +138,7 @@ export class CoLoaderComponent {
   async gateAllColoaders() {
     const payload = {
       "fields": [],
-      "max": 12,
+      "max": 10000,
       "current": 0
     }
     await firstValueFrom(this.coloaderService.fetchColoader(payload).pipe(
@@ -162,8 +159,6 @@ export class CoLoaderComponent {
 
   viewcoloader(coloader: any) {
     this.showAddState = true;
-
-    console.log(coloader);
     this.coloaderForm.patchValue({
       coloader_name: coloader.coloader_name,
       coloader_contact: coloader.coloader_contuct,
@@ -195,7 +190,6 @@ export class CoLoaderComponent {
         updates: formData,
         conditions: "coloader_id=" + this.coloaderId,
       };
-      console.log(payload);
       firstValueFrom(this.coloaderService.updateColoader(payload).pipe(
         tap((response) => {
           this.alertService.success(response.message);

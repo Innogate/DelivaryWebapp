@@ -22,7 +22,7 @@ export class BookingResiveComponent {
 
   bookingList?: any[];
   current = 0;
-  max = 10000;
+  max = 100000;
   showAddState: boolean = false;
   stateId?: number;
   isEditing: boolean = false;
@@ -195,7 +195,6 @@ export class BookingResiveComponent {
 
   getCityName(cityId: number): string {
     const cities = this.storage.get('cities') as { city_id: number; city_name: string }[] || [];
-    console.log(cities)
     const city = cities.find(city => city.city_id === cityId);
     return city ? city.city_name : 'Unknown City';
   }

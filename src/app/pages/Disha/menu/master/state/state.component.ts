@@ -131,7 +131,7 @@ export class StateComponent {
             this.stateForm.reset();
           })
         )
-      ).catch((error) => console.error('Error updating state:', error));
+      ).catch((error) => this.alertservice.error('Error updating state:', error));
     }
   }
 

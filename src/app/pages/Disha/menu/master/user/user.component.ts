@@ -78,7 +78,7 @@ export class UserComponent {
     async gateAllUser() {
         const payload = {
             fields: [],
-            max: 100,
+            max: 10000,
             current: 0
         }
         await firstValueFrom(this.userService.getAllUsers(payload).pipe(
@@ -124,7 +124,6 @@ export class UserComponent {
             ))
         } else {
             this.addUserForm.markAllAsTouched();
-            console.log("Invalid form");
         }
     }
 
@@ -155,7 +154,6 @@ export class UserComponent {
         if (data) {
             this.showAddState = true;
             this.isEditing = true;
-            console.log(data);
             this.userId = data.user_id;
 
             const fullName = `${data.first_name} ${data.last_name}`.trim();
@@ -232,7 +230,7 @@ export class UserComponent {
     async gateDeletedAllUser() {
         const payload = {
             fields: [],
-            max: 100,
+            max: 10000,
             current: 0
         }
         await firstValueFrom(this.userService.gateAllDeletedUsers(payload).pipe(
@@ -271,7 +269,6 @@ export class UserComponent {
             )
         ))
 
-        console.log(data);
     }
 
 

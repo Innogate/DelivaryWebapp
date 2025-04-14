@@ -194,7 +194,7 @@ export class BranchComponent implements OnInit {
         )
       ))
     } catch (error) {
-      console.error('Error fetching cities:', error);
+      this.alertService.error('Error fetching cities:');
     }
   }
 
@@ -334,7 +334,6 @@ export class BranchComponent implements OnInit {
         // Catch any errors and display a user-friendly message
         const errorMessage = error.error.message || 'An error occurred while creating the branch.';
         this.alertService.error(errorMessage);
-        console.error('Error adding branch:', error);
       }
     } else {
       // If the form is invalid, show relevant errors

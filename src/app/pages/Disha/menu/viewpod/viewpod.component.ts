@@ -39,7 +39,6 @@ export class ViewpodComponent {
           tap(
             (res) => {
               if (res.body) {
-                console.log(res.body);
                 this.base64File = res.body.pod_data;
               }
             },
@@ -51,11 +50,8 @@ export class ViewpodComponent {
           )
         )
       );
-
-      console.log(this.base64File);
     } catch (err) {
       this.alertService.error('Failed to fetch uploaded PODs.');
-      console.error(err);
     }
   }
 
@@ -69,7 +65,6 @@ export class ViewpodComponent {
     const allowedTypes = ['image/jpeg', 'image/png'];
 
     if (!allowedTypes.includes(file.type)) {
-      console.error('Unsupported format');
       return;
     }
     this.file_type = file.type
@@ -86,7 +81,6 @@ export class ViewpodComponent {
     reader.onloadend = () => {
       this.base64File = reader.result as string;
     };
-    console.log("base 90", this.base64File);
     reader.readAsDataURL(file);
   }
 
@@ -117,7 +111,6 @@ export class ViewpodComponent {
                     }
                 },
                 (error) => {
-                    console.log(error.error.message);
                     this.alertService.error(error.error.message);
                 }
             )

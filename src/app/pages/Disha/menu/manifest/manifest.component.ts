@@ -155,7 +155,7 @@ export class ManifestComponent {
     async getAllManifests() {
         const payload = {
             "fields": [],
-            "max": 10,
+            "max": 1000000,
             "current": 0
         }
         await firstValueFrom(this.manifestsService.getManifest(payload).pipe(
@@ -173,7 +173,7 @@ export class ManifestComponent {
         const payload =
         {
             "fields": [],
-            "max": 5000,
+            "max": 50000,
             "current": 0,
         }
         await firstValueFrom(this.branchService.getAllBranches(payload).pipe(
@@ -191,7 +191,7 @@ export class ManifestComponent {
     async gateAllColoaders() {
         const payload = {
             "fields": [],
-            "max": 12,
+            "max": 1000,
             "current": 0
         }
         await firstValueFrom(this.coloaderService.fetchColoader(payload).pipe(

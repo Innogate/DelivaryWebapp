@@ -181,7 +181,7 @@ export class CompanyComponent {
           this.companyForm.reset();
         },
         (error) => {
-          console.error('Error adding state:', error);
+          this.alertService.error('Error adding state:', error);
         }
       );
     }

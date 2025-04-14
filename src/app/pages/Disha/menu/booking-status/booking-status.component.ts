@@ -28,7 +28,7 @@ export class BookingStatusComponent implements OnInit {
   bookingList?: any[];
   filteredBookingsInventory?: any[];
   current = 0;
-  max = 10;
+  max = 100000;
   bookingStatusForm: FormGroup;
   branches: any[] = [];
   cities: any[] = [];
@@ -144,7 +144,7 @@ export class BookingStatusComponent implements OnInit {
         )
       ))
     } catch (error) {
-      console.error('Error fetching cities:', error);
+      this.alertService.error('Error fetching cities:');
     }
   }
   
@@ -161,7 +161,6 @@ export class BookingStatusComponent implements OnInit {
 
   onCitySelect(event: any) {
     if (event.value) {
-      console.log(event.value);
       this.bookingStatusForm?.patchValue({ destination_city_id: event.value.city_id });
       this.selectedCity = event.value;
       if (event.value.destination_city_id == '', event.value.destination_city_id == undefined) {
@@ -175,7 +174,6 @@ export class BookingStatusComponent implements OnInit {
 
   searchCity(event: any) {
     const query = event?.query?.toLowerCase() || '';
-    console.log(query)
     this.filterBookingList();
 
     this.filteredCities = this.cities.filter(city =>
@@ -199,7 +197,6 @@ export class BookingStatusComponent implements OnInit {
 
   filterBookingList() {
     const { bookingDate, destination_city_id, destination_id } = this.bookingStatusForm.value;
-    console.log('Filter values:', { bookingDate, destination_city_id, destination_id });
 
     const selectedDate = bookingDate
       ? new Date(bookingDate).toLocaleDateString('en-CA')
@@ -487,9 +484,6 @@ export class BookingStatusComponent implements OnInit {
       const offsetX = 20;
       const offsetY = 20;
       const slip_no = '100'; // default slip number
-
-      console.log('QR button clicked');
-
       const qrData = await QRCode.toDataURL(slip_no, { margin: 1, width: 100 });
       const qrX = offsetX + 120;
       const qrY = offsetY + 50;
@@ -501,7 +495,7 @@ export class BookingStatusComponent implements OnInit {
 
       doc.save('booking-slip.pdf'); // optional: save PDF
     } catch (err) {
-      console.error('QR Code Error:', err);
+      this.alertService.error('QR Code Error:');
     }
   }
 

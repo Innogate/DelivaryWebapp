@@ -47,7 +47,7 @@ export class MenuComponent {
     try {
       return jwtDecode(token);
     } catch (error) {
-      console.error('Invalid token:', error);
+      this.alertService.error('Invalid token:');
       return null;
     }
   }

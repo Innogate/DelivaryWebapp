@@ -131,7 +131,6 @@ export class PodUploadComponent {
         const allowedTypes = ['image/jpeg', 'image/png'];
 
         if (!allowedTypes.includes(file.type)) {
-            console.error('Unsupported format');
             return;
         }
         this.file_type = file.type
@@ -178,7 +177,6 @@ export class PodUploadComponent {
                         }
                     },
                     (error) => {
-                        console.log(error.error.message);
                         this.alertService.error(error.error.message);
                     }
                 )
@@ -198,7 +196,6 @@ export class PodUploadComponent {
     // Search cities handler
     searchCity(event: any) {
         const query = event?.query?.toLowerCase() || '';
-        console.log(query);
 
         this.filteredCities = this.cities.filter(city =>
             city.city_name?.toLowerCase().includes(query)
@@ -215,7 +212,6 @@ export class PodUploadComponent {
             return;
         }
 
-        console.log("city","employe",city_id, employee_id);
         this.filteredPodInventory = this.PodList.filter(item => {
             const cityMatch = city_id ? item.city_id === city_id.city_id : true;
             const employeeMatch = employee_id ? item.employee_id === employee_id : true;
@@ -266,17 +262,13 @@ export class PodUploadComponent {
                 )
             );
 
-            console.log(this.uplodedListImage);
         } catch (err) {
             this.alertService.error('Failed to fetch uploaded PODs.');
-            console.error(err);
         }
     }
 
 
     viewPod(pod: any) {
-        console.log(pod);
-
         this.router.navigate(['/pages/viewpod', pod.booking_id]);
     }
 

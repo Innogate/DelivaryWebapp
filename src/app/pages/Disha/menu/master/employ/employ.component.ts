@@ -78,7 +78,6 @@ export class EmployComponent implements OnInit {
       tap(
         (res) => {
           if (res.body) {
-            console.log(res.body);
             this.employeeList = res.body;
           }
         },
@@ -111,7 +110,6 @@ export class EmployComponent implements OnInit {
 
   onEmployeeChange(selectedId: number) {
     const selectedUser = this.userList?.find(user => user.id === selectedId);
-    console.log(selectedUser);
     if (selectedUser) {
       this.employeeForm.patchValue({
         phone: selectedUser.mobile,
@@ -149,8 +147,6 @@ export class EmployComponent implements OnInit {
       formData.joining_date = this.datePipe.transform(formData.joining_date, 'yyyy-MM-dd');
     }
 
-    console.log(formData); // Verify the formatted date
-
     if (this.employeeForm.valid) {
       await firstValueFrom(
         this.EmployeeService.addNewEmployee(formData).pipe(
@@ -173,8 +169,6 @@ export class EmployComponent implements OnInit {
 
 
   async deleteEmployee(employee: any) {
-
-    console.log(employee)
     if (employee.employee_id) {
       const confirmation = this.alertService.confirm("You want to Inactive this Employee. ");
       if (await confirmation === false) {

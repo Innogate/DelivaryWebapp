@@ -191,7 +191,6 @@ export class BookingComponent implements OnInit {
 
 
   onCitySelect(event: any) {
-    console.log('Selected City:', event);  // Debugging
     if (event) {
       console.log('Selected City ID:', event.value.id);
       console.log('Selected City Name:', event.value.name);
@@ -256,7 +255,6 @@ export class BookingComponent implements OnInit {
 
   viewBooking() {
     if (this.booking) {
-      console.log(this.booking);
       // Find the city object from the ID
       const cities = this.globalstorageService.get('cities') as { city_id: number; city_name: string }[] || [];
       const selectedCity = cities.find(
@@ -276,7 +274,7 @@ export class BookingComponent implements OnInit {
       });
 
     } else {
-      console.warn('Booking data is missing.');
+      this.alertService.error('Booking data is missing.');
     }
   }
 
@@ -298,8 +296,6 @@ export class BookingComponent implements OnInit {
       updates,
       conditions: `booking_id=${this.booking.booking_id}`
     };
-
-    console.log(payload);
 
     await firstValueFrom(this.bookingService.updateBooking(payload).pipe(
       tap(
@@ -328,7 +324,7 @@ export class BookingComponent implements OnInit {
     ];
   }
   book(): void {
-    console.log("Not implemented");
+    console.log("Not implemented")
   }
 
 
@@ -410,7 +406,6 @@ export class BookingComponent implements OnInit {
 
   async search($event: any) {
     const string = $event.query;
-    console.log(string);
     await firstValueFrom(this.bookingService.searchConsignee(string).pipe(
       tap(
         (res) => {
@@ -451,8 +446,7 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm) {
       return;
     }
-    console.log(event);
-    this.bookingForm.patchValue({
+   this.bookingForm.patchValue({
       consignor_name: event.value.consignor_name,
       consignor_mobile: event.value.consignor_mobile,
     });
@@ -628,32 +622,6 @@ export class BookingComponent implements OnInit {
     doc.setFontSize(7);
     doc.text('Signature', offsetX + 180, offsetY + h - 2);
   }
-
-
-  async qr() {
-    try {
-      const doc = new jsPDF(); // create jsPDF instance
-      const offsetX = 20;
-      const offsetY = 20;
-      const slip_no = '100'; // default slip number
-
-      console.log('QR button clicked');
-
-      const qrData = await QRCode.toDataURL(slip_no, { margin: 1, width: 100 });
-      const qrX = offsetX + 120;
-      const qrY = offsetY + 50;
-      const qrSize = 15;
-
-      doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
-      doc.setFontSize(6);
-      doc.text('Scan Slip No.', qrX, qrY + qrSize + 3);
-
-      doc.save('booking-slip.pdf'); // optional: save PDF
-    } catch (err) {
-      console.error('QR Code Error:', err);
-    }
-  }
-
 
   getCityName(cityId: number): string {
     const cities = this.globalstorageService.get('cities') as { city_id: number; city_name: string }[] || [];

@@ -82,7 +82,7 @@ export class DeliveryComponent {
   async gateAllEmployee() {
     const payload: any = {
       fields: [],
-      max: 10,
+      max: 100,
       current: 0
     }
     try {

@@ -29,7 +29,6 @@ export class MasterComponent {
       const res: any = await firstValueFrom(this.pageService.getMyAccess());
       this.allowedPageIds = res.body || []; // Ensure it's an array
       this.globalstore.set('allowedPageIds', this.allowedPageIds); // Store data
-      console.log("Fetched from API and stored:", this.allowedPageIds);
     } catch (error: any) {
       this.alertService.error(error.error.message);
     }

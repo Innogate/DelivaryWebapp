@@ -173,7 +173,7 @@ export class CityComponent implements OnInit {
             this.Form.reset();
           })
         )
-      ).catch((error) => console.error('Error updating state:', error));
+      ).catch((error) => this.alertService.error('Error updating state:', error));
     }
   }
 
