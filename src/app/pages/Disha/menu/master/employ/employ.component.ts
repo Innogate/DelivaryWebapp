@@ -55,8 +55,8 @@ export class EmployComponent implements OnInit {
   ngOnInit() {
     this.storage.set('PAGE_TITLE', "EMPLOYEE");
     this.gateAllEmployee();
-    this.gateAllUser();
-    // this.fetchBranches();
+    // this.gateAllUser();
+    this.fetchBranches();
   }
   toggleAddState() {
     this.showAddState = !this.showAddState;
@@ -89,24 +89,24 @@ export class EmployComponent implements OnInit {
   }
 
 
-  async gateAllUser() {
-    await firstValueFrom(this.userService.getAllUsers(0).pipe(
-      tap(
-        (res) => {
-          if (res.body) {
-            this.userList = res.body;
-          }
-          this.employeeName = this.userList?.map(user => ({
-            label: `${user.first_name} ${user.last_name.trim()}`,
-            value: user.id
-          }));
-        },
-        (error) => {
-          this.alertService.error(error.error.message);
-        }
-      )
-    ))
-  }
+  // async gateAllUser() {
+  //   await firstValueFrom(this.userService.getAllUsers(0).pipe(
+  //     tap(
+  //       (res) => {
+  //         if (res.body) {
+  //           this.userList = res.body;
+  //         }
+  //         this.employeeName = this.userList?.map(user => ({
+  //           label: `${user.first_name} ${user.last_name.trim()}`,
+  //           value: user.id
+  //         }));
+  //       },
+  //       (error) => {
+  //         this.alertService.error(error.error.message);
+  //       }
+  //     )
+  //   ))
+  // }
 
   onEmployeeChange(selectedId: number) {
     const selectedUser = this.userList?.find(user => user.id === selectedId);
