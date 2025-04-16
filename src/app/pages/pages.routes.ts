@@ -23,10 +23,12 @@ import { DeliveryComponent } from './Disha/menu/delivery/delivery.component';
 import { PodUploadComponent } from './Disha/menu/pod-upload/pod-upload.component';
 import { ViewpodComponent } from './Disha/menu/viewpod/viewpod.component';
 import { TrackingComponent } from './Disha/menu/tracking/tracking.component';
+import { HomeComponent } from './home/home.component';
 export default [
     {path: 'documentation', component: Documentation },
     {path: 'scan', component: MenuComponent },
     {path: 'login', component: LoginComponent },
+    {path: 'home', component: HomeComponent},
     {path: 'empty', component: Empty },
     {path: 'booking', component: BookingComponent, canActivate: [AuthGuard]},
     {path: 'state', component: StateComponent, canActivate: [AuthGuard]},

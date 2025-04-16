@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Disha Airways Enterprise</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .scrollable-container {
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="font-['Montserrat',sans-serif] text-gray-800 scrollable-container">
+    <!-- Header -->
+    <header class="bg-white shadow-md fixed w-full z-30">
+      <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+        <div class="text-2xl font-bold text-indigo-600 flex items-center space-x-2">
+          <i class="fas fa-shipping-fast"></i>
+          <span>Disha Airways</span>
+        </div>
+        <nav class="space-x-6 text-lg hidden md:flex">
+          <!-- <a href="#" class="hover:text-indigo-600 transition">Home</a>
+          <a href="#" class="hover:text-indigo-600 transition">Services</a>
+          <a href="#" class="hover:text-indigo-600 transition">About</a>
+          <a href="#" class="hover:text-indigo-600 transition">Contact</a> -->
+          <a href="/pages/login" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+            Login
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen bg-cover bg-center" style="background-image: url('https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistic_testata.jpg');">
+      <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center px-4">
+        <h1 class="text-white text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg max-w-4xl">
+          Reliable Enterprise Seeping & Logistics Solutions
+        </h1>
+        <p class="text-white text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-md">
+          Delivering excellence with speed, safety, and global reach.
+        </p>
+        <button class="bg-green-600 hover:bg-green-700 text-white font-semibold px-10 py-4 rounded-full shadow-lg transition" (click)="NavigateMethod()">
+          Tracking
+        </button>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="max-w-7xl mx-auto py-20 px-6">
+      <h2 class="text-4xl font-bold text-center mb-12 text-indigo-700">Our Services</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
+        <div class="bg-white rounded-lg shadow-lg p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2 duration-300">
+          <i class="fas fa-truck text-indigo-600 text-6xl mb-6"></i>
+          <h3 class="text-2xl font-semibold mb-4">Fast Seeping</h3>
+          <p class="text-gray-600">Rapid and secure seeping services tailored to your business needs. We ensure timely delivery with utmost care and professionalism.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2 duration-300">
+          <i class="fas fa-headset text-indigo-600 text-6xl mb-6"></i>
+          <h3 class="text-2xl font-semibold mb-4">24/7 Support</h3>
+          <p class="text-gray-600">Dedicated support team available around the clock to assist you. Our experts are always ready to resolve your queries and provide assistance.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2 duration-300">
+          <i class="fas fa-globe text-indigo-600 text-6xl mb-6"></i>
+          <h3 class="text-2xl font-semibold mb-4">Global Reach</h3>
+          <p class="text-gray-600">Seeping services across multiple countries with a reliable network. We connect your business to the world with seamless logistics solutions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="bg-indigo-50 py-20 px-6">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center md:space-x-12">
+        <div class="md:w-1/2 mb-10 md:mb-0">
+          <img src="https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistics-truck-frachtschiff-group.jpg" alt="About Disha Airways" class="rounded-lg shadow-lg object-cover w-full h-72 md:h-full" />
+        </div>
+        <div class="md:w-1/2 text-center md:text-left">
+          <h2 class="text-4xl font-bold mb-6 text-indigo-700">About Disha Airways Enterprise</h2>
+          <p class="text-gray-700 text-lg leading-relaxed">
+            Founded with a vision to revolutionize the enterprise seeping industry, Disha Airways Enterprise combines innovation, technology, and customer-centric values to deliver outstanding service. Our commitment to excellence and sustainability drives us to continuously improve and expand our capabilities.
+          </p>
+          <p class="text-gray-700 text-lg leading-relaxed mt-4">
+            With a team of experienced professionals and a robust logistics network, we ensure your goods are handled with care and delivered on time. Trust us to be your reliable partner in all your seeping and logistics needs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="max-w-7xl mx-auto py-20 px-6">
+      <h2 class="text-4xl font-bold text-center mb-12 text-indigo-700">Gallery</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <img src="/image/image1.jpg" alt="Gallery Image 1" class="rounded-lg shadow-lg object-cover w-full h-48 hover:scale-105 transition-transform duration-300" />
+        <img src="https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistics-truck-frachtschiff-group.jpg" alt="Gallery Image 2" class="rounded-lg shadow-lg object-cover w-full h-48 hover:scale-105 transition-transform duration-300" />
+        <img src="https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistics-truck-frachtschiff-group.jpg" alt="Gallery Image 3" class="rounded-lg shadow-lg object-cover w-full h-48 hover:scale-105 transition-transform duration-300" />
+        <img src="https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistic_testata.jpg" alt="Gallery Image 4" class="rounded-lg shadow-lg object-cover w-full h-48 hover:scale-105 transition-transform duration-300" />
+        <img src="https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistics-truck-frachtschiff-group.jpg" alt="Gallery Image 5" class="rounded-lg shadow-lg object-cover w-full h-48 hover:scale-105 transition-transform duration-300" />
+        <img src="https://dishaairwaysenterprise.com/wp-content/uploads/2022/07/logistic_testata.jpg" alt="Gallery Image 6" class="rounded-lg shadow-lg object-cover w-full h-48 hover:scale-105 transition-transform duration-300" />
+      </div>
+    </section>
+
+    <section class="bg-white py-10 px-4">
+      <div class="max-w-5xl mx-auto text-center space-y-6">
+        <!-- Contact Heading -->
+        <h6 class="font-semibold text-black text-3xl">Contact</h6>
+    
+        <!-- Phone Number -->
+        <h6 class="font-medium text-blue-800 text-3xl">033-22730449</h6>
+    
+        <!-- Address -->
+        <h3 class="text-lg font-semibold text-gray-700">
+          Corporate Address: 164 M.G.Road, 1st Floor, Kolkata-700007 , West Bengal , India
+        </h3>
+    
+        <!-- Google Maps -->
+        <div class="rounded-lg overflow-hidden shadow-lg">
+          <iframe 
+            class="w-full h-[400px] border-0"
+            src="https://maps.google.com/maps?q=1st%20Floor,%2064,%20Mahatma%20Gandhi%20Rd,%20College%20Square,%20Kolkata,%20West%20Bengal%20700009&t=m&z=18&output=embed"
+            allowfullscreen
+            loading="lazy"
+            title="Company Location"
+          ></iframe>
+        </div>
+  
+      </div>
+    </section>
+    
+
+    <!-- Footer -->
+    <footer class="bg-indigo-900 text-white py-6 text-center">
+      <p>&copy; 2024 Disha Airways Enterprise. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>

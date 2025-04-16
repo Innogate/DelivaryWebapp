@@ -12,6 +12,8 @@ import { TrakingService } from '../../../../../services/traking.service';
 import { AlertService } from '../../../../../services/alert.service';
 import { ActivatedRoute } from '@angular/router';
 import { IconFieldModule } from 'primeng/iconfield';
+import { deliveryService } from '../../../../../services/delivery.service';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-tracking',
@@ -26,7 +28,8 @@ import { IconFieldModule } from 'primeng/iconfield';
     FormsModule,
     InputTextModule,
     ButtonModule,
-    IconFieldModule
+    IconFieldModule,
+    DialogModule
   ],
   templateUrl: './tracking.component.html',
   styleUrl: './tracking.component.scss'
@@ -36,12 +39,15 @@ export class TrackingComponent implements OnInit {
   isView: boolean = false;
   booking: any = {};
   search: FormGroup;
-
+  base64File: string | null = null; // This will store the Base64 string of the file.
+  displayImagePopup = false;
+  zoom = 1;
   constructor(
     private route: ActivatedRoute,
     private trakingService: TrakingService,
     private alertService: AlertService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private deliveryService: deliveryService
   ) {
     this.search = this.fb.group({
       slip_no: ['', [Validators.required, Validators.pattern('^[A-Za-z]+-[0-9]+$')]]
@@ -65,6 +71,9 @@ export class TrackingComponent implements OnInit {
         tap(response => {
           const statusList = response.body.status;
           this.booking = response.body.booking;
+          if(this.booking.booking_id){
+            this.gatePodById(this.booking.booking_id);
+          }
           this.timelineSteps = []; // Clear previous results
           this.isView = true;
           if (statusList && statusList.length != 0) {
@@ -101,4 +110,46 @@ export class TrackingComponent implements OnInit {
       )
     );
   }
+
+  async gatePodById(id: any) {
+    const payload = { booking_id: id };
+    try {
+      const response = await firstValueFrom(
+        this.deliveryService.podById(payload).pipe(
+          tap(
+            (res) => {
+              if (res.body) {
+                this.base64File = res.body.pod_data;
+              }
+            },
+            (error) => {
+              this.alertService.error(
+                error?.error?.message || 'An error occurred while fetching PODs.'
+              );
+            }
+          )
+        )
+      );
+    } catch (err) {
+      this.alertService.error('Failed to fetch uploaded PODs.');
+    }
+  }
+
+
+  showImagePopup() {
+    this.zoom = 1; // Reset zoom on open
+    this.displayImagePopup = true;
+  }
+  
+  onZoom(event: WheelEvent) {
+    event.preventDefault();
+    const delta = Math.sign(event.deltaY);
+    if (delta < 0 && this.zoom < 3) {
+      this.zoom += 0.1;
+    } else if (delta > 0 && this.zoom > 0.5) {
+      this.zoom -= 0.1;
+    }
+    this.zoom = parseFloat(this.zoom.toFixed(2));
+  }
+  
 }

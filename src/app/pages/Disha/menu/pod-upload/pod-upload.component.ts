@@ -13,17 +13,18 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-pod-upload',
-    imports: [DropdownModule, CommonModule, AutoCompleteModule, FormsModule, TagModule, ButtonModule, ReactiveFormsModule, CardModule],
+    imports: [DropdownModule, CommonModule, AutoCompleteModule, FormsModule, TagModule, ButtonModule, ReactiveFormsModule, CardModule,DialogModule],
     templateUrl: './pod-upload.component.html',
     styleUrl: './pod-upload.component.scss'
 })
 export class PodUploadComponent {
     filteredCities: any[] = [];
     cities: any[] = [];
-    PodForm: FormGroup; 
+    PodForm: FormGroup;
     selectedCity: any = null;
     EmployeeList: any[] = [];
     PodList: any[] = [];
@@ -36,10 +37,11 @@ export class PodUploadComponent {
     filteredPodInventory: any[] = [];
     uplodedListImage: any[] = [];
     showPod: boolean = false;
-
+    displayImagePopup = false;
+    zoom = 1;
 
     constructor(private fb: FormBuilder, private globalstorageService: GlobalStorageService,
-        private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService,private router: Router,
+        private cityService: CityService, private EmployeeService: EmployeesService, private alertService: AlertService, private router: Router,
         private deliveryService: deliveryService,) {
         this.PodForm = this.fb.group({
             city_id: [''],
@@ -66,13 +68,14 @@ export class PodUploadComponent {
         try {
             await firstValueFrom(this.cityService.getAllCities({
                 "fields": ["city_id", "city_name"],
-                "max": 5000,
+                "max": 50000,
                 "current": 0,
             }).pipe(
                 tap(
                     (res) => {
                         if (res.body) {
-                            this.uplodedListImage = res.body;
+                            this.cities = Array.isArray(res.body) ? res.body : [];
+                            this.globalstorageService.set('cities', this.cities, true);
                         }
                     }
                 )
@@ -82,10 +85,12 @@ export class PodUploadComponent {
         }
     }
 
+
+
     async gateAllEmployee() {
         const payload: any = {
             fields: [],
-            max: 10,
+            max: 100,
             current: 0
         };
         try {
@@ -105,7 +110,7 @@ export class PodUploadComponent {
 
     async gateAllBookingPod() {
         const payload = {
-            "max": 10,
+            "max": 100000,
             "current": 0
         };
         await firstValueFrom(this.deliveryService.fetchDeliveryInPod(payload).pipe(
@@ -148,43 +153,6 @@ export class PodUploadComponent {
             this.base64File = reader.result as string;
         };
         reader.readAsDataURL(file);
-    }
-
-    // Save handler
-    async onSave(): Promise<void> {
-        if (!this.base64File) {
-            this.alertService.error('Please select a valid file.');
-            return;
-        }
-
-        const formData = {
-            booking_id: "1",
-            pod_data: this.base64File,
-            data_formate: this.file_type
-        };
-
-        try {
-            // Send JSON data (formData as a JSON object)
-            await firstValueFrom(this.deliveryService.uploadPod(formData).pipe(
-                tap(
-                    (res) => {
-                        if (res) {
-                            this.alertService.success(res.message);
-                            this.PodForm.reset();
-                            this.fileName = '';
-                            this.imageBlob = null;
-                            this.base64File = null; // Reset Base64 string after successful upload
-                        }
-                    },
-                    (error) => {
-                        this.alertService.error(error.error.message);
-                    }
-                )
-            ));
-            this.gateAllBookingPod();
-        } catch (err) {
-            this.alertService.error('Error: ' + err);
-        }
     }
 
     // City selection handler
@@ -271,6 +239,5 @@ export class PodUploadComponent {
     viewPod(pod: any) {
         this.router.navigate(['/pages/viewpod', pod.booking_id]);
     }
-
 
 }
