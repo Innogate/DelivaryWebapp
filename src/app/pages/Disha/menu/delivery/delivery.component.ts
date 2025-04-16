@@ -13,6 +13,8 @@ import { ButtonModule } from 'primeng/button';
 import { deliveryService } from '../../../../../services/delivery.service';
 import autoTable from 'jspdf-autotable';
 import jsPDF from 'jspdf';
+import { printBase64File, saveFile } from '../../../../../utility/function';
+import { strict } from 'assert';
 
 @Component({
   selector: 'app-delivery',
@@ -126,14 +128,14 @@ export class DeliveryComponent {
       this.alertService.error('Please select booking');
       return;
     }
-    if(!this.deliveryForm.valid){
+    if (!this.deliveryForm.valid) {
       return;
     }
 
     const selectedBookingIds = this.selectedBookingsInventory.map(booking => booking.booking_id);
 
     try {
-      
+
       const payload = {
         employee_id: this.deliveryForm.value.employee_id,
         city_id: this.deliveryForm.value.city_id.city_id,
@@ -315,8 +317,23 @@ export class DeliveryComponent {
     if (isPrint) {
       doc.autoPrint();
       window.open(doc.output('bloburl'), '_blank');
+      // convert to base64 and console log
+      const blob = doc.output('blob');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        printBase64File(base64String, ('Delivery') +(new Date().toDateString())+'.pdf');
+      };
+      reader.readAsDataURL(blob);
     } else {
       doc.save(('Delivery') + '_List_Report.pdf');
+      const blob = doc.output('blob');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        saveFile(base64String, ('Delivery') +(new Date().toDateString())+'.pdf');
+      };
+      reader.readAsDataURL(blob);
     }
   }
 

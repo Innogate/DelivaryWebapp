@@ -15,6 +15,7 @@ import { DatePicker, DatePickerModule } from 'primeng/datepicker';
 import jsPDF from 'jspdf';
 import QRCode from 'qrcode';
 import { Router } from '@angular/router';
+import { saveFile } from '../../../../../utility/function';
 
 @Component({
   selector: 'app-booking-status',
@@ -493,7 +494,14 @@ export class BookingStatusComponent implements OnInit {
       doc.setFontSize(6);
       doc.text('Scan Slip No.', qrX, qrY + qrSize + 3);
 
-      doc.save('booking-slip.pdf'); // optional: save PDF
+      doc.save('booking-slip.pdf'); // optional: save 
+      const blob = doc.output('blob');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        saveFile(base64String, ('booking_slip') +(new Date().toDateString())+'.pdf');
+      };
+      reader.readAsDataURL(blob);
     } catch (err) {
       this.alertService.error('QR Code Error:');
     }
