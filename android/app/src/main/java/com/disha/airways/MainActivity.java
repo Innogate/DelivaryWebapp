@@ -6,9 +6,13 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.print.PageRange;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
+import android.print.PrintDocumentInfo;
 import android.print.PrintManager;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -24,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import com.getcapacitor.BridgeActivity;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -91,27 +96,57 @@ public class MainActivity extends BridgeActivity {
             @JavascriptInterface
             public void printBase64File(String base64Data, String filename) {
                 try {
-                    String html = new String(Base64.decode(base64Data, Base64.DEFAULT), "UTF-8");
+                    // Remove base64 prefix if present
+                    if (base64Data.contains(",")) {
+                        base64Data = base64Data.substring(base64Data.indexOf(",") + 1);
+                    }
 
+                    // Decode the base64 string to a byte array
+                    byte[] decodedBytes = Base64.decode(base64Data.trim(), Base64.DEFAULT);
+
+                    // Create a temporary PDF file
+                    File pdfFile = new File(getCacheDir(), filename);
+                    try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
+                        fos.write(decodedBytes);
+                    }
+
+                    // Now print the PDF using PrintManager
                     runOnUiThread(() -> {
-                        WebView printWebView = new WebView(MainActivity.this);
-                        printWebView.getSettings().setJavaScriptEnabled(false);
-                        printWebView.loadDataWithBaseURL(null, html, "text/HTML", "UTF-8", null);
-
-                        printWebView.setWebViewClient(new WebViewClient() {
+                        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
+                        PrintDocumentAdapter printAdapter = new PrintDocumentAdapter() {
                             @Override
-                            public void onPageFinished(WebView view, String url) {
-                                PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
-                                PrintDocumentAdapter printAdapter = printWebView.createPrintDocumentAdapter(filename);
-                                printManager.print(filename, printAdapter, new PrintAttributes.Builder().build());
+                            public void onLayout(PrintAttributes oldAttributes, PrintAttributes newAttributes, CancellationSignal cancellationSignal, LayoutResultCallback callback, Bundle extras) {
+                                callback.onLayoutFinished(new PrintDocumentInfo.Builder(filename)
+                                    .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                                    .build(), true);
                             }
-                        });
+
+                            @Override
+                            public void onWrite(PageRange[] pages, ParcelFileDescriptor destination, CancellationSignal cancellationSignal, WriteResultCallback callback) {
+                                try (FileInputStream fis = new FileInputStream(pdfFile);
+                                     FileOutputStream fos = new FileOutputStream(destination.getFileDescriptor())) {
+                                    byte[] buffer = new byte[1024];
+                                    int bytesRead;
+                                    while ((bytesRead = fis.read(buffer)) != -1) {
+                                        fos.write(buffer, 0, bytesRead);
+                                    }
+                                    callback.onWriteFinished(new PageRange[]{PageRange.ALL_PAGES});
+                                } catch (Exception e) {
+                                    callback.onWriteFailed(e.getMessage());
+                                }
+                            }
+                        };
+
+                        printManager.print(filename, printAdapter, new PrintAttributes.Builder().build());
                     });
 
                 } catch (Exception e) {
-                    Log.e("Print", "Error: " + e.getMessage(), e);
+                    e.printStackTrace();
+                    Log.e("Print", "Error: " + e.getMessage());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Failed to print", Toast.LENGTH_SHORT).show());
                 }
             }
+
         }, "AndroidInterface");
     }
 }
