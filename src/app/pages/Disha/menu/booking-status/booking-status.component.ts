@@ -15,7 +15,7 @@ import { DatePicker, DatePickerModule } from 'primeng/datepicker';
 import jsPDF from 'jspdf';
 import QRCode from 'qrcode';
 import { Router } from '@angular/router';
-import { saveFile } from '../../../../../utility/function';
+import { printBase64File, saveFile } from '../../../../../utility/function';
 
 @Component({
   selector: 'app-booking-status',
@@ -312,7 +312,13 @@ export class BookingStatusComponent implements OnInit {
     const blobUrl = URL.createObjectURL(pdfBlob);
   
     const win = window.open(blobUrl, '_blank');
-  
+    const blob = pdfBlob
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        printBase64File(base64String, ('Delivery') +(new Date().toDateString())+'.pdf');
+      };
+      reader.readAsDataURL(blob);
     if (!win) {
       alert('Popup blocked! Please allow popups in your browser.');
     } else {
