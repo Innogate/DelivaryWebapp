@@ -353,7 +353,7 @@ export class BookingStatusComponent implements OnInit {
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(255, 0, 0);
     doc.setFontSize(10);
-    doc.text('' + this.branchInfo.booking_branch_name, offsetX + 2, offsetY + 6);
+    doc.text('' + this.branchInfo.branch_name, offsetX + 2, offsetY + 6);
 
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
