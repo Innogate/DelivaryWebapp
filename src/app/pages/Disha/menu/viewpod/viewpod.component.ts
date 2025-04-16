@@ -4,10 +4,11 @@ import { deliveryService } from '../../../../../services/delivery.service';
 import { firstValueFrom, tap } from 'rxjs';
 import { AlertService } from '../../../../../services/alert.service';
 import { CommonModule } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-viewpod',
-  imports: [CommonModule],
+  imports: [CommonModule, DialogModule],
   templateUrl: './viewpod.component.html',
   styleUrl: './viewpod.component.scss'
 })
@@ -20,7 +21,8 @@ export class ViewpodComponent {
   showPod: boolean = false;
   fileName: string = '';
   imageBlob: Blob | null = null;
-
+  displayImagePopup = false;
+  zoom = 1;
   constructor(private route: ActivatedRoute, private deliveryService: deliveryService, private alertService: AlertService) { }
 
   ngOnInit(): void {
@@ -120,6 +122,20 @@ export class ViewpodComponent {
     }
 }
 
+showImagePopup() {
+  this.zoom = 1; // Reset zoom on open
+  this.displayImagePopup = true;
+}
 
+onZoom(event: WheelEvent) {
+  event.preventDefault();
+  const delta = Math.sign(event.deltaY);
+  if (delta < 0 && this.zoom < 3) {
+    this.zoom += 0.1;
+  } else if (delta > 0 && this.zoom > 0.5) {
+    this.zoom -= 0.1;
+  }
+  this.zoom = parseFloat(this.zoom.toFixed(2));
+}
 
 }

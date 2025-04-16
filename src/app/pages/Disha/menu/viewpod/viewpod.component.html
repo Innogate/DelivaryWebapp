@@ -1,4 +1,4 @@
-<div class="w-full max-w-md mx-auto bg-white rounded-2xl p-6 space-y-5 border border-gray-200">
+<div class="w-full max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl mx-auto bg-white rounded-2xl p-4 sm:p-6 md:p-8 space-y-5 border border-gray-200 shadow">
   <h2 class="text-xl font-bold text-gray-800">Upload POD Image</h2>
 
   <!-- Upload Button -->
@@ -19,14 +19,20 @@
   </label>
 
   <!-- Preview -->
-  <div *ngIf="base64File" class="space-y-2">
-    <p class="text-sm text-gray-600 font-medium">Image Preview:</p>
-    <img
-      [src]="base64File"
-      alt="Selected POD"
-      class="w-full rounded-lg border border-gray-300 shadow-sm transition hover:shadow-md"
-    />
+  <div *ngIf="base64File" class="space-y-2 mb-20">
+    <img [src]="base64File" alt="Selected POD" (click)="showImagePopup()"
+      class="w-full rounded-lg border border-gray-300 shadow-sm cursor-pointer hover:shadow-md" />
   </div>
+
+  <!-- Dialog with zoomable image -->
+  <p-dialog [(visible)]="displayImagePopup" [modal]="true" [style]="{ width: 'auto' }"
+    [contentStyle]="{ 'text-align': 'center' }" [dismissableMask]="true" header="Image Preview">
+    <div class="overflow-auto">
+      <img [src]="base64File" alt="Zoomed Image" class="transition-transform duration-300"
+        [style.transform]="'scale(' + zoom + ')'" (wheel)="onZoom($event)"
+        style="max-width: 100%; max-height: 80vh;" />
+    </div>
+  </p-dialog>
 
   <!-- Action Button -->
   <div class="flex justify-end">

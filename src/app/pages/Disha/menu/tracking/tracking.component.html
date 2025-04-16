@@ -1,7 +1,7 @@
 <div class="w-full h-full overflow-auto">
   <!-- Input Section -->
   <div *ngIf="!isView" class="max-w-xl mx-auto p-8 bg-white rounded-2xl shadow-lg mt-10">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">📦 Track Your Package</h2>
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">📦 Track Your Booking</h2>
 
     <form [formGroup]="search" (ngSubmit)="searchPackage()">
       <input type="text" pInputText formControlName="slip_no" placeholder="Enter Slip No."
@@ -17,7 +17,7 @@
   <!-- Tracking View -->
   <div *ngIf="isView" class="overflow-y-auto">
     <!-- Tracking Card Container -->
-     <!-- Back Button -->
+    <!-- Back Button -->
     <div class="mb-6 mt-4 text-center">
       <button pButton label=" Track another package" class="text-sm text-blue-500"
         (click)="isView = false; timelineSteps = []">
@@ -72,8 +72,26 @@
               </div>
             </div>
           </ng-container>
+
         </div>
+
+        
+        <div *ngIf="base64File" class="space-y-2 mb-20">
+          <img [src]="base64File" alt="Selected POD" (click)="showImagePopup()"
+            class="w-full rounded-lg border border-gray-300 shadow-sm cursor-pointer hover:shadow-md" />
+        </div>
+
+        <!-- Dialog with zoomable image -->
+        <p-dialog [(visible)]="displayImagePopup" [modal]="true" [style]="{ width: 'auto' }"
+          [contentStyle]="{ 'text-align': 'center' }" [dismissableMask]="true" header="Image Preview">
+          <div class="overflow-auto">
+            <img [src]="base64File" alt="Zoomed Image" class="transition-transform duration-300"
+              [style.transform]="'scale(' + zoom + ')'" (wheel)="onZoom($event)"
+              style="max-width: 100%; max-height: 80vh;" />
+          </div>
+        </p-dialog>
       </div>
     </div>
   </div>
+
 </div>
