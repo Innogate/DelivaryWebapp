@@ -24,7 +24,7 @@ import { MenuModule } from 'primeng/menu';
 import { CardModule } from 'primeng/card';
 import { CalendarModule } from 'primeng/calendar';
 import { TagModule } from 'primeng/tag';
-import { saveFile } from '../../../../../utility/function';
+import { printBase64File, saveFile } from '../../../../../utility/function';
 
 @Component({
     selector: 'app-manifest',
@@ -464,6 +464,14 @@ export class ManifestComponent {
         if (isPrint) {
             doc.autoPrint();
             window.open(doc.output('bloburl'), '_blank');  // Open print dialog
+            // convert to base64 and console log
+            const blob = doc.output('blob');
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                printBase64File(base64String, data.manifests_number + '.pdf');
+            };
+            reader.readAsDataURL(blob);
         } else {
             doc.save(data.manifests_number + '_Manifest_Report.pdf');
             // convert to base64 and console log
