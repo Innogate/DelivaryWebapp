@@ -53,7 +53,7 @@ export class AppLayout implements OnInit {
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             setTimeout(() => this.checkLoginUrl(), 0); // Small delay to ensure route update
         });
-        
+
     }
 
     ngOnInit() {
@@ -122,8 +122,12 @@ export class AppLayout implements OnInit {
     }
 
     checkLoginUrl() {
-    const loginRoutes = ['/pages/login'];
-    this.isNotLoginPage = !loginRoutes.includes(this.router.url);
-}
+        const loginRoutes = ['/pages/login'];
+        const homeRouter = ['/pages/home']
+        this.isNotLoginPage = this.isNotLoginPage = !(
+            loginRoutes.includes(this.router.url) || 
+            homeRouter.includes(this.router.url)
+        );;
+    }
 
 }
