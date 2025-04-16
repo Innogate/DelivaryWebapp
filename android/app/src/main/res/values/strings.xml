@@ -1,3 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">Disha Airways</string>
+    <string name="title_activity_main">Disha Airways</string>
+    <string name="package_name">com.disha.airways</string>
+    <string name="custom_url_scheme">com.disha.airways</string>
 </resources>
