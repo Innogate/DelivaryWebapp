@@ -69,7 +69,6 @@ export class BookingStatusComponent implements OnInit {
     this.gateAllBranch();
     this.gateAllcity();
     this.filterBookingList()
-    this.branchInfo = this.globalstorageService.get('branchInfo');
     await this.getStatebyId(this.branchInfo.state_id)
   }
 
@@ -120,6 +119,30 @@ export class BookingStatusComponent implements OnInit {
     ))
   }
 
+  async gateBranchByid(data: any, value: any) {
+    const payload = {
+      fields: [],
+      relation: null,
+      branch_id: data.branch_id
+    }
+    if (data.branch_id) {
+      await firstValueFrom(this.branchService.getBranchById(payload).pipe(
+        tap(
+          (res) => {
+            if (res.body) {
+              this.branchInfo = res.body
+              if(value === 'print'){
+                this.printBookingSlip(data);
+              } else if(value === 'download'){
+                this.generateBookingSlipPDF(data,'download')
+              }
+            }
+          }
+        )
+      ))
+    }
+  }
+
 
   async gateAllcity() {
     const storedCities = this.globalStorage.get<{ city_id: number; city_name: string }[]>('cities');
@@ -148,7 +171,7 @@ export class BookingStatusComponent implements OnInit {
       this.alertService.error('Error fetching cities:');
     }
   }
-  
+
 
 
   editBooking(booking: any) {
@@ -253,9 +276,9 @@ export class BookingStatusComponent implements OnInit {
   }
 
   async cancelOder(bookingId: number) {
-    if(bookingId){
+    if (bookingId) {
       const status = this.alertService.confirm("Cancle this Booking");
-      if(await status == true){
+      if (await status == true) {
         await firstValueFrom(this.bookService.cancelBooking(bookingId).pipe(
           tap(
             (res) => {
@@ -268,7 +291,7 @@ export class BookingStatusComponent implements OnInit {
           )
         ))
       }
-      
+
     }
   }
 
@@ -278,14 +301,18 @@ export class BookingStatusComponent implements OnInit {
   async generateBookingSlipPDF(data: any, option: 'print' | 'download'): Promise<void> {
     const doc = new jsPDF('p', 'mm', 'a4');
     const positions = [5];
-  
+
     for (const offsetY of positions) {
       await this.drawTemplate(doc, 5, offsetY, data);
     }
-  
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+
     const pdfBlob = doc.output('blob');
     const blobUrl = URL.createObjectURL(pdfBlob);
-  
+
     if (option === 'print') {
       const win = window.open(blobUrl, '_blank');
       if (!win) {
@@ -300,41 +327,43 @@ export class BookingStatusComponent implements OnInit {
       const a = document.createElement('a');
       a.href = blobUrl;
       a.download = 'booking-slip.pdf';
+      a.download = `booking-slip-${data.slip_no}-${formattedDate}.pdf`;
+
       a.click();
     }
   }
-  
+
 
 
   async printBookingSlip(data: any) {
-    const pdfBlob:any = await this.generateBookingSlipPDF(data, 'print');
-  
+    const pdfBlob: any = await this.generateBookingSlipPDF(data, 'print');
+
     const blobUrl = URL.createObjectURL(pdfBlob);
-  
+
     const win = window.open(blobUrl, '_blank');
     const blob = pdfBlob
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        printBase64File(base64String, ('Delivery') +(new Date().toDateString())+'.pdf');
-      };
-      reader.readAsDataURL(blob);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      printBase64File(base64String, ('Delivery') + (new Date().toDateString()) + '.pdf');
+    };
+    reader.readAsDataURL(blob);
     if (!win) {
       alert('Popup blocked! Please allow popups in your browser.');
     } else {
-      
+
       setTimeout(() => {
         win.focus();
         win.print();
       }, 500);
     }
   }
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 
   async drawTemplate(doc: jsPDF, offsetX: number, offsetY: number, data: any) {
     const w = 200;
@@ -359,12 +388,12 @@ export class BookingStatusComponent implements OnInit {
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
     doc.text('ENTERPRISE', offsetX + 2, offsetY + 10);
-    doc.text(''+this.branchInfo.address, offsetX + 2, offsetY + 14);
+    doc.text('' + this.branchInfo.address, offsetX + 2, offsetY + 14);
     doc.text(
       'City: ' + this.getCityName(this.branchInfo.city_id) + ', State: ' + this.stateName,
       offsetX + 2,
       offsetY + 18
-    );    doc.text('Phone : '+this.branchInfo.contact_no, offsetX + 2, offsetY + 22);
+    ); doc.text('Phone : ' + this.branchInfo.contact_no, offsetX + 2, offsetY + 22);
     doc.text(`PAN : ${this.branchInfo.udyam_no || '-'}   •   GSTIN : ${this.branchInfo.gst_no || '-'}`, offsetX + 2, offsetY + 26);
 
     // Consignor Block
@@ -505,7 +534,7 @@ export class BookingStatusComponent implements OnInit {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        saveFile(base64String, ('booking_slip') +(new Date().toDateString())+'.pdf');
+        saveFile(base64String, ('booking_slip') + (new Date().toDateString()) + '.pdf');
       };
       reader.readAsDataURL(blob);
     } catch (err) {
@@ -516,18 +545,18 @@ export class BookingStatusComponent implements OnInit {
 
   calculateGst(data: any | null, gst: number): number {
     if (!data || typeof data.total_value !== 'number') return 0;
-  
+
     const totalGst = data.cgst + data.sgst + data.igst;
-  
+
     const baseAmount = (data.total_value * 100) / (100 + totalGst);
-  
+
     const result = (baseAmount * gst) / 100;
-  
-    return parseFloat(result.toFixed(2)); ;
+
+    return parseFloat(result.toFixed(2));;
   }
 
-  async getStatebyId(data: any){
-    if(data){
+  async getStatebyId(data: any) {
+    if (data) {
       const payload = {
         state_id: data
       }
@@ -545,6 +574,6 @@ export class BookingStatusComponent implements OnInit {
       ))
     }
   }
-  
-  
+
+
 }
