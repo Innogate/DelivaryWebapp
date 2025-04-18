@@ -131,10 +131,10 @@ export class BookingStatusComponent implements OnInit {
           (res) => {
             if (res.body) {
               this.branchInfo = res.body
-              if(value === 'print'){
+              if (value === 'print') {
                 this.printBookingSlip(data);
-              } else if(value === 'download'){
-                this.generateBookingSlipPDF(data,'download')
+              } else if (value === 'download') {
+                this.generateBookingSlipPDF(data, 'download')
               }
             }
           }
@@ -323,11 +323,27 @@ export class BookingStatusComponent implements OnInit {
         win.focus();
         win.print();
       };
+      // convert to base64 and console log
+      const blob = doc.output('blob');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        printBase64File(base64String, data.slip_no + '.pdf');
+      };
+      reader.readAsDataURL(blob);
+      
     } else if (option === 'download') {
       const a = document.createElement('a');
       a.href = blobUrl;
-      a.download = 'booking-slip.pdf';
       a.download = `booking-slip-${data.slip_no}-${formattedDate}.pdf`;
+
+      const blob = doc.output('blob');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        saveFile(base64String, data.slip_no + '.pdf');
+      };
+      reader.readAsDataURL(blob);
 
       a.click();
     }
@@ -512,36 +528,6 @@ export class BookingStatusComponent implements OnInit {
     doc.setFontSize(7);
     doc.text('Signature', offsetX + 180, offsetY + h - 2);
   }
-
-
-  async qr() {
-    try {
-      const doc = new jsPDF(); // create jsPDF instance
-      const offsetX = 20;
-      const offsetY = 20;
-      const slip_no = '100'; // default slip number
-      const qrData = await QRCode.toDataURL(slip_no, { margin: 1, width: 100 });
-      const qrX = offsetX + 120;
-      const qrY = offsetY + 50;
-      const qrSize = 15;
-
-      doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
-      doc.setFontSize(6);
-      doc.text('Scan Slip No.', qrX, qrY + qrSize + 3);
-
-      doc.save('booking-slip.pdf'); // optional: save 
-      const blob = doc.output('blob');
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        saveFile(base64String, ('booking_slip') + (new Date().toDateString()) + '.pdf');
-      };
-      reader.readAsDataURL(blob);
-    } catch (err) {
-      this.alertService.error('QR Code Error:');
-    }
-  }
-
 
   calculateGst(data: any | null, gst: number): number {
     if (!data || typeof data.total_value !== 'number') return 0;

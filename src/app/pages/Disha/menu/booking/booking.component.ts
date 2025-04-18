@@ -23,6 +23,7 @@ import html2canvas from 'html2canvas';
 import autoTable from 'jspdf-autotable';
 import QRCode from 'qrcode';
 import { Router } from '@angular/router';
+import { printBase64File } from '../../../../../utility/function';
 declare module 'jspdf' {
   interface jsPDF {
     lastAutoTable?: {
@@ -446,7 +447,7 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm) {
       return;
     }
-   this.bookingForm.patchValue({
+    this.bookingForm.patchValue({
       consignor_name: event.value.consignor_name,
       consignor_mobile: event.value.consignor_mobile,
     });
@@ -468,6 +469,14 @@ export class BookingComponent implements OnInit {
     // Open in a new tab for print
     doc.autoPrint();
     window.open(doc.output('bloburl'), '_blank');
+    // convert to base64 and console log
+    const blob = doc.output('blob');
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      printBase64File(base64String,'bookingSlip'+ this.responce + '.pdf');
+    };
+    reader.readAsDataURL(blob);
   }
 
 

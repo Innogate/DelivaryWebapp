@@ -17,7 +17,7 @@ import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-pod-upload',
-    imports: [DropdownModule, CommonModule, AutoCompleteModule, FormsModule, TagModule, ButtonModule, ReactiveFormsModule, CardModule,DialogModule],
+    imports: [DropdownModule, CommonModule, AutoCompleteModule, FormsModule, TagModule, ButtonModule, ReactiveFormsModule, CardModule, DialogModule],
     templateUrl: './pod-upload.component.html',
     styleUrl: './pod-upload.component.scss'
 })
@@ -103,8 +103,8 @@ export class PodUploadComponent {
                     }
                 )
             ));
-        } catch (error) {
-            this.alertService.error('' + error);
+        } catch (error: any) {
+            this.alertService.error('' + error.error.message);
         }
     }
 

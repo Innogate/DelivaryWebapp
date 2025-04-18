@@ -1,8 +1,8 @@
 <div class="sticky top-0 bg-blue-300 z-10 shadow-md" *ngIf="!showAddState">
     <div class="flex items-center justify-between px-4 py-2 border-b border-gray-300">
-        <h2 class="text-2xl font-bold text-gray-800 m-0">Co-Loader Master</h2>
+        <h2  class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800 m-0">Co-Loader Master</h2>
 
-        <div class="space-x-2">
+        <!-- <div class="space-x-2">
             <button class="px-4 py-1 rounded-lg font-medium bg-green-600 text-white hover:bg-green-700 transition"
                 [class.bg-green-800]="coloaderStatus === 'active'" (click)="setUserStatus('active')">
                 Active
@@ -12,11 +12,11 @@
                 [class.bg-red-800]="coloaderStatus === 'inactive'" (click)="setUserStatus('inactive')">
                 Inactive
             </button>
-        </div>
+        </div> -->
     </div>
 </div>
 
-<div class="flex flex-col bg-slate-100 p-2 h-full w-full relative scrollable-container">
+<div class="p-4 bg-slate-100  rounded-lg shadow-md  m-0 scrollable-container h-full">
     <div *ngIf="coloaderList.length" class="flex flex-col bg-slate-100 py-2 min-h-screen">
         <div *ngFor="let coloader of coloaderList"
             class="bg-white p-4 mb-3 rounded-xl shadow-lg border border-gray-300 transition-transform transform hover:scale-105">
@@ -28,10 +28,10 @@
                     User ID: <span class="text-blue-600 font-bold">{{ coloader.coloader_id }}</span>
                 </p>
 
-                <div class="flex items-center text-gray-500 text-sm">
+                <!-- <div class="flex items-center text-gray-500 text-sm">
                     <i class="pi pi-calendar mr-1 text-gray-400"></i>
                     Created: {{ coloader.created_at | date: 'dd-MM-yyyy HH:mm' }}
-                </div>
+                </div> -->
             </div>
 
 
@@ -42,14 +42,14 @@
                     <i class="pi pi-user mr-2 text-green-500"></i>
                     <strong> </strong> {{coloader.coloader_name}}
                 </p>
-                <div [ngClass]="{
+                <!-- <div [ngClass]="{
                 'bg-green-200 text-green-700': coloader.status,
                 'bg-red-200 text-red-700': !coloader.status
-            }" class="px-4 py-2 rounded-full font-medium text-sm flex items-center">
+             }" class="px-4 py-2 rounded-full font-medium text-sm flex items-center">
                     <i class="pi"
                         [ngClass]="coloader.status ? 'pi-check-circle text-green-700' : 'pi-times-circle text-red-700'"></i>
                     <span class="ml-2">{{ coloader.status ? 'Active' : 'Inactive' }}</span>
-                </div>
+                </div> -->
             </div>
 
             <!-- Branch Name -->
