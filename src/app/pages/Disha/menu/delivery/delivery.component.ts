@@ -76,8 +76,8 @@ export class DeliveryComponent {
           }
         )
       ))
-    } catch (error) {
-      this.alertService.error('' + error);
+    } catch (error: any) {
+      this.alertService.error('' + error.error.message);
     }
   }
 
@@ -97,8 +97,8 @@ export class DeliveryComponent {
           }
         )
       ))
-    } catch (error) {
-      this.alertService.error('' + error);
+    } catch (error:any) {
+      this.alertService.error('' + error.error.message);
     }
   }
 
