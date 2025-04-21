@@ -16,15 +16,13 @@
         </p-dropdown>
 
         <!-- City Autocomplete -->
-        <div class="w-full">
-            <!-- <label for="cities" class="font-medium flex items-center">
-                <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
-            </label> -->
+        <!-- <div class="w-full">
+         
             <p-autoComplete [(ngModel)]="selectedCity" [suggestions]="filteredCities"
                 (completeMethod)="searchCity($event)" optionLabel="city_name" placeholder="Search and Select a City"
                 (onSelect)="onCitySelect($event)" class="w-full" formControlName="city_id" (onSelect)="filterManifest()" (input)="filterManifest()">
             </p-autoComplete>
-        </div>
+        </div> -->
 
 
     </div>
@@ -66,7 +64,7 @@
                     <!-- City Selection -->
                     <div class="w-full">
                         <label for="cities" class="font-medium flex items-center">
-                            <i class="pi pi-map-marker text-red-500 mr-2"></i> City <span class="text-red-500">*</span>
+                            <i class="pi pi-map-marker text-red-500 mr-2"></i> City 
                         </label>
                         <div class="w-full">
                             <p-autoComplete [(ngModel)]="selectedCity" [suggestions]="filteredCities"
