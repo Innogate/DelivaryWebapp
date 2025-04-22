@@ -203,21 +203,13 @@
                 {{ (manifest.create_at | date: 'dd-MM-yyyy HH:mm') ?? "N/A" }}
             </p>
         </div>
-        <div class="flex justify-between items-center">
-            <p class="text-blue-800 font-semibold text-lg flex items-center">
-                <i class="pi pi-file mr-2 text-blue-600"></i>
-                Manifest No: <span class="text-blue-600 font-bold ml-1">{{ manifest.manifests_number }}</span>
-            </p>
-            
-        </div>
-
         
         <div class="flex justify-between items-center">
           
-            <p class="text-blue-800 font-semibold text-lg flex items-center">
+            <!-- <p class="text-blue-800 font-semibold text-lg flex items-center">
                 <i class="pi pi-map mr-2 text-blue-600"></i>
                  City: <span class="text-blue-600 font-bold ml-1">{{ getCityName(manifest.destination_city_id) }}</span>
-            </p>
+            </p> -->
             <p class="text-blue-800 font-semibold text-lg flex items-center">
                 <i class="pi pi-file mr-2 text-blue-600"></i>
                 No Bag: <span class="text-blue-600 font-bold ml-1">{{manifest.bag_count}}</span>
