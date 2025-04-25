@@ -5,7 +5,7 @@
 <form class="sticky top-0 bg-blue-300 z-10 shadow-md p-1" *ngIf="showManifests" [formGroup]="manifestFilterForm">
     <div class="grid grid-cols-2 gap-4 items-center">
         <p-dropdown [filter]="true" [options]="branches" optionLabel="branch_name" optionValue="branch_id"
-            formControlName="destination_branch_id" placeholder="Select Branch" class="w-full"
+            formControlName="destination_branch_id" placeholder="Select Branch" class="w-full" [showClear]="true"
             (onChange)="filterManifest()">
         </p-dropdown>
 
