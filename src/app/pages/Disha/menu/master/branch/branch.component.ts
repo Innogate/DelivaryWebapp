@@ -116,7 +116,7 @@ export class BranchComponent implements OnInit {
   async gateAllUser(data: any) {
     const payload = {
       "fields": [],
-      "max": 10,
+      "max": 5000,
       "current": 0
     }
 

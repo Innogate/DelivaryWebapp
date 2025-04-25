@@ -50,7 +50,7 @@ export class TrackingComponent implements OnInit {
     private deliveryService: deliveryService
   ) {
     this.search = this.fb.group({
-      slip_no: ['', [Validators.required, Validators.pattern('^[A-Za-z]+-[0-9]+$')]]
+      slip_no: ['', [Validators.required, Validators.pattern('^[A-Za-z]+[0-9]+$')]]
     });
   }
 

@@ -40,6 +40,7 @@ export class BookingStatusComponent implements OnInit {
   sgstAmount: number = 0;
   igstAmount: number = 0;
   stateName: string = '';
+  totalBooking?: number = 0;
 
 
 
@@ -228,6 +229,7 @@ export class BookingStatusComponent implements OnInit {
 
     this.filteredBookingsInventory = this.bookingList?.filter(booking => {
       const bookingCreatedDate = new Date(booking.created_at).toLocaleDateString('en-CA');
+  
 
       return (
         (selectedDate ? bookingCreatedDate === selectedDate : true) &&
@@ -235,6 +237,8 @@ export class BookingStatusComponent implements OnInit {
         (destination_id ? booking.destination_branch_id === +destination_id : true)
       );
     });
+    this.totalBooking = this.filteredBookingsInventory?.length
+
   }
 
 

@@ -116,9 +116,9 @@ export class BookingComponent implements OnInit {
       // package section
       slip_no: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Booking sleep number
       package_count: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], //  package count
-      package_weight: ['', [Validators.required,]], // package weight
+      package_weight: ['', ], // package weight
       package_value: ['',], // package value
-      package_contents: ['0'], // package contents
+      package_contents: [''], // package contents
 
       // booking details
       consignor_name: ['', [Validators.required]], // consignor name
@@ -213,6 +213,16 @@ export class BookingComponent implements OnInit {
     let formData = { ...this.bookingForm.value };
     if (formData.destination_city_id && typeof formData.destination_city_id === 'object') {
       formData.destination_city_id = formData.destination_city_id.city_id;
+      const sanitize = (value: any): string => {
+        const trimmed = value?.toString().trim();
+        return (!trimmed || trimmed.toLowerCase() === 'null' || trimmed.toLowerCase() === 'undefined') ? '0' : trimmed;
+      };
+      formData.package_weight = sanitize(formData.package_weight);
+      formData.package_value = sanitize(formData.package_value);
+      formData.cgst = sanitize(formData.cgst);
+      formData.sgst = sanitize(formData.sgst);
+      formData.igst = sanitize(formData.igst);
+      formData.other_charges = sanitize(formData.other_charges)
     }
 
     this.FormData = formData;
@@ -238,7 +248,7 @@ export class BookingComponent implements OnInit {
     const payload =
     {
       "fields": [],
-      "max": 12,
+      "max": 100,
       "current": 0,
     }
 

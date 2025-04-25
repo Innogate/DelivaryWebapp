@@ -105,7 +105,7 @@ export class ManifestComponent {
             destination_id: ['', Validators.required],
             coloader_id: ['', Validators.required],
             booking_id: [],
-            destination_city_id: [''],
+            destination_city_id: [1217],
             bag_count: [],
             transport_mode: ['', Validators.required]
         });
@@ -350,22 +350,22 @@ export class ManifestComponent {
             if (typeof weight === "string") {
                 weight = parseFloat(weight.replace(/[^\d.]/g, ""));
             }
-        
+
             if (isNaN(weight) || weight === 0) {
                 return '0 KG 0 GM';
             }
-        
+
             // Convert from KG to grams only if it's a float (i.e., <1000)
             if (weight < 1000) {
                 weight = weight * 1000;
             }
-        
+
             const kg = Math.floor(weight / 1000);
             const gm = Math.round(weight % 1000);
-        
+
             return `${kg} KG ${gm} GM`;
         };
-        
+
 
         const transportMode = data.bookings[0]?.transport_mode;
         const selectedMode = this.transportModes.find(mode => mode.value === transportMode);
@@ -397,34 +397,37 @@ export class ManifestComponent {
         const tableColumn = ['CN No.', 'No of Packages', 'Product Weight', 'Consignee', 'Destination', 'To Pay'];
 
         const tableRows = data.bookings.map((
-          b: {
-            slip_no: { toString: () => any };
-            package_count: { toString: () => any };
-            package_weight: any;
-            consignee_name: string;
-            destination_city_name: any;
-            to_pay: any;
-            total_value: any;
-          }
+            b: {
+                slip_no: { toString: () => any };
+                package_count: { toString: () => any };
+                package_weight: any;
+                consignee_name: string;
+                destination_city_name: any;
+                to_pay: any;
+                total_value: any;
+            }
         ) => {
-          // Set amount if to_pay is truthy and not 0
-          if (b.to_pay && b.to_pay !== 0) {
-            b.total_value = b.total_value;
-          }
-        
-          const toPayValue = b.to_pay ? (b.total_value?.toString() || '') : '';
-          console.log('To Pay Value:', b.package_weight);
-        
-          return [
-            b.slip_no.toString(),
-            b.package_count.toString(),
-            formatWeight(parseFloat(b.package_weight)),
-            b.consignee_name.toUpperCase(),
-            b.destination_city_name,
-            toPayValue
-          ];
+            // Set amount if to_pay is truthy and not 0
+            if (b.to_pay && b.to_pay !== 0) {
+                b.total_value = b.total_value;
+            }
+
+            const toPayValue = b.to_pay ? (b.total_value?.toString() || '') : '';
+
+            const weight = parseFloat(b.package_weight);
+            const weightDisplay = !weight ? 'Document' : formatWeight(weight);
+
+            return [
+                b.slip_no.toString(),
+                b.package_count.toString(),
+                weightDisplay,
+                b.consignee_name.toUpperCase(),
+                b.destination_city_name,
+                toPayValue
+            ];
         });
-        
+
+
 
         autoTable(doc, {
             startY: 65,
@@ -499,16 +502,16 @@ export class ManifestComponent {
     filterManifest() {
         const { date, city_id, destination_branch_id } = this.manifestFilterForm.value;
         const isNoFilterApplied = !date && !city_id && !destination_branch_id;
-    
+
         if (isNoFilterApplied) {
             this.filteredBookingsInventory = [...this.allManifests];
             return;
         }
-    
+
         const cityIdValue = city_id?.city_id || city_id;
         const destBranchIdValue = destination_branch_id?.destination_id || destination_branch_id;
         const formatDate = (d: Date) => d.toLocaleDateString('en-CA'); // gives YYYY-MM-DD in local timezone
-        const selectedDate = date ? formatDate(new Date(date)) : null;    
+        const selectedDate = date ? formatDate(new Date(date)) : null;
         this.filteredBookingsInventory = this.allManifests?.filter(booking => {
             const bookingDate = booking.create_at?.split(' ')[0];
             return (
@@ -517,8 +520,8 @@ export class ManifestComponent {
                 (destBranchIdValue ? booking.destination_id === +destBranchIdValue : true)
             );
         });
-        }
-    
+    }
+
 
     async downloadManifest(id: any) {
         const payload: any = {
