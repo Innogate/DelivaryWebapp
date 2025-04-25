@@ -149,4 +149,18 @@ public class MainActivity extends BridgeActivity {
 
         }, "AndroidInterface");
     }
+
+    @Override
+    public void onBackPressed() {
+        WebView webView = this.bridge.getWebView();
+
+        // Check if the WebView has a page history
+        if (webView.canGoBack()) {
+            // If there is a previous page in the history, go back
+            webView.goBack();
+        } else {
+            // If there is no history, close the app
+            super.onBackPressed();
+        }
+    }
 }
