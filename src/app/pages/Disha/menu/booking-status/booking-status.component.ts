@@ -70,7 +70,8 @@ export class BookingStatusComponent implements OnInit {
     this.gateAllBranch();
     this.gateAllcity();
     this.filterBookingList()
-    await this.getStatebyId(this.branchInfo.state_id)
+    this.branchInfo = this.globalstorageService.get('branchInfo');
+    await this.getStatebyId(this.branchInfo.state_id);
   }
 
   async getAllBooking() {
@@ -121,27 +122,31 @@ export class BookingStatusComponent implements OnInit {
   }
 
   async gateBranchByid(data: any, value: any) {
-    const payload = {
-      fields: [],
-      relation: null,
-      branch_id: data.branch_id
+
+    if (value === 'print') {
+      this.printBookingSlip(data);
+    } else if (value === 'download') {
+      this.generateBookingSlipPDF(data, 'download')
     }
-    if (data.branch_id) {
-      await firstValueFrom(this.branchService.getBranchById(payload).pipe(
-        tap(
-          (res) => {
-            if (res.body) {
-              this.branchInfo = res.body
-              if (value === 'print') {
-                this.printBookingSlip(data);
-              } else if (value === 'download') {
-                this.generateBookingSlipPDF(data, 'download')
-              }
-            }
-          }
-        )
-      ))
-    }
+
+    // const payload = {
+    //   fields: [],
+    //   relation: null,
+    //   branch_id: data.branch_id
+    // }
+    // if (data.branch_id) {
+    //   await firstValueFrom(this.branchService.getBranchById(payload).pipe(
+    //     tap(
+    //       async (res) => {
+    //         if (res.body) {
+    //           this.branchInfo = res.body
+    //           await this.getStatebyId(this.branchInfo.state_id);
+             
+    //         }
+    //       }
+    //     )
+    //   ))
+    // }
   }
 
 
@@ -546,6 +551,7 @@ export class BookingStatusComponent implements OnInit {
   }
 
   async getStatebyId(data: any) {
+    console.log("call", data)
     if (data) {
       const payload = {
         state_id: data
