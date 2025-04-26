@@ -190,7 +190,7 @@
                 <label for="packages" class="font-medium flex items-center">
                     No Pack <span class="text-red-500">*</span>
                 </label>
-                <input pInputText id="packages" formControlName="package_count" type="number"
+                <input pInputText id="packages" formControlName="package_count" type="number" (input)="onCalculate()"
                     class="p-inputtext p-component" />
                 <small
                     *ngIf="bookingForm.controls['package_count'].hasError('required') && bookingForm.controls['package_count'].touched"
@@ -205,7 +205,7 @@
             </div>
             <div class="flex flex-col">
                 <label for="weight" class="font-medium flex items-center">
-                    <i class="pi pi-weight text-gray-600 mr-2"></i> Weight <span class="text-red-500">*</span>
+                    <i class="pi pi-weight text-gray-600 mr-2"></i> Weight 
                 </label>
                 <input pInputText id="weight" formControlName="package_weight" placeholder="KG" type="number"
                     (input)="onCalculate()" class="p-inputtext p-component" />
@@ -222,7 +222,7 @@
             </div>
             <div class="flex flex-col">
                 <label for="charges" class="font-medium flex items-center">
-                    Charges/KG <span class="text-red-500">*</span>
+                    Charges/KG
                 </label>
                 <input pInputText id="charges" formControlName="package_value" type="number"
                     class="p-inputtext p-component" (input)="onCalculate()" />
@@ -240,7 +240,7 @@
 
             <div class="flex flex-col">
                 <label for="charges" class="font-medium flex items-center">
-                    Amount <span class="text-red-500">*</span>
+                    Amount
                 </label>
                 <input pInputText type="number" formControlName="package_amount" class="p-inputtext p-component"
                     />
@@ -254,7 +254,7 @@
                     <i class="pi pi-send text-blue-500 mr-2"></i> Shipper
                 </label>
                 <input pInputText id="shipper" formControlName="shipper_charges" type="number"
-                    class="p-inputtext p-component" min="5" (input)="onCalculate()" />
+                    class="p-inputtext p-component" (input)="onCalculate()" />
                 <small
                     *ngIf="bookingForm.controls['shipper_charges'].hasError('pattern') && bookingForm.controls['shipper_charges'].touched"
                     class="text-red-500">
@@ -342,7 +342,7 @@
             <!-- Total Input Field -->
             <div class="flex-1">
                 <label for="total" class="font-medium flex items-center">
-                    <i class="pi pi-calculator text-blue-600 mr-2"></i> Total <span class="text-red-500">*</span>
+                    <i class="pi pi-calculator text-blue-600 mr-2"></i> Total
                 </label>
                 <input pInputText id="total" formControlName="total_value" type="number"
                     class="p-inputtext p-component w-full" />

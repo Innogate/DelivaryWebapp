@@ -132,13 +132,13 @@ export class BookingComponent implements OnInit {
       // Billing section
       paid_type: "Prepaid", // payment type
       booking_address: ['UNSET'], // booking address
-      shipper_charges: [5, Validators.min(5)], // shipper charges
+      shipper_charges: [5], // shipper charges
       other_charges: [0], // other charges
       declared_value: [0],
       cgst: [cgst],
       sgst: [sgst],
       igst: [igst],
-      total_value: ['', [Validators.required,]],
+      total_value: [''],
 
       to_pay: ['0'],
       on_account: ['0'],
@@ -222,7 +222,11 @@ export class BookingComponent implements OnInit {
       formData.cgst = sanitize(formData.cgst);
       formData.sgst = sanitize(formData.sgst);
       formData.igst = sanitize(formData.igst);
-      formData.other_charges = sanitize(formData.other_charges)
+      formData.other_charges = sanitize(formData.other_charges);
+      formData.package_amount = sanitize(formData.package_amount);
+      formData.total_value = sanitize(formData.total_value);
+      formData.shipper_charges = sanitize(formData.shipper_charges);
+      formData.declared_value = sanitize(formData.declared_value);
     }
 
     this.FormData = formData;
